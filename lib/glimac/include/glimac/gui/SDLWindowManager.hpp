@@ -7,26 +7,26 @@
 namespace glimac {
 
 class SDLWindowManager {
-public:
-  SDL_Window *window;
+    private:
+        SDL_Window *m_window;
+        SDL_GLContext m_openglContext;
 
-    SDLWindowManager(uint32_t width, uint32_t height, const char* title);
+    public:
+        //Constructor & Destructor
+        SDLWindowManager(uint32_t width, uint32_t height, const char* title);
+        ~SDLWindowManager();
 
-    ~SDLWindowManager();
+        //Getters & Setters
+        SDL_Window* window();
+        SDL_GLContext& glContext();
 
-    bool pollEvent(SDL_Event& e);
-
-    bool isKeyPressed(SDL_Keycode key) const;
-
-    // button can SDL_BUTTON_LEFT, SDL_BUTTON_RIGHT and SDL_BUTTON_MIDDLE
-    bool isMouseButtonPressed(uint32_t button) const;
-
-    glm::ivec2 getMousePosition() const;
-
-    void swapBuffers();
-
-    // Return the time in seconds
-    float getTime() const;
+        //SDL functions
+        bool pollEvent(SDL_Event& e);
+        bool isKeyPressed(SDL_Keycode key) const;
+        bool isMouseButtonPressed(uint32_t button) const; //button can SDL_BUTTON_LEFT, SDL_BUTTON_RIGHT and SDL_BUTTON_MIDDLE
+        glm::ivec2 getMousePosition() const;
+        void swapBuffers();
+        float getTime() const; // Return the time in seconds
 };
 
 }
