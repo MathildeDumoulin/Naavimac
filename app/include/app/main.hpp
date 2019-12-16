@@ -28,6 +28,6 @@
 /// \li firefox index.html (or any other browser, e.g. 'google-chrome')
 /// \section who_sec Who are we?
 /// Mathilde DUMOULIN & Julien HAUDEGOND.
-/// French engineer students in IMAC school.
+/// French engineering students in IMAC school.
 
 #endif

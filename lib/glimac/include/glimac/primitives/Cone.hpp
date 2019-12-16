@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "glimac/common/common.hpp"
+#include "glimac/common/ShapeVertex.hpp"
 
 namespace glimac {
     
