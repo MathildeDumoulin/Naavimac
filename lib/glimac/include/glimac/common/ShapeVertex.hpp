@@ -2,6 +2,7 @@
 
 #include <GL/glew.h>
 #include "glimac/common/glm.hpp"
+#include <vector>
 
 namespace glimac {
 
@@ -13,6 +14,8 @@ struct ShapeVertexHomo {
 
     ShapeVertexHomo() = default;
     ShapeVertexHomo(glm::vec4 pos, glm::vec4 norm, glm::vec2 tex) : position(pos), normal(norm), texCoords(tex) {}
+
+    void transform(const glm::mat4 &mat);
 };
 
 struct ShapeVertex {
@@ -28,6 +31,9 @@ struct ShapeVertex {
     ShapeVertex& operator=(const ShapeVertex &src);
     ShapeVertex& operator=(const ShapeVertexHomo &src);
 };
+
+
+void transformShapeVertexVector(std::vector<ShapeVertexHomo> &vec, const glm::mat4 &mat);
 
 
 }
