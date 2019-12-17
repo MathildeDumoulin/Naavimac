@@ -7,6 +7,7 @@
 #include <glimac/gui/IMGUIWindowManager.hpp>
 #include <GL/glew.h>
 #include <glimac/shading/Program.hpp>
+#include <glimac/shading/ShadingProgram.hpp>
 #include <glimac/common/FilePath.hpp>
 #include <glimac/common/glm.hpp>
 #include <glimac/common/Image.hpp>
@@ -17,24 +18,6 @@
 
 using namespace glimac;
 
-struct MainProgram {
-    Program m_Program;
-
-    GLuint uMVPMatrix;
-    GLuint uMVMatrix;
-    GLuint uNormalMatrix;
-    GLuint uTexture;
-
-
-    MainProgram(const FilePath& applicationPath):
-        m_Program(loadProgram(applicationPath.dirPath() + "shaders/3D.vs.glsl",
-                                applicationPath.dirPath() + "shaders/3D.fs.glsl")) {
-        uMVPMatrix = glGetUniformLocation(m_Program.getGLId(), "uMVPMatrix");
-        uMVMatrix = glGetUniformLocation(m_Program.getGLId(), "uMVMatrix");
-        uNormalMatrix = glGetUniformLocation(m_Program.getGLId(), "uNormalMatrix");
-        uTexture = glGetUniformLocation(m_Program.getGLId(), "uTexture");
-    }
-};
 
 int main(int argc, char** argv) {
     // Initialize SDL & OpenGL + open a window
@@ -53,7 +36,7 @@ int main(int argc, char** argv) {
 
         //Load, compile and tell OpenGL to use these shaders
         FilePath applicationPath(argv[0]);
-        MainProgram mainProgram(applicationPath);
+        ShadingProgram mainProgram(applicationPath);
 
 
     //OBJECT
@@ -169,7 +152,7 @@ int main(int argc, char** argv) {
 
         glBindVertexArray(vao); // Binding VAO
 
-            mainProgram.m_Program.use();
+            mainProgram.use();
 
                 //Make the cube rotate
                 // glm::mat4 cubeMVMatrix = glm::rotate(viewMatrix, windowManager.getTime(), glm::vec3(0, 1, 0));
