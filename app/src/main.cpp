@@ -64,14 +64,24 @@ int main(int argc, char** argv) {
         glGenBuffers(1, &vbo);
 
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-            glBufferData(GL_ARRAY_BUFFER, myCube.getVertexCount() * sizeof(ShapeVertex), myCube.getDataPointer(), GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, myCube.getVertexCount() * sizeof(ShapeVertex), myCube.getVerticesPointer(), GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
+        GLuint ibo;
+        glGenBuffers(1, &ibo);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, myCube.getIndexCount() * sizeof(uint32_t), myCube.getIndexesPointer(), GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 
         GLuint vao;
         glGenVertexArrays(1, &vao);
 
         glBindVertexArray(vao);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+
             const GLuint VERTEX_ATTR_POSITION = 0;
             const GLuint VERTEX_ATTR_NORMAL = 1;
             const GLuint VERTEX_ATTR_TEXTURE = 2;
@@ -153,7 +163,7 @@ int main(int argc, char** argv) {
                 glUniformMatrix4fv(mainProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * cubeMVMatrix));
                 glUniformMatrix4fv(mainProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(cubeMVMatrix))));
 
-                glDrawArrays(GL_TRIANGLES, 0, myCube.getVertexCount()); //cube
+                glDrawElements(GL_TRIANGLES, myCube.getIndexCount(), GL_UNSIGNED_INT, 0); //cube
 
         glBindVertexArray(0);
 

@@ -9,18 +9,24 @@ namespace glimac {
 class Cube {
     private:
         std::vector<ShapeVertex> m_Vertices;
-        GLsizei m_nVertexCount;
+        std::vector<uint32_t> m_Indexes;
+        GLsizei m_nbVertex;
+        GLsizei m_nbIndex;
+
+        void pushQuad(const std::vector<ShapeVertexHomo> &quad);
     
     public:
         Cube();
 
-        const ShapeVertex* getDataPointer() const;
-        GLsizei getVertexCount() const;
+        const ShapeVertex* getVerticesPointer() const;
+        const GLsizei getVertexCount() const;
+        
+        const uint32_t* getIndexesPointer() const;
+        const GLsizei getIndexCount() const;
 };
 
 
 const std::vector<ShapeVertexHomo> createQuad(const float &size);
-void pushQuadIntoVector(const std::vector<ShapeVertexHomo> &quad, std::vector<ShapeVertex> &vec);
 
 }
 

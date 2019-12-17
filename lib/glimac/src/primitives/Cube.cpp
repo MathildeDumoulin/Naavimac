@@ -6,10 +6,9 @@ namespace glimac {
 
 /***** CLASS CUBE - METHODS *****/
 
-    // (SANS IBO)
-    Cube::Cube() : m_nVertexCount(0) {
+    Cube::Cube() : m_Vertices(24), m_Indexes(36), m_nbVertex(0), m_nbIndex(0) {
 
-        const std::vector<ShapeVertexHomo> quad = createQuad(1);
+        const std::vector<ShapeVertexHomo> quad = createQuad(1); //Create 4 vertices
 
         std::vector<glm::mat4> transforms = {
             glm::translate(glm::mat4(), glm::vec3(0, 0, 0.5)), //Front face
@@ -21,28 +20,45 @@ namespace glimac {
         };
 
         for(const auto &mat:transforms) {
-            std::vector<ShapeVertexHomo> face = quad;
+            std::vector<ShapeVertexHomo> face = quad; //Create a face from the 4 vertices
 
-            transformShapeVertexVector(face, mat);
-            pushQuadIntoVector(face, m_Vertices);
-            m_nVertexCount += 6;
+            transformShapeVertexVector(face, mat); //Put the face in the right place in 3D space
+            pushQuad(face); //Push vertices and index in the Cube Data
         }
-
-        /*
-        for(const auto &v:m_Vertices) {
-            std::cout << v.normal << std::endl;
-        }
-        */
     }
 
 
-    const ShapeVertex* Cube::getDataPointer() const {
+    const ShapeVertex* Cube::getVerticesPointer() const {
         return &m_Vertices[0];
     }
 
 
-    GLsizei Cube::getVertexCount() const {
-        return m_nVertexCount;
+    const GLsizei Cube::getVertexCount() const {
+        return m_nbVertex;
+    }
+
+    const uint32_t* Cube::getIndexesPointer() const {
+        return &m_Indexes[0];
+    }
+    
+    const GLsizei Cube::getIndexCount() const {
+        return m_nbIndex;
+    }
+
+    void Cube::pushQuad(const std::vector<ShapeVertexHomo> &quad) {
+        assert(quad.size() == 4);
+
+        uint32_t offset = m_nbVertex;       
+        std::vector<uint32_t> newIndex = {
+            offset+0, offset+1, offset+2, //First tri
+            offset+1, offset+2, offset+3 //Second tri
+        };
+        
+        m_Vertices.insert(m_Vertices.begin() + m_nbVertex, quad.cbegin(), quad.cend());
+        m_Indexes.insert(m_Indexes.begin() + m_nbIndex, newIndex.cbegin(), newIndex.cend());
+
+        m_nbVertex += 4;
+        m_nbIndex += 6;
     }
 
 
@@ -62,21 +78,6 @@ namespace glimac {
         };
 
         return vertices;
-    }
-
-
-    void pushQuadIntoVector(const std::vector<ShapeVertexHomo> &quad, std::vector<ShapeVertex> &vec) {
-        assert(quad.size() == 4);
-
-        //First tri
-        vec.push_back(quad[0]); //Convert automatically from ShapeVertexHomo to ShapeVertex
-        vec.push_back(quad[1]);
-        vec.push_back(quad[2]);
-
-        //Second tri
-        vec.push_back(quad[1]);
-        vec.push_back(quad[2]);
-        vec.push_back(quad[3]);
     }
 
 }
