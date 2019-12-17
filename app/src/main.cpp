@@ -1,11 +1,14 @@
 #include "app/main.hpp"
 #include <glimac/gui/SDLWindowManager.hpp>
+#include <glimac/gui/IMGUIWindowManager.hpp>
 #include <GL/glew.h>
 #include <glimac/shading/Program.hpp>
 #include <glimac/shading/ShadingProgram.hpp>
 #include <glimac/common/FilePath.hpp>
 #include <glimac/common/glm.hpp>
 #include <glimac/common/Image.hpp>
+#include <glimac/common/Object.hpp>
+#include <glimac/common/VertexArray.hpp>
 #include <glimac/primitives/Cube.hpp>
 #include <glimac/cam/TrackballCamera.hpp>
 #include <iostream>
@@ -13,11 +16,16 @@
 
 using namespace glimac;
 
+
 int main(int argc, char** argv) {
-    // Initialize SDL and open a window
+    // Initialize SDL & OpenGL + open a window
     const int WINDOW_WIDTH = 600;
     const int WINDOW_HEIGHT = 600;
     SDLWindowManager windowManager(WINDOW_WIDTH, WINDOW_HEIGHT, "GLImac");
+
+    // Initialize ImGui
+    IMGUIWindowManager interface(windowManager);
+
 
     TrackballCamera cam;
 
@@ -30,43 +38,11 @@ int main(int argc, char** argv) {
 
 
     //OBJECT
-        Cube myCube;
+    Cube cube;
+    Object myCube(cube.getVertexCount(), cube.getIndexCount(), cube.getVerticesPointer(), cube.getIndexesPointer());
+    VertexArray vao;
 
-        GLuint vbo;
-        glGenBuffers(1, &vbo);
-
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-            glBufferData(GL_ARRAY_BUFFER, myCube.getVertexCount() * sizeof(ShapeVertex), myCube.getVerticesPointer(), GL_STATIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-
-        GLuint ibo;
-        glGenBuffers(1, &ibo);
-
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, myCube.getIndexCount() * sizeof(uint32_t), myCube.getIndexesPointer(), GL_STATIC_DRAW);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-
-        GLuint vao;
-        glGenVertexArrays(1, &vao);
-
-        glBindVertexArray(vao);
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-
-            const GLuint VERTEX_ATTR_POSITION = 0;
-            const GLuint VERTEX_ATTR_NORMAL = 1;
-            const GLuint VERTEX_ATTR_TEXTURE = 2;
-            glEnableVertexAttribArray(VERTEX_ATTR_POSITION);
-            glEnableVertexAttribArray(VERTEX_ATTR_NORMAL);
-            glEnableVertexAttribArray(VERTEX_ATTR_TEXTURE);
-
-            glBindBuffer(GL_ARRAY_BUFFER, vbo); //Binding the VBO inside the VAO
-                glVertexAttribPointer(VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(ShapeVertex), (const GLvoid*)(offsetof(ShapeVertex, position)));
-                glVertexAttribPointer(VERTEX_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(ShapeVertex), (const GLvoid*)(offsetof(ShapeVertex, normal)));
-                glVertexAttribPointer(VERTEX_ATTR_TEXTURE, 2, GL_FLOAT, GL_FALSE, sizeof(ShapeVertex), (const GLvoid*)(offsetof(ShapeVertex, texCoords)));
-            glBindBuffer(GL_ARRAY_BUFFER, 0); //Unbinding the VBO
-        glBindVertexArray(0); //Unbinding the VAO
+    vao.addObject(myCube);
 
 
     glEnable(GL_DEPTH_TEST);
@@ -84,6 +60,7 @@ int main(int argc, char** argv) {
         // Event loop:
         SDL_Event e;
         while(windowManager.pollEvent(e)) {
+            interface.processEvent(e);
             if(e.type == SDL_QUIT) {
                 done = true; // Leave the loop after this iteration
             }
@@ -114,6 +91,21 @@ int main(int argc, char** argv) {
             }
         }
 
+        /* IMGUI */
+
+        // Start the Dear ImGui frame
+        interface.startFrame(windowManager);
+
+        {
+            ImGui::Begin("Another Window");
+            ImGui::Text("Hello from another window!");
+            ImGui::End();
+        }
+
+        // Rendering
+        interface.render();
+
+
         /*********************************
          * HERE SHOULD COME THE RENDERING CODE
          *********************************/
@@ -122,7 +114,9 @@ int main(int argc, char** argv) {
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clear window
 
-        glBindVertexArray(vao); // Binding VAO
+        interface.draw();
+
+        glBindVertexArray(vao.vao()); // Binding VAO
 
             mainProgram.use();
 
@@ -135,7 +129,7 @@ int main(int argc, char** argv) {
                 glUniformMatrix4fv(mainProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * cubeMVMatrix));
                 glUniformMatrix4fv(mainProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(cubeMVMatrix))));
 
-                glDrawElements(GL_TRIANGLES, myCube.getIndexCount(), GL_UNSIGNED_INT, 0); //cube
+                glDrawElements(GL_TRIANGLES, cube.getIndexCount(), GL_UNSIGNED_INT, 0); //cube
 
         glBindVertexArray(0);
 

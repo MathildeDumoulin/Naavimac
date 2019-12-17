@@ -1,5 +1,5 @@
-#ifndef SHADING_PROGRAM__
-#define SHADING_PROGRAM__
+#ifndef SHADING_PROGRAM_HPP__
+#define SHADING_PROGRAM_HPP__
 #pragma once
 
 #include "glimac/shading/Program.hpp"
