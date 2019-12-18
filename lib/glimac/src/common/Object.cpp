@@ -18,6 +18,8 @@ Object::Object(const GLsizei &nbVertex, const GLsizei &nbIndex, const ShapeVerte
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
+Object::Object(const Object& src) : m_vbo(src.m_vbo), m_ibo(src.m_ibo) {}
+
 const GLuint Object::vbo() const {
     return m_vbo;
 }

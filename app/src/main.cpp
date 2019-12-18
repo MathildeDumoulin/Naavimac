@@ -9,14 +9,15 @@
 #include <glimac/common/Image.hpp>
 #include <glimac/common/Object.hpp>
 #include <glimac/common/VertexArray.hpp>
+#include <glimac/common/Instance.hpp>
 #include <glimac/primitives/Cube.hpp>
 #include <glimac/cam/TrackballCamera.hpp>
 #include <iostream>
 #include <vector>
 
 
-#define WORLD_WIDTH 5
-#define WORLD_LENGTH 5
+#define WORLD_WIDTH 50
+#define WORLD_LENGTH 50
 #define WORLD_HEIGHT 5
 
 using namespace glimac;
@@ -40,35 +41,22 @@ int main(int argc, char** argv) {
         //Load, compile and tell OpenGL to use these shaders
         FilePath applicationPath(argv[0]);
         ShadingProgram mainProgram(applicationPath, "3D.vs.glsl", "3D.fs.glsl");
-        ShadingProgram selectProgram(applicationPath, "3D.vs.glsl", "select.fs.glsl");
+        ShadingProgram selectProgram(applicationPath, "select.vs.glsl", "select.fs.glsl");
 
 
     //OBJECT
-    Cube cube;
-    Object myCube(cube.getVertexCount(), cube.getIndexCount(), cube.getVerticesPointer(), cube.getIndexesPointer());
+    Cube cube; //Primitive (points)
+    Object myCube(cube.getVertexCount(), cube.getIndexCount(), cube.getVerticesPointer(), cube.getIndexesPointer()); //VBO and IBO
     VertexArray vao;
 
-    vao.addObject(myCube);
+    vao.addObject(myCube); //Add CubeObject to VAO
+
+    Instance whiteCubes(WORLD_WIDTH, WORLD_LENGTH, 3, myCube, vao); //Create instance of CubeObjects
+    whiteCubes.refresh(); //Refresh the number of cubes inside the instance (to call each time we add or remove a cube)
 
 
     glEnable(GL_DEPTH_TEST);
 
-
-    /*
-    std::vector<glm::vec3> cubes(WORLD_WIDTH * WORLD_LENGTH * 1);
-    for(size_t i = 0; i < 1; ++i) {
-        for(size_t j = 0; j < WORLD_WIDTH; ++j) {
-            for(size_t k = 0; k < WORLD_LENGTH; ++k) {
-                cubes[k+j*WORLD_LENGTH+i*WORLD_WIDTH*WORLD_LENGTH] = glm::vec3(j, i, k);
-            }
-        }
-    }
-    */
-
-    std::vector<glm::vec3> cubes(5);
-    for(size_t i = 0; i < 5; ++i) {
-        cubes[i] = glm::vec3(i, 0, 0);
-    }
 
     glm::vec3 selection(0.f, 0.f, 0.f);
 
@@ -131,6 +119,8 @@ int main(int argc, char** argv) {
         // Rendering
         interface.render();
 
+        // whiteCubes.refresh(); (uniquement si changement du nombre d'instances)
+
 
         /*********************************
          * HERE SHOULD COME THE RENDERING CODE
@@ -146,18 +136,17 @@ int main(int argc, char** argv) {
 
             mainProgram.use();
 
-                for(const auto &pos:cubes) {
-                    //Make the cube rotate
-                    // glm::mat4 cubeMVMatrix = glm::rotate(viewMatrix, windowManager.getTime(), glm::vec3(0, 1, 0));
-                    glm::mat4 cubeMVMatrix = glm::translate(viewMatrix, pos);
+                //Make the cube rotate
+                // glm::mat4 cubeMVMatrix = glm::rotate(viewMatrix, windowManager.getTime(), glm::vec3(0, 1, 0));
+                glm::mat4 cubeMVMatrix = viewMatrix;
 
-                    //Send matrix to the CG
-                    glUniformMatrix4fv(mainProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(cubeMVMatrix));
-                    glUniformMatrix4fv(mainProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * cubeMVMatrix));
-                    glUniformMatrix4fv(mainProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(cubeMVMatrix))));
+                //Send matrix to the CG
+                glUniformMatrix4fv(mainProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(cubeMVMatrix));
+                glUniformMatrix4fv(mainProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * cubeMVMatrix));
+                glUniformMatrix4fv(mainProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(cubeMVMatrix))));
 
-                    glDrawElements(GL_TRIANGLES, cube.getIndexCount(), GL_UNSIGNED_INT, 0); //cube
-                }
+                glDrawElementsInstanced(GL_TRIANGLES, cube.getIndexCount(), GL_UNSIGNED_INT, 0, whiteCubes.nbInstances()); //cube
+
 
             selectProgram.use();
 
@@ -166,7 +155,7 @@ int main(int argc, char** argv) {
 
                 //Make the cube rotate
                 // glm::mat4 cubeMVMatrix = glm::rotate(viewMatrix, windowManager.getTime(), glm::vec3(0, 1, 0));
-                glm::mat4 cubeMVMatrix = glm::translate(viewMatrix, selection);
+                cubeMVMatrix = glm::translate(viewMatrix, selection);
                 cubeMVMatrix = glm::scale(cubeMVMatrix, glm::vec3(1.01, 1.01, 1.01));
 
                 //Send matrix to the CG
@@ -177,6 +166,8 @@ int main(int argc, char** argv) {
                 glDrawElements(GL_TRIANGLES, cube.getIndexCount(), GL_UNSIGNED_INT, 0); //cube
 
                 glDisable(GL_BLEND);
+
+
 
         glBindVertexArray(0);
 

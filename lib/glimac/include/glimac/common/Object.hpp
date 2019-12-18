@@ -14,6 +14,7 @@ class Object {
 
     public:
         Object(const GLsizei &nbVertex, const GLsizei &nbIndex, const ShapeVertex* vertices, const uint32_t* indexes);
+        Object(const Object& src);
 
         const GLuint vbo() const;
         const GLuint ibo() const;
