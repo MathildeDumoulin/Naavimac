@@ -16,8 +16,8 @@
 #include <vector>
 
 
-#define WORLD_WIDTH 500
-#define WORLD_LENGTH 500
+#define WORLD_WIDTH 50
+#define WORLD_LENGTH 50
 #define WORLD_HEIGHT 5
 
 using namespace glimac;
