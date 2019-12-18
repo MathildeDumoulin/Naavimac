@@ -16,8 +16,8 @@
 #include <vector>
 
 
-#define WORLD_WIDTH 50
-#define WORLD_LENGTH 50
+#define WORLD_WIDTH 500
+#define WORLD_LENGTH 500
 #define WORLD_HEIGHT 5
 
 using namespace glimac;
@@ -52,7 +52,6 @@ int main(int argc, char** argv) {
     vao.addObject(myCube); //Add CubeObject to VAO
 
     Instance whiteCubes(WORLD_WIDTH, WORLD_LENGTH, 3, myCube, vao); //Create instance of CubeObjects
-    whiteCubes.refresh(); //Refresh the number of cubes inside the instance (to call each time we add or remove a cube)
 
 
     glEnable(GL_DEPTH_TEST);
@@ -119,7 +118,7 @@ int main(int argc, char** argv) {
         // Rendering
         interface.render();
 
-        // whiteCubes.refresh(); (uniquement si changement du nombre d'instances)
+        // whiteCubes.refresh(); //A appeler seulement quand on ajoute ou enleve un cube
 
 
         /*********************************
