@@ -2,8 +2,8 @@
 
 namespace glimac {
 
-ShadingProgram::ShadingProgram(const FilePath& applicationPath)
-    : m_Program(loadProgram(applicationPath.dirPath() + "shaders/3D.vs.glsl", applicationPath.dirPath() + "shaders/3D.fs.glsl")) {
+ShadingProgram::ShadingProgram(const FilePath& applicationPath, const char* vs, const char* fs)
+    : m_Program(loadProgram(applicationPath.dirPath() + "shaders/" + vs, applicationPath.dirPath() + "shaders/" + fs)) {
         uMVMatrix = glGetUniformLocation(m_Program.getGLId(), "uMVMatrix");
         uMVPMatrix = glGetUniformLocation(m_Program.getGLId(), "uMVPMatrix");
         uNormalMatrix = glGetUniformLocation(m_Program.getGLId(), "uNormalMatrix");

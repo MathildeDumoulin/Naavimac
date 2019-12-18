@@ -14,6 +14,11 @@
 #include <iostream>
 #include <vector>
 
+
+#define WORLD_WIDTH 5
+#define WORLD_LENGTH 5
+#define WORLD_HEIGHT 5
+
 using namespace glimac;
 
 
@@ -34,7 +39,8 @@ int main(int argc, char** argv) {
 
         //Load, compile and tell OpenGL to use these shaders
         FilePath applicationPath(argv[0]);
-        ShadingProgram mainProgram(applicationPath);
+        ShadingProgram mainProgram(applicationPath, "3D.vs.glsl", "3D.fs.glsl");
+        ShadingProgram selectProgram(applicationPath, "3D.vs.glsl", "select.fs.glsl");
 
 
     //OBJECT
@@ -47,6 +53,24 @@ int main(int argc, char** argv) {
 
     glEnable(GL_DEPTH_TEST);
 
+
+    /*
+    std::vector<glm::vec3> cubes(WORLD_WIDTH * WORLD_LENGTH * 1);
+    for(size_t i = 0; i < 1; ++i) {
+        for(size_t j = 0; j < WORLD_WIDTH; ++j) {
+            for(size_t k = 0; k < WORLD_LENGTH; ++k) {
+                cubes[k+j*WORLD_LENGTH+i*WORLD_WIDTH*WORLD_LENGTH] = glm::vec3(j, i, k);
+            }
+        }
+    }
+    */
+
+    std::vector<glm::vec3> cubes(5);
+    for(size_t i = 0; i < 5; ++i) {
+        cubes[i] = glm::vec3(i, 0, 0);
+    }
+
+    glm::vec3 selection(0.f, 0.f, 0.f);
 
     glm::mat4 ProjMatrix = glm::perspective(glm::radians(70.f), 600.f/600.f, 0.1f, 100.f);
 
@@ -67,8 +91,10 @@ int main(int argc, char** argv) {
 
             switch(e.type) {
                 case SDL_KEYDOWN:
-                    if(e.key.keysym.sym == SDLK_UP) cam.rotateUp(1);
-                    if(e.key.keysym.sym == SDLK_DOWN) cam.rotateUp(-1);
+                    if(e.key.keysym.sym == SDLK_UP) selection.y++;
+                    if(e.key.keysym.sym == SDLK_DOWN) selection.y--;
+                    if(e.key.keysym.sym == SDLK_LEFT) selection.x--;
+                    if(e.key.keysym.sym == SDLK_RIGHT) selection.x++;
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
@@ -120,16 +146,37 @@ int main(int argc, char** argv) {
 
             mainProgram.use();
 
+                for(const auto &pos:cubes) {
+                    //Make the cube rotate
+                    // glm::mat4 cubeMVMatrix = glm::rotate(viewMatrix, windowManager.getTime(), glm::vec3(0, 1, 0));
+                    glm::mat4 cubeMVMatrix = glm::translate(viewMatrix, pos);
+
+                    //Send matrix to the CG
+                    glUniformMatrix4fv(mainProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(cubeMVMatrix));
+                    glUniformMatrix4fv(mainProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * cubeMVMatrix));
+                    glUniformMatrix4fv(mainProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(cubeMVMatrix))));
+
+                    glDrawElements(GL_TRIANGLES, cube.getIndexCount(), GL_UNSIGNED_INT, 0); //cube
+                }
+
+            selectProgram.use();
+
+                glEnable(GL_BLEND);
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
                 //Make the cube rotate
                 // glm::mat4 cubeMVMatrix = glm::rotate(viewMatrix, windowManager.getTime(), glm::vec3(0, 1, 0));
-                glm::mat4 cubeMVMatrix = viewMatrix;
+                glm::mat4 cubeMVMatrix = glm::translate(viewMatrix, selection);
+                cubeMVMatrix = glm::scale(cubeMVMatrix, glm::vec3(1.01, 1.01, 1.01));
 
                 //Send matrix to the CG
-                glUniformMatrix4fv(mainProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(cubeMVMatrix));
-                glUniformMatrix4fv(mainProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * cubeMVMatrix));
-                glUniformMatrix4fv(mainProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(cubeMVMatrix))));
+                glUniformMatrix4fv(selectProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(cubeMVMatrix));
+                glUniformMatrix4fv(selectProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * cubeMVMatrix));
+                glUniformMatrix4fv(selectProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(cubeMVMatrix))));
 
                 glDrawElements(GL_TRIANGLES, cube.getIndexCount(), GL_UNSIGNED_INT, 0); //cube
+
+                glDisable(GL_BLEND);
 
         glBindVertexArray(0);
 
