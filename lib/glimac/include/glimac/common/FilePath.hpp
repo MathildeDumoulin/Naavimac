@@ -1,3 +1,5 @@
+#ifndef FILEPATH_HPP__
+#define FILEPATH_HPP__
 #pragma once
 
 #include <string>
@@ -118,3 +120,5 @@ namespace std {
     }
   };
 }
+
+#endif

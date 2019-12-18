@@ -1,3 +1,5 @@
+#ifndef IMGUI_WINDOW_MANAGER_HPP__
+#define IMGUI_WINDOW_MANAGER_HPP__
 #pragma once
 
 #include "imgui/imgui.h"
@@ -32,3 +34,5 @@ class IMGUIWindowManager{
 };
 
 }
+
+#endif

@@ -1,5 +1,6 @@
 #ifndef MAIN_HPP__
 #define MAIN_HPP__
+#pragma once
 
 // Doxygen menu
 /// \version 0.1

@@ -1,3 +1,5 @@
+#ifndef SHADER_HPP__
+#define SHADER_HPP__
 #pragma once
 
 #include <GL/glew.h>
@@ -50,3 +52,5 @@ private:
 Shader loadShader(GLenum type, const FilePath& filepath);
 
 }
+
+#endif

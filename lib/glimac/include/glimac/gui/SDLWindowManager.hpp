@@ -1,3 +1,5 @@
+#ifndef SDL_WINDOW_MANAGER_HPP__
+#define SDL_WINDOW_MANAGER_HPP__
 #pragma once
 
 #include <cstdint>
@@ -30,3 +32,5 @@ class SDLWindowManager {
 };
 
 }
+
+#endif

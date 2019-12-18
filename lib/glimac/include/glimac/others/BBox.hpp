@@ -1,3 +1,5 @@
+#ifndef BBOX_HPP__
+#define BBOX_HPP__
 #pragma once
 
 #include "glimac/common/glm.hpp"
@@ -100,3 +102,5 @@ inline void boundingSphere(const BBox3f& bbox, glm::vec3& c,
 }
 
 }
+
+#endif

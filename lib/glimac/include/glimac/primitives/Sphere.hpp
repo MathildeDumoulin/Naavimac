@@ -1,3 +1,5 @@
+#ifndef SPHERE_HPP__
+#define SPHERE_HPP__
 #pragma once
 
 #include <vector>
@@ -35,3 +37,5 @@ private:
 };
     
 }
+
+#endif

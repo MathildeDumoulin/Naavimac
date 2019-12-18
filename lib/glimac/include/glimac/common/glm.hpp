@@ -1,3 +1,5 @@
+#ifndef GLM_HPP__
+#define GLM_HPP__
 #pragma once
 
 #define GLM_FORCE_RADIANS
@@ -7,3 +9,5 @@
 #include <glm/gtc/constants.hpp>
 #include <glm/gtx/io.hpp>
 #include <glm/gtc/random.hpp>
+
+#endif

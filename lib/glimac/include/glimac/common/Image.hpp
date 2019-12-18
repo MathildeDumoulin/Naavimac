@@ -1,3 +1,5 @@
+#ifndef IMAGE_HPP__
+#define IMAGE_HPP__
 #pragma once
 
 #include <vector>
@@ -46,3 +48,5 @@ public:
 };
 
 }
+
+#endif

@@ -1,3 +1,5 @@
+#ifndef CONE_HPP__
+#define CONE_HPP__
 #pragma once
 
 #include <vector>
@@ -34,3 +36,5 @@ private:
 };
     
 }
+
+#endif

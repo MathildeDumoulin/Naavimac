@@ -1,3 +1,5 @@
+#ifndef GEOMETRY_HPP__
+#define GEOMETRY_HPP__
 #pragma once
 
 #include <glm/glm.hpp>
@@ -85,3 +87,5 @@ public:
 };
 
 }
+
+#endif

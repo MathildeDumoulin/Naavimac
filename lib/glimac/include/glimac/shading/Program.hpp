@@ -1,3 +1,5 @@
+#ifndef PROGRAM_HPP__
+#define PROGRAM_HPP__
 #pragma once
 
 #include <GL/glew.h>
@@ -56,3 +58,5 @@ Program loadProgram(const FilePath& vsFile, const FilePath& fsFile);
 
 
 }
+
+#endif

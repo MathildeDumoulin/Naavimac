@@ -1,5 +1,7 @@
 #include "glimac/cam/TrackballCamera.hpp"
 
+namespace glimac {
+
 TrackballCamera::TrackballCamera() : 
     m_fDistance(5.f), m_fAngleX(0.f), m_fAngleY(0.f) {}
 
@@ -21,4 +23,6 @@ glm::mat4 TrackballCamera::getViewMatrix() const {
     viewMatrix = glm::rotate(viewMatrix, glm::radians(m_fAngleY), glm::vec3(0, 1, 0));
 
     return viewMatrix;
+}
+
 }

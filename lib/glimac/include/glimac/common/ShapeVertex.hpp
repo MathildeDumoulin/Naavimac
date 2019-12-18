@@ -1,3 +1,5 @@
+#ifndef SHAPEVERTEX_HPP__
+#define SHAPEVERTEX_HPP__
 #pragma once
 
 #include <GL/glew.h>
@@ -37,3 +39,5 @@ void transformShapeVertexVector(std::vector<ShapeVertexHomo> &vec, const glm::ma
 
 
 }
+
+#endif

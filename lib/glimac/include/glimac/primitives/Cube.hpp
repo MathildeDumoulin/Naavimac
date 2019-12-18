@@ -1,4 +1,6 @@
-#pragma once 
+#ifndef CUBE_HPP__
+#define CUBE_HPP__
+#pragma once
 
 #include <vector>
 
@@ -30,3 +32,4 @@ const std::vector<ShapeVertexHomo> createQuad(const float &size);
 
 }
 
+#endif
