@@ -8,7 +8,10 @@
 
 namespace glimac {
 
-class Instance {
+
+// Utiliser les stratégies pour modifier le vector m_offset en fonction du type de cube (et intégrer le changement de texture dans la statégie)
+// Comme ça, on appelle le changement de stratégie, on refresh la liste des instances et on dessine les cubes avec la bonne texture !!
+class Instances {
     private:
         GLuint m_buffer;
         std::vector<glm::vec3> m_offset;
@@ -16,7 +19,7 @@ class Instance {
         void fillOffset(const unsigned int &width, const unsigned int &length, const unsigned int &height);
 
     public:
-        Instance(const unsigned int &width, const unsigned int &length, const unsigned int &height, const Object& obj, const VertexArray& vao);
+        Instances(const unsigned int &width, const unsigned int &length, const unsigned int &height, const Object& obj, const VertexArray& vao);
         void refresh() const;
 
         const size_t nbInstances() const;

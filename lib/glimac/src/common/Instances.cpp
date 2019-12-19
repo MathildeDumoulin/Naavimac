@@ -1,4 +1,4 @@
-#include "glimac/common/Instance.hpp"
+#include "glimac/common/Instances.hpp"
 #include <GL/glew.h>
 
 #include <glimac/common/Object.hpp>
@@ -6,7 +6,7 @@
 
 namespace glimac {
 
-Instance::Instance(const unsigned int &width, const unsigned int &length, const unsigned int &height, const Object& obj, const VertexArray& vao) 
+Instances::Instances(const unsigned int &width, const unsigned int &length, const unsigned int &height, const Object& obj, const VertexArray& vao) 
     : m_offset(width*length*height) {
 
         glGenBuffers(1, &m_buffer);
@@ -29,7 +29,8 @@ Instance::Instance(const unsigned int &width, const unsigned int &length, const 
 
 }
 
-void Instance::fillOffset(const unsigned int &width, const unsigned int &length, const unsigned int &height) {
+
+void Instances::fillOffset(const unsigned int &width, const unsigned int &length, const unsigned int &height) {
     assert(m_offset.size() == width * length * height);
 
     for(size_t i = 0; i < height; ++i) {
@@ -41,13 +42,13 @@ void Instance::fillOffset(const unsigned int &width, const unsigned int &length,
     }
 }
 
-void Instance::refresh() const {
+void Instances::refresh() const {
     glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
         glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * m_offset.size(), &m_offset[0], GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-const size_t Instance::nbInstances() const {
+const size_t Instances::nbInstances() const {
     return m_offset.size() + 1;
 }
 

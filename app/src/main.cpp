@@ -9,11 +9,12 @@
 #include <glimac/common/Image.hpp>
 #include <glimac/common/Object.hpp>
 #include <glimac/common/VertexArray.hpp>
-#include <glimac/common/Instance.hpp>
+#include <glimac/common/Instances.hpp>
 #include <glimac/primitives/Cube.hpp>
 #include <glimac/cam/TrackballCamera.hpp>
 #include <iostream>
 #include <vector>
+
 
 
 #define WORLD_WIDTH 50
@@ -45,13 +46,12 @@ int main(int argc, char** argv) {
 
 
     //OBJECT
-    Cube cube; //Primitive (points)
-    Object myCube(cube.getVertexCount(), cube.getIndexCount(), cube.getVerticesPointer(), cube.getIndexesPointer()); //VBO and IBO
+    Object myCube = Object(Cube()); //VBO and IBO
     VertexArray vao;
 
     vao.addObject(myCube); //Add CubeObject to VAO
 
-    Instance whiteCubes(WORLD_WIDTH, WORLD_LENGTH, 3, myCube, vao); //Create instance of CubeObjects
+    Instances cubeList(WORLD_WIDTH, WORLD_LENGTH, 3, myCube, vao); //Create instance of CubeObjects
 
 
     glEnable(GL_DEPTH_TEST);
@@ -118,7 +118,7 @@ int main(int argc, char** argv) {
         // Rendering
         interface.render();
 
-        // whiteCubes.refresh(); //A appeler seulement quand on ajoute ou enleve un cube
+        // cubeList.refresh(); //A appeler seulement quand on ajoute ou enleve un cube
 
 
         /*********************************
@@ -144,7 +144,7 @@ int main(int argc, char** argv) {
                 glUniformMatrix4fv(mainProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * cubeMVMatrix));
                 glUniformMatrix4fv(mainProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(cubeMVMatrix))));
 
-                glDrawElementsInstanced(GL_TRIANGLES, cube.getIndexCount(), GL_UNSIGNED_INT, 0, whiteCubes.nbInstances()); //cube
+                glDrawElementsInstanced(GL_TRIANGLES, myCube.nbIndex(), GL_UNSIGNED_INT, 0, cubeList.nbInstances()); //cube
 
 
             selectProgram.use();
@@ -162,7 +162,7 @@ int main(int argc, char** argv) {
                 glUniformMatrix4fv(selectProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * cubeMVMatrix));
                 glUniformMatrix4fv(selectProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(cubeMVMatrix))));
 
-                glDrawElements(GL_TRIANGLES, cube.getIndexCount(), GL_UNSIGNED_INT, 0); //cube
+                glDrawElements(GL_TRIANGLES, myCube.nbIndex(), GL_UNSIGNED_INT, 0); //cube
 
                 glDisable(GL_BLEND);
 

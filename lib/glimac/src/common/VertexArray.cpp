@@ -7,8 +7,6 @@ VertexArray::VertexArray() {
     glGenVertexArrays(1, &m_vao);
 }
 
-VertexArray::VertexArray(const VertexArray& src) : m_vao(src.m_vao) {}
-
 void VertexArray::addObject(const Object &obj) {
     glBindVertexArray(m_vao);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, obj.ibo());

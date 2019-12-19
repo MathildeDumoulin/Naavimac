@@ -13,7 +13,6 @@ class VertexArray {
 
     public:
         VertexArray();
-        VertexArray(const VertexArray& src);
         void addObject(const Object &obj);
 
         const GLuint vao() const;
