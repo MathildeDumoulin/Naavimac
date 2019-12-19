@@ -80,8 +80,11 @@ int main(int argc, char** argv) {
                 case SDL_KEYDOWN:
                     if(e.key.keysym.sym == SDLK_UP) selection.y++;
                     if(e.key.keysym.sym == SDLK_DOWN) selection.y--;
-                    if(e.key.keysym.sym == SDLK_LEFT) selection.x--;
-                    if(e.key.keysym.sym == SDLK_RIGHT) selection.x++;
+                    if(e.key.keysym.sym == SDLK_LEFT) selection.x++;
+                    if(e.key.keysym.sym == SDLK_RIGHT) selection.x--;
+                    if(e.key.keysym.sym == SDLK_COMMA) selection.z--;
+                    if(e.key.keysym.sym == SDLK_SEMICOLON) selection.z++;
+                    if(e.key.keysym.sym == SDLK_SPACE) cubeList.addInstance(selection);
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:

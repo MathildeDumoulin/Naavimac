@@ -52,4 +52,16 @@ const size_t Instances::nbInstances() const {
     return m_offset.size() + 1;
 }
 
+bool Instances::isThereSomething(const glm::vec3& position) const {
+    for(const auto &inst:m_offset) {
+        if(position == inst) return true;
+    }
+    return false;
+}
+
+void Instances::addInstance(const glm::vec3& position) {
+    if(!isThereSomething(position)) m_offset.push_back(position);
+    refresh();
+}
+
 }

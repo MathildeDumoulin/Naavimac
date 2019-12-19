@@ -23,6 +23,8 @@ class Instances {
         void refresh() const;
 
         const size_t nbInstances() const;
+        bool isThereSomething(const glm::vec3& position) const;
+        void addInstance(const glm::vec3& position);
 };
 
 }
