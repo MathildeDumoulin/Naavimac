@@ -33,10 +33,10 @@ Instances::Instances(const unsigned int &width, const unsigned int &length, cons
 void Instances::fillOffset(const unsigned int &width, const unsigned int &length, const unsigned int &height) {
     assert(m_offset.size() == width * length * height);
 
-    for(size_t i = 0; i < height; ++i) {
-        for(size_t j = 0; j < width; ++j) {
-            for(size_t k = 0; k < length; ++k) {
-                m_offset[k + j*length + i*width*length] = glm::vec3(j, i, k);
+    for(int i = 0; i < height; ++i) {
+        for(int j = 0; j < width; ++j) {
+            for(int k = 0; k < length; ++k) {
+                m_offset[k + j*length + i*width*length] = glm::vec3(j, i, -k);
             }
         }
     }

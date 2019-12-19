@@ -11,7 +11,7 @@
 #include <glimac/common/VertexArray.hpp>
 #include <glimac/common/Instances.hpp>
 #include <glimac/primitives/Cube.hpp>
-#include <glimac/cam/TrackballCamera.hpp>
+#include <glimac/cam/FreeflyCamera.hpp>
 #include <iostream>
 #include <vector>
 
@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
     IMGUIWindowManager interface(windowManager);
 
 
-    TrackballCamera cam;
+    FreeflyCamera cam;
 
 
     //INITIALISATION
@@ -78,10 +78,16 @@ int main(int argc, char** argv) {
 
             switch(e.type) {
                 case SDL_KEYDOWN:
+                    if(e.key.keysym.sym == SDLK_z) cam.moveFront(1);
+                    if(e.key.keysym.sym == SDLK_s) cam.moveFront(-1);
+                    if(e.key.keysym.sym == SDLK_q) cam.moveLeft(1);
+                    if(e.key.keysym.sym == SDLK_d) cam.moveLeft(-1);
+                    if(e.key.keysym.sym == SDLK_a) cam.moveUp(-1);
+                    if(e.key.keysym.sym == SDLK_e) cam.moveUp(1);
                     if(e.key.keysym.sym == SDLK_UP) selection.y++;
                     if(e.key.keysym.sym == SDLK_DOWN) selection.y--;
-                    if(e.key.keysym.sym == SDLK_LEFT) selection.x++;
-                    if(e.key.keysym.sym == SDLK_RIGHT) selection.x--;
+                    if(e.key.keysym.sym == SDLK_LEFT) selection.x--;
+                    if(e.key.keysym.sym == SDLK_RIGHT) selection.x++;
                     if(e.key.keysym.sym == SDLK_COMMA) selection.z--;
                     if(e.key.keysym.sym == SDLK_SEMICOLON) selection.z++;
                     if(e.key.keysym.sym == SDLK_SPACE) cubeList.addInstance(selection);
@@ -100,8 +106,8 @@ int main(int argc, char** argv) {
                     if(mouseDown) {
                         glm::ivec2 offsetMouse = windowManager.getMousePosition() - mouse;
                         mouse = windowManager.getMousePosition();
-                        cam.rotateUp(offsetMouse.y/2.f);
-                        cam.rotateLeft(offsetMouse.x/2.f);
+                        cam.rotateUp(-offsetMouse.y/2.f);
+                        cam.rotateLeft(-offsetMouse.x/2.f);
                     }
                     break;
             }
