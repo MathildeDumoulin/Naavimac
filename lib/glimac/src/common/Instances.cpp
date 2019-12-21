@@ -4,15 +4,14 @@
 #include <glimac/common/Object.hpp>
 #include <glimac/common/VertexArray.hpp>
 
+#include "app/const.hpp"
+
 namespace glimac {
 
-Instances::Instances(const unsigned int &width, const unsigned int &length, const unsigned int &height, const Object& obj, const VertexArray& vao) 
-    : m_offset(width*length*height) {
+Instances::Instances(const unsigned int nbInstances, const Object& obj, const VertexArray& vao) 
+    : m_offset(nbInstances) {
 
         glGenBuffers(1, &m_buffer);
-        fillOffset(width, length, height);
-
-        refresh(); // Update the buffer
 
         //Bind the buffer in the VAO
         glBindVertexArray(vao.vao());
@@ -30,16 +29,23 @@ Instances::Instances(const unsigned int &width, const unsigned int &length, cons
 }
 
 
-void Instances::fillOffset(const unsigned int &width, const unsigned int &length, const unsigned int &height) {
-    assert(m_offset.size() == width * length * height);
+void Instances::createCubesGround() {
+    assert(m_offset.size() == nbCubesAtStart);
 
-    for(int i = 0; i < height; ++i) {
-        for(int j = 0; j < width; ++j) {
-            for(int k = 0; k < length; ++k) {
-                m_offset[k + j*length + i*width*length] = glm::vec3(j, i, -k);
+    int count = 0;
+
+    for(int y = -1; y <= 1; ++y) {
+        for(int x = worldMinX; x <= worldMaxX; ++x) {
+            for(int z = worldMinZ; z <= worldMaxZ; ++z) {
+                m_offset[count] = glm::vec3(x, y, z);
+                ++count;
             }
         }
     }
+
+    assert(m_offset.size() == count);
+
+    refresh();
 }
 
 void Instances::refresh() const {

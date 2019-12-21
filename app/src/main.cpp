@@ -15,11 +15,9 @@
 #include <iostream>
 #include <vector>
 
+#include "app/const.hpp"
 
 
-#define WORLD_WIDTH 50
-#define WORLD_LENGTH 50
-#define WORLD_HEIGHT 5
 
 using namespace glimac;
 
@@ -51,7 +49,8 @@ int main(int argc, char** argv) {
 
     vao.addObject(myCube); //Add CubeObject to VAO
 
-    Instances cubeList(WORLD_WIDTH, WORLD_LENGTH, 3, myCube, vao); //Create instance of CubeObjects
+    Instances cubeList(nbCubesAtStart, myCube, vao); //Create instance of CubeObjects
+    cubeList.createCubesGround();
 
 
     glEnable(GL_DEPTH_TEST);

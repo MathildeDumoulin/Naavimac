@@ -8,7 +8,7 @@ namespace glimac {
 
 class FreeflyCamera {
     private:
-        glm::vec3 m_position = glm::vec3(0.f, 0.f, 10.f);
+        glm::vec3 m_position = glm::vec3(0.f, 10.f, 0.f);
         float m_fPhi = glm::pi<float>();
         float m_fTheta = 0.f;
         glm::vec3 m_frontVector;

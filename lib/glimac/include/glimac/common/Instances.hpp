@@ -16,10 +16,9 @@ class Instances {
         GLuint m_buffer;
         std::vector<glm::vec3> m_offset;
 
-        void fillOffset(const unsigned int &width, const unsigned int &length, const unsigned int &height);
-
     public:
-        Instances(const unsigned int &width, const unsigned int &length, const unsigned int &height, const Object& obj, const VertexArray& vao);
+        Instances(const unsigned int nbInstances, const Object& obj, const VertexArray& vao);
+        void createCubesGround();
         void refresh() const;
 
         const size_t nbInstances() const;
