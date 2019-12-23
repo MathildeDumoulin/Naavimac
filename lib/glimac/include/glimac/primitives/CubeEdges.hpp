@@ -1,24 +1,25 @@
-#ifndef CUBE_HPP__
-#define CUBE_HPP__
+#ifndef CUBE_EDGES_HPP__
+#define CUBE_EDGES_HPP__
 #pragma once
 
 #include <vector>
 
 #include "glimac/common/ShapeVertex.hpp"
+#include "glimac/primitives/Line.hpp"
 
 namespace glimac {
 
-class Cube {
+class CubeEdges {
     private:
         std::vector<ShapeVertex> m_Vertices;
         std::vector<uint32_t> m_Indexes;
         GLsizei m_nbVertex;
         GLsizei m_nbIndex;
 
-        void pushQuad(const std::vector<ShapeVertexHomo> &quad);
+        void pushLine(Line& line);
     
     public:
-        Cube();
+        CubeEdges(const float& thickness);
 
         const ShapeVertex* verticesPointer() const;
         const GLsizei nbVertex() const;
@@ -26,9 +27,6 @@ class Cube {
         const uint32_t* indexesPointer() const;
         const GLsizei nbIndex() const;
 };
-
-
-const std::vector<ShapeVertexHomo> createQuad(const float &size);
 
 }
 

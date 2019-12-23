@@ -11,11 +11,14 @@
 #include <glimac/common/VertexArray.hpp>
 #include <glimac/common/Instances.hpp>
 #include <glimac/primitives/Cube.hpp>
+#include <glimac/primitives/CubeEdges.hpp>
 #include <glimac/cam/FreeflyCamera.hpp>
 #include <iostream>
 #include <vector>
 
 #include "app/const.hpp"
+
+#include "glimac/common/Scene.hpp"
 
 
 
@@ -31,8 +34,7 @@ int main(int argc, char** argv) {
     // Initialize ImGui
     IMGUIWindowManager interface(windowManager);
 
-
-    FreeflyCamera cam;
+    Scene scene;
 
 
     //INITIALISATION
@@ -45,20 +47,21 @@ int main(int argc, char** argv) {
 
     //OBJECT
     Object myCube = Object(Cube()); //VBO and IBO
-    VertexArray vao;
+    VertexArray vao1;
+    vao1.addObject(myCube); //Add CubeObject to VAO
 
-    vao.addObject(myCube); //Add CubeObject to VAO
-
-    Instances cubeList(nbCubesAtStart, myCube, vao); //Create instance of CubeObjects
+    Instances cubeList(nbCubesAtStart, myCube, vao1); //Create instance of CubeObjects
     cubeList.createCubesGround();
+
+    //OBJECT 2
+    CubeEdges cubeEdges(0.05);
+    Object edges(cubeEdges.nbVertex(), cubeEdges.nbIndex(), cubeEdges.verticesPointer(), cubeEdges.indexesPointer());
+    VertexArray vao2;
+    vao2.addObject(edges);
 
 
     glEnable(GL_DEPTH_TEST);
 
-
-    glm::vec3 selection(0.f, 0.f, 0.f);
-
-    glm::mat4 ProjMatrix = glm::perspective(glm::radians(70.f), 600.f/600.f, 0.1f, 100.f);
 
     glm::ivec2 mouse;
 
@@ -77,19 +80,19 @@ int main(int argc, char** argv) {
 
             switch(e.type) {
                 case SDL_KEYDOWN:
-                    if(e.key.keysym.sym == SDLK_z) cam.moveFront(1);
-                    if(e.key.keysym.sym == SDLK_s) cam.moveFront(-1);
-                    if(e.key.keysym.sym == SDLK_q) cam.moveLeft(1);
-                    if(e.key.keysym.sym == SDLK_d) cam.moveLeft(-1);
-                    if(e.key.keysym.sym == SDLK_a) cam.moveUp(-1);
-                    if(e.key.keysym.sym == SDLK_e) cam.moveUp(1);
-                    if(e.key.keysym.sym == SDLK_UP) selection.y++;
-                    if(e.key.keysym.sym == SDLK_DOWN) selection.y--;
-                    if(e.key.keysym.sym == SDLK_LEFT) selection.x--;
-                    if(e.key.keysym.sym == SDLK_RIGHT) selection.x++;
-                    if(e.key.keysym.sym == SDLK_COMMA) selection.z--;
-                    if(e.key.keysym.sym == SDLK_SEMICOLON) selection.z++;
-                    if(e.key.keysym.sym == SDLK_SPACE) cubeList.addInstance(selection);
+                    if(e.key.keysym.sym == SDLK_z) scene.cam().moveFront(1);
+                    if(e.key.keysym.sym == SDLK_s) scene.cam().moveFront(-1);
+                    if(e.key.keysym.sym == SDLK_q) scene.cam().moveLeft(1);
+                    if(e.key.keysym.sym == SDLK_d) scene.cam().moveLeft(-1);
+                    if(e.key.keysym.sym == SDLK_a) scene.cam().moveUp(-1);
+                    if(e.key.keysym.sym == SDLK_e) scene.cam().moveUp(1);
+                    if(e.key.keysym.sym == SDLK_UP) scene.selection().y++;
+                    if(e.key.keysym.sym == SDLK_DOWN) scene.selection().y--;
+                    if(e.key.keysym.sym == SDLK_LEFT) scene.selection().x--;
+                    if(e.key.keysym.sym == SDLK_RIGHT) scene.selection().x++;
+                    if(e.key.keysym.sym == SDLK_COMMA) scene.selection().z--;
+                    if(e.key.keysym.sym == SDLK_SEMICOLON) scene.selection().z++;
+                    if(e.key.keysym.sym == SDLK_SPACE) cubeList.addInstance(scene.selection());
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
@@ -105,8 +108,8 @@ int main(int argc, char** argv) {
                     if(mouseDown) {
                         glm::ivec2 offsetMouse = windowManager.getMousePosition() - mouse;
                         mouse = windowManager.getMousePosition();
-                        cam.rotateUp(-offsetMouse.y/2.f);
-                        cam.rotateLeft(-offsetMouse.x/2.f);
+                        scene.cam().rotateUp(-offsetMouse.y/2.f);
+                        scene.cam().rotateLeft(-offsetMouse.x/2.f);
                     }
                     break;
             }
@@ -126,56 +129,33 @@ int main(int argc, char** argv) {
         // Rendering
         interface.render();
 
-        // cubeList.refresh(); //A appeler seulement quand on ajoute ou enleve un cube
-
 
         /*********************************
          * HERE SHOULD COME THE RENDERING CODE
          *********************************/
 
-        glm::mat4 viewMatrix = cam.getViewMatrix();
+        glm::mat4 viewMatrix = scene.viewMatrix();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clear window
 
         interface.draw();
 
-        glBindVertexArray(vao.vao()); // Binding VAO
-
+        glBindVertexArray(vao1.vao()); // Binding VAO
             mainProgram.use();
+                cubeList.drawInstances(scene, mainProgram);        
+        glBindVertexArray(0);
 
-                //Make the cube rotate
-                // glm::mat4 cubeMVMatrix = glm::rotate(viewMatrix, windowManager.getTime(), glm::vec3(0, 1, 0));
-                glm::mat4 cubeMVMatrix = viewMatrix;
-
-                //Send matrix to the CG
-                glUniformMatrix4fv(mainProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(cubeMVMatrix));
-                glUniformMatrix4fv(mainProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * cubeMVMatrix));
-                glUniformMatrix4fv(mainProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(cubeMVMatrix))));
-
-                glDrawElementsInstanced(GL_TRIANGLES, myCube.nbIndex(), GL_UNSIGNED_INT, 0, cubeList.nbInstances()); //cube
-
-
+        glBindVertexArray(vao2.vao());
             selectProgram.use();
 
-                glEnable(GL_BLEND);
-                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-                //Make the cube rotate
-                // glm::mat4 cubeMVMatrix = glm::rotate(viewMatrix, windowManager.getTime(), glm::vec3(0, 1, 0));
-                cubeMVMatrix = glm::translate(viewMatrix, selection);
-                cubeMVMatrix = glm::scale(cubeMVMatrix, glm::vec3(1.01, 1.01, 1.01));
+                glm::mat4 cubeMVMatrix = glm::translate(viewMatrix, scene.selection());
 
                 //Send matrix to the CG
                 glUniformMatrix4fv(selectProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(cubeMVMatrix));
-                glUniformMatrix4fv(selectProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * cubeMVMatrix));
+                glUniformMatrix4fv(selectProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(scene.projMat() * cubeMVMatrix));
                 glUniformMatrix4fv(selectProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(cubeMVMatrix))));
 
-                glDrawElements(GL_TRIANGLES, myCube.nbIndex(), GL_UNSIGNED_INT, 0); //cube
-
-                glDisable(GL_BLEND);
-
-
-
+                glDrawElements(GL_TRIANGLES, edges.nbIndex(), GL_UNSIGNED_INT, 0); //cube
         glBindVertexArray(0);
 
         // Update the display

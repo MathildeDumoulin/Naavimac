@@ -28,20 +28,20 @@ namespace glimac {
     }
 
 
-    const ShapeVertex* Cube::getVerticesPointer() const {
+    const ShapeVertex* Cube::verticesPointer() const {
         return &m_Vertices[0];
     }
 
 
-    const GLsizei Cube::getVertexCount() const {
+    const GLsizei Cube::nbVertex() const {
         return m_nbVertex;
     }
 
-    const uint32_t* Cube::getIndexesPointer() const {
+    const uint32_t* Cube::indexesPointer() const {
         return &m_Indexes[0];
     }
     
-    const GLsizei Cube::getIndexCount() const {
+    const GLsizei Cube::nbIndex() const {
         return m_nbIndex;
     }
 

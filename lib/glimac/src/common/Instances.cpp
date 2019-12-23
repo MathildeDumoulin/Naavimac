@@ -9,7 +9,7 @@
 namespace glimac {
 
 Instances::Instances(const unsigned int nbInstances, const Object& obj, const VertexArray& vao) 
-    : m_offset(nbInstances) {
+    : m_offset(nbInstances), m_nbIndexPerObj(obj.nbIndex()) {
 
         glGenBuffers(1, &m_buffer);
 
@@ -58,6 +58,10 @@ const size_t Instances::nbInstances() const {
     return m_offset.size() + 1;
 }
 
+const GLsizei Instances::nbIndexPerObj() const {
+    return m_nbIndexPerObj;
+}
+
 bool Instances::isThereSomething(const glm::vec3& position) const {
     for(const auto &inst:m_offset) {
         if(position == inst) return true;
@@ -68,6 +72,17 @@ bool Instances::isThereSomething(const glm::vec3& position) const {
 void Instances::addInstance(const glm::vec3& position) {
     if(!isThereSomething(position)) m_offset.push_back(position);
     refresh();
+}
+
+void Instances::drawInstances(const Scene& scene, const ShadingProgram& prog) const {
+    glm::mat4 MVMatrix = scene.viewMatrix();
+
+    //Send matrix to the CG
+    glUniformMatrix4fv(prog.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+    glUniformMatrix4fv(prog.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(scene.projMat() * MVMatrix));
+    glUniformMatrix4fv(prog.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
+
+    glDrawElementsInstanced(GL_TRIANGLES, nbIndexPerObj(), GL_UNSIGNED_INT, 0, nbInstances());
 }
 
 }

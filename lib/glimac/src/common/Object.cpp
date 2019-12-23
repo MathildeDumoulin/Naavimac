@@ -19,7 +19,7 @@ Object::Object(const GLsizei &nbVertex, const GLsizei &nbIndex, const ShapeVerte
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-Object::Object(const Cube& cube) : Object(cube.getVertexCount(), cube.getIndexCount(), cube.getVerticesPointer(), cube.getIndexesPointer()) {}
+Object::Object(const Cube& cube) : Object(cube.nbVertex(), cube.nbIndex(), cube.verticesPointer(), cube.indexesPointer()) {}
 
 
 const GLuint Object::vbo() const {
