@@ -46,18 +46,15 @@ int main(int argc, char** argv) {
 
 
     //OBJECT
-    Object myCube = Object(Cube()); //VBO and IBO
-    VertexArray vao1;
-    vao1.addObject(myCube); //Add CubeObject to VAO
+    Object cubeObj = Object(Cube()); //VBO and IBO
+    VertexArray cube(POS_NORM_TEXT, cubeObj);
 
-    Instances cubeList(nbCubesAtStart, myCube, vao1); //Create instance of CubeObjects
+    Instances cubeList(nbCubesAtStart, cubeObj, cube); //Create instance of CubeObjects
     cubeList.createCubesGround();
 
     //OBJECT 2
-    CubeEdges cubeEdges(0.05);
-    Object edges(cubeEdges.nbVertex(), cubeEdges.nbIndex(), cubeEdges.verticesPointer(), cubeEdges.indexesPointer());
-    VertexArray vao2;
-    vao2.addObject(edges);
+    Object cubeEdgesObj = Object(CubeEdges(0.05));
+    VertexArray cubeEdges(POS, cubeEdgesObj);
 
 
     glEnable(GL_DEPTH_TEST);
@@ -134,29 +131,20 @@ int main(int argc, char** argv) {
          * HERE SHOULD COME THE RENDERING CODE
          *********************************/
 
-        glm::mat4 viewMatrix = scene.viewMatrix();
-
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clear window
 
         interface.draw();
 
-        glBindVertexArray(vao1.vao()); // Binding VAO
+        cube.bindVAO(); // Binding VAO
             mainProgram.use();
                 cubeList.drawInstances(scene, mainProgram);        
-        glBindVertexArray(0);
+        cube.unbindVAO();
 
-        glBindVertexArray(vao2.vao());
+        cubeEdges.bindVAO();
             selectProgram.use();
-
-                glm::mat4 cubeMVMatrix = glm::translate(viewMatrix, scene.selection());
-
-                //Send matrix to the CG
-                glUniformMatrix4fv(selectProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(cubeMVMatrix));
-                glUniformMatrix4fv(selectProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(scene.projMat() * cubeMVMatrix));
-                glUniformMatrix4fv(selectProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(cubeMVMatrix))));
-
-                glDrawElements(GL_TRIANGLES, edges.nbIndex(), GL_UNSIGNED_INT, 0); //cube
-        glBindVertexArray(0);
+                glm::mat4 cubeMVMatrix = glm::translate(scene.viewMatrix(), scene.selection());
+                cubeEdgesObj.draw(scene, selectProgram, cubeMVMatrix);
+        cubeEdges.unbindVAO();
 
         // Update the display
         windowManager.swapBuffers();

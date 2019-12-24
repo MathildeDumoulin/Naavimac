@@ -8,7 +8,7 @@ namespace glimac {
 
 /***** CLASS CUBE EDGES - METHODS *****/
 
-    CubeEdges::CubeEdges(const float& thickness) : m_Vertices(96), m_Indexes(432), m_nbVertex(0), m_nbIndex(0) {
+    CubeEdges::CubeEdges(const float& thickness) : Primitive(96, 432) {
         const Line line(1+thickness, thickness);
 
         float offset = 1/2.f;
@@ -36,23 +36,6 @@ namespace glimac {
         }
     }
 
-
-    const ShapeVertex* CubeEdges::verticesPointer() const {
-        return &m_Vertices[0];
-    }
-
-
-    const GLsizei CubeEdges::nbVertex() const {
-        return m_nbVertex;
-    }
-
-    const uint32_t* CubeEdges::indexesPointer() const {
-        return &m_Indexes[0];
-    }
-    
-    const GLsizei CubeEdges::nbIndex() const {
-        return m_nbIndex;
-    }
 
     void CubeEdges::pushLine(Line& line) {
         

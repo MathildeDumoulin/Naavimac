@@ -3,15 +3,20 @@
 namespace glimac {
 
 Object::Object(const GLsizei &nbVertex, const GLsizei &nbIndex, const ShapeVertex* vertices, const uint32_t* indexes) 
-    : m_nbVertex(nbVertex), m_nbIndex(nbIndex) {
+    : m_vbo(0), m_ibo(0), m_nbVertex(nbVertex), m_nbIndex(nbIndex) {
 
+        //Avoid memory leak
+        if(glIsBuffer(m_vbo) == GL_TRUE) glDeleteBuffers(1, &m_vbo);
+        if(glIsBuffer(m_ibo) == GL_TRUE) glDeleteBuffers(1, &m_ibo);
+
+        //VBO Creation
         glGenBuffers(1, &m_vbo);
 
         glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
             glBufferData(GL_ARRAY_BUFFER, nbVertex * sizeof(ShapeVertex), vertices, GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-
+        //IBO Creation
         glGenBuffers(1, &m_ibo);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
@@ -20,6 +25,13 @@ Object::Object(const GLsizei &nbVertex, const GLsizei &nbIndex, const ShapeVerte
 }
 
 Object::Object(const Cube& cube) : Object(cube.nbVertex(), cube.nbIndex(), cube.verticesPointer(), cube.indexesPointer()) {}
+
+Object::Object(const CubeEdges& cubeEdges) : Object(cubeEdges.nbVertex(), cubeEdges.nbIndex(), cubeEdges.verticesPointer(), cubeEdges.indexesPointer()) {}
+
+Object::~Object() {
+    glDeleteBuffers(1, &m_vbo);
+    glDeleteBuffers(1, &m_ibo);
+}
 
 
 const GLuint Object::vbo() const {
@@ -36,6 +48,16 @@ const GLsizei Object::nbVertex() const {
 
 const GLsizei Object::nbIndex() const {
     return m_nbIndex;
+}
+
+
+void Object::draw(const Scene& scene, const ShadingProgram& prog, const glm::mat4& MVMat) const {
+    //Send matrix to the CG
+    glUniformMatrix4fv(prog.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMat));
+    glUniformMatrix4fv(prog.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(scene.projMat() * MVMat));
+    glUniformMatrix4fv(prog.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMat))));
+
+    glDrawElements(GL_TRIANGLES, m_nbIndex, GL_UNSIGNED_INT, 0);
 }
 
 }

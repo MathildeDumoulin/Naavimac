@@ -6,7 +6,7 @@ namespace glimac {
 
 /***** CLASS CUBE - METHODS *****/
 
-    Cube::Cube() : m_Vertices(24), m_Indexes(36), m_nbVertex(0), m_nbIndex(0) {
+    Cube::Cube() : Primitive(24, 36) {
 
         const std::vector<ShapeVertexHomo> quad = createQuad(1); //Create 4 vertices
 
@@ -28,23 +28,6 @@ namespace glimac {
     }
 
 
-    const ShapeVertex* Cube::verticesPointer() const {
-        return &m_Vertices[0];
-    }
-
-
-    const GLsizei Cube::nbVertex() const {
-        return m_nbVertex;
-    }
-
-    const uint32_t* Cube::indexesPointer() const {
-        return &m_Indexes[0];
-    }
-    
-    const GLsizei Cube::nbIndex() const {
-        return m_nbIndex;
-    }
-
     void Cube::pushQuad(const std::vector<ShapeVertexHomo> &quad) {
         assert(quad.size() == 4);
 
@@ -59,25 +42,6 @@ namespace glimac {
 
         m_nbVertex += 4;
         m_nbIndex += 6;
-    }
-
-
-/***** OTHERS FUNCTIONS *****/
-
-    const std::vector<ShapeVertexHomo> createQuad(const float &size) {
-        glm::vec2 texture(0.f, 0.f);
-        glm::vec4 normal(0.f, 0.f, 1.f, 0.f);
-        float depth = 0.f;
-        float offset = size / 2.f;
-
-        std::vector<ShapeVertexHomo> vertices = {
-            ShapeVertexHomo(glm::vec4(-offset, offset, depth, 1), normal, texture), //Top Left
-            ShapeVertexHomo(glm::vec4(-offset, -offset, depth, 1), normal, texture), //Bottom Left
-            ShapeVertexHomo(glm::vec4(offset, offset, depth, 1), normal, texture), //Top Right
-            ShapeVertexHomo(glm::vec4(offset, -offset, depth, 1), normal, texture) //Bottom Right
-        };
-
-        return vertices;
     }
 
 }

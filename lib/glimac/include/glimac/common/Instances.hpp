@@ -21,6 +21,8 @@ class Instances {
 
     public:
         Instances(const unsigned int nbInstances, const Object& obj, const VertexArray& vao);
+        ~Instances();
+
         void createCubesGround();
         void refresh() const;
 

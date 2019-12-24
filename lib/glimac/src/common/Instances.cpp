@@ -9,23 +9,30 @@
 namespace glimac {
 
 Instances::Instances(const unsigned int nbInstances, const Object& obj, const VertexArray& vao) 
-    : m_offset(nbInstances), m_nbIndexPerObj(obj.nbIndex()) {
+    : m_buffer(0), m_offset(nbInstances), m_nbIndexPerObj(obj.nbIndex()) {
 
+        //Avoid memory leak
+        if(glIsBuffer(m_buffer) == GL_TRUE) glDeleteBuffers(1, &m_buffer);
+
+        //Buffer Creation
         glGenBuffers(1, &m_buffer);
 
-        //Bind the buffer in the VAO
+        const GLuint VERTEX_ATTR_OFFSET = 3;
+
         glBindVertexArray(vao.vao());
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, obj.ibo());
 
-            const GLuint VERTEX_ATTR_OFFSET = 3;
             glEnableVertexAttribArray(VERTEX_ATTR_OFFSET);
 
-            glBindBuffer(GL_ARRAY_BUFFER, m_buffer); //Binding the VBO inside the VAO
+            glBindBuffer(GL_ARRAY_BUFFER, m_buffer); 
                 glVertexAttribPointer(VERTEX_ATTR_OFFSET, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
-            glBindBuffer(GL_ARRAY_BUFFER, 0); //Unbinding the VBO
+            glBindBuffer(GL_ARRAY_BUFFER, 0); 
             glVertexAttribDivisor(VERTEX_ATTR_OFFSET, 1);
-        glBindVertexArray(0); //Unbinding the VAO
+        glBindVertexArray(0);
+}
 
+Instances::~Instances() {
+    glDeleteBuffers(1, &m_buffer);
 }
 
 

@@ -5,30 +5,17 @@
 #include <vector>
 
 #include "glimac/common/ShapeVertex.hpp"
+#include "glimac/primitives/Primitive.hpp"
 
 namespace glimac {
 
-class Cube {
+class Cube : public Primitive<ShapeVertex> {
     private:
-        std::vector<ShapeVertex> m_Vertices;
-        std::vector<uint32_t> m_Indexes;
-        GLsizei m_nbVertex;
-        GLsizei m_nbIndex;
-
         void pushQuad(const std::vector<ShapeVertexHomo> &quad);
     
     public:
         Cube();
-
-        const ShapeVertex* verticesPointer() const;
-        const GLsizei nbVertex() const;
-        
-        const uint32_t* indexesPointer() const;
-        const GLsizei nbIndex() const;
 };
-
-
-const std::vector<ShapeVertexHomo> createQuad(const float &size);
 
 }
 

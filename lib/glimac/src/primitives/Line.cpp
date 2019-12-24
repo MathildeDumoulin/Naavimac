@@ -7,7 +7,7 @@ namespace glimac {
 
 /***** CLASS LINE - METHODS *****/
 
-    Line::Line(const float& length, const float& thickness) : m_Vertices(8), m_Indexes(36), m_nbVertex(0), m_nbIndex(0) {
+    Line::Line(const float& length, const float& thickness) : Primitive(8, 36) {
 
         float offset = length/2.f;
 
@@ -40,31 +40,6 @@ namespace glimac {
         m_nbIndex += 36;
     }
 
-
-    const ShapeVertexHomo* Line::verticesPointer() const {
-        return &m_Vertices[0];
-    }
-
-    std::vector<ShapeVertexHomo>& Line::vertices() {
-        return m_Vertices;
-    }
-
-
-    const GLsizei Line::nbVertex() const {
-        return m_nbVertex;
-    }
-
-    const uint32_t* Line::indexesPointer() const {
-        return &m_Indexes[0];
-    }
-
-    std::vector<uint32_t>& Line::indexes() {
-        return m_Indexes;
-    }
-    
-    const GLsizei Line::nbIndex() const {
-        return m_nbIndex;
-    }
 
     void Line::transform(const glm::mat4& mat) {
         for(auto &elt:m_Vertices) {

@@ -7,15 +7,21 @@
 
 namespace glimac {
 
+enum ShaderAttrib {
+    POS = 0, POS_NORM = 1, POS_NORM_TEXT = 2
+};
+
 class VertexArray {
     private:
         GLuint m_vao;
 
     public:
-        VertexArray();
-        void addObject(const Object &obj);
+        VertexArray(const ShaderAttrib& attrib, const Object& obj);
+        ~VertexArray();
 
         const GLuint vao() const;
+        void bindVAO() const;
+        void unbindVAO() const;
 };
 
 }
