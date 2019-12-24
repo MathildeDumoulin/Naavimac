@@ -16,6 +16,9 @@
 #include <iostream>
 #include <vector>
 
+#include <cmath>
+#include "glimac/gui/Mouse.hpp"
+
 #include "app/const.hpp"
 
 #include "glimac/common/Scene.hpp"
@@ -34,6 +37,8 @@ int main(int argc, char** argv) {
     // Initialize ImGui
     IMGUIWindowManager interface(windowManager);
 
+    Mouse mouse;
+
     Scene scene;
 
 
@@ -41,28 +46,24 @@ int main(int argc, char** argv) {
 
         //Load, compile and tell OpenGL to use these shaders
         FilePath applicationPath(argv[0]);
-        ShadingProgram mainProgram(applicationPath, "3D.vs.glsl", "3D.fs.glsl");
-        ShadingProgram selectProgram(applicationPath, "select.vs.glsl", "select.fs.glsl");
+        ShadingProgram texturedCubeProgram(applicationPath, "texturedCube.vs.glsl", "texturedCube.fs.glsl");
+        ShadingProgram smallCubeProgram(applicationPath, "smallCube.vs.glsl", "texturedCube.fs.glsl");
+        ShadingProgram selectionCubeProgram(applicationPath, "selectionCube.vs.glsl", "selectionCube.fs.glsl");
 
 
-    //OBJECT
+    //CUBE
     Object cubeObj = Object(Cube()); //VBO and IBO
     VertexArray cube(POS_NORM_TEXT, cubeObj);
 
     Instances cubeList(nbCubesAtStart, cubeObj, cube); //Create instance of CubeObjects
     cubeList.createCubesGround();
 
-    //OBJECT 2
+    //CUBE EDGES
     Object cubeEdgesObj = Object(CubeEdges(0.05));
     VertexArray cubeEdges(POS, cubeEdgesObj);
 
 
     glEnable(GL_DEPTH_TEST);
-
-
-    glm::ivec2 mouse;
-
-    bool mouseDown = false;
 
     // Application loop:
     bool done = false;
@@ -93,18 +94,35 @@ int main(int argc, char** argv) {
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
-                    mouseDown = true;
-                    mouse = windowManager.getMousePosition();
+                    if(e.button.button == SDL_BUTTON_LEFT) {
+                        mouse.leftDown(true);
+                        mouse.updatePosition(windowManager);
+                    }
+                    if(e.button.button == SDL_BUTTON_RIGHT) {
+                        mouse.rightDown(true);
+                        mouse.updatePosition(windowManager);
+
+                        //Draw smaller cubes to make mouse selection easier
+                        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                        cube.bindVAO();
+                            smallCubeProgram.use();
+                                cubeList.drawInstances(scene, smallCubeProgram);        
+                        cube.unbindVAO();
+
+                        //Update selection position
+                        mouse.updateSelection(scene, cubeList);
+                    }
                     break;
 
                 case SDL_MOUSEBUTTONUP:
-                    mouseDown = false;
+                    mouse.leftDown(false);
+                    mouse.rightDown(false);
                     break;
 
                 case SDL_MOUSEMOTION:
-                    if(mouseDown) {
-                        glm::ivec2 offsetMouse = windowManager.getMousePosition() - mouse;
-                        mouse = windowManager.getMousePosition();
+                    if(mouse.leftDown()) {
+                        glm::ivec2 offsetMouse = windowManager.getMousePosition() - mouse.position();
+                        mouse.updatePosition(windowManager);
                         scene.cam().rotateUp(-offsetMouse.y/2.f);
                         scene.cam().rotateLeft(-offsetMouse.x/2.f);
                     }
@@ -136,14 +154,14 @@ int main(int argc, char** argv) {
         interface.draw();
 
         cube.bindVAO(); // Binding VAO
-            mainProgram.use();
-                cubeList.drawInstances(scene, mainProgram);        
+            texturedCubeProgram.use();
+                cubeList.drawInstances(scene, texturedCubeProgram);        
         cube.unbindVAO();
 
         cubeEdges.bindVAO();
-            selectProgram.use();
+            selectionCubeProgram.use();
                 glm::mat4 cubeMVMatrix = glm::translate(scene.viewMatrix(), scene.selection());
-                cubeEdgesObj.draw(scene, selectProgram, cubeMVMatrix);
+                cubeEdgesObj.draw(scene, selectionCubeProgram, cubeMVMatrix);
         cubeEdges.unbindVAO();
 
         // Update the display

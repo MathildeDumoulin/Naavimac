@@ -26,6 +26,7 @@ class FreeflyCamera {
         void rotateUp(const float& degrees);
 
         glm::mat4 getViewMatrix() const;
+        const glm::vec3 position() const;
 };
 
 }
