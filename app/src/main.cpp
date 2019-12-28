@@ -8,7 +8,6 @@
 #include <glimac/common/glm.hpp>
 #include <glimac/common/Image.hpp>
 #include <glimac/common/Object.hpp>
-#include <glimac/common/VertexArray.hpp>
 #include <glimac/common/Instance.hpp>
 #include <glimac/primitives/Cube.hpp>
 #include <glimac/primitives/CubeEdges.hpp>
@@ -32,9 +31,7 @@ using namespace glimac;
 
 int main(int argc, char** argv) {
     // Initialize SDL & OpenGL + open a window
-    const int WINDOW_WIDTH = 600;
-    const int WINDOW_HEIGHT = 600;
-    SDLWindowManager windowManager(WINDOW_WIDTH, WINDOW_HEIGHT, "GLImac");
+    SDLWindowManager windowManager(windowWidth, windowHeight, "GLImac");
 
     // Initialize ImGui
     IMGUIWindowManager interface(windowManager);
@@ -61,7 +58,7 @@ int main(int argc, char** argv) {
 
     //CUBE EDGES
     Object cubeEdgesObj = Object(CubeEdges(0.05));
-    VertexArray cubeEdges(POS, cubeEdgesObj);
+    Instance cubeEdges(1, cubeEdgesObj);
 
 
     glEnable(GL_DEPTH_TEST);
@@ -155,12 +152,9 @@ int main(int argc, char** argv) {
         texturedCubeProgram.use();
             cubeList.instance(DIRT)->drawInstances(scene, texturedCubeProgram);        
 
-
-        cubeEdges.bindVAO();
-            selectionCubeProgram.use();
-                glm::mat4 cubeMVMatrix = glm::translate(scene.viewMatrix(), scene.selection());
-                cubeEdgesObj.draw(scene, selectionCubeProgram, cubeMVMatrix);
-        cubeEdges.unbindVAO();
+        selectionCubeProgram.use();
+            cubeEdges.changeFirstInstance(scene.selection());
+            cubeEdges.drawInstances(scene, selectionCubeProgram);
 
         // Update the display
         windowManager.swapBuffers();

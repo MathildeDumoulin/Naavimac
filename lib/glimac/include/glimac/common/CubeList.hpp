@@ -7,7 +7,6 @@
 #include <memory>
 #include <app/const.hpp>
 #include <glimac/common/Object.hpp>
-#include <glimac/common/VertexArray.hpp>
 #include <glimac/common/Instance.hpp>
 
 namespace glimac {

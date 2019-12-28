@@ -2,7 +2,6 @@
 #include <GL/glew.h>
 
 #include <glimac/common/Object.hpp>
-#include <glimac/common/VertexArray.hpp>
 
 #include "app/const.hpp"
 
@@ -13,7 +12,9 @@ namespace glimac {
 /***** CONSTRUCTORS & DESTRUCTOR *****/
 
     Instance::Instance(const unsigned int nbInstances, const Object& obj) 
-        : m_buffer(0), m_offsetPosition(nbInstances), m_nbIndexPerObj(obj.nbIndex()), m_vao(POS_NORM_TEXT, obj) {
+        : m_vao(0), m_buffer(0), m_offsetPosition(nbInstances), m_nbIndexPerObj(obj.nbIndex()) {
+
+            generateVertexArray(obj);
 
             //Avoid memory leak
             if(glIsBuffer(m_buffer) == GL_TRUE) glDeleteBuffers(1, &m_buffer);
@@ -23,7 +24,7 @@ namespace glimac {
 
             const GLuint VERTEX_ATTR_OFFSET = 3;
 
-            glBindVertexArray(m_vao.vao());
+            glBindVertexArray(m_vao);
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, obj.ibo());
 
                 glEnableVertexAttribArray(VERTEX_ATTR_OFFSET);
@@ -37,6 +38,7 @@ namespace glimac {
 
     Instance::~Instance() {
         glDeleteBuffers(1, &m_buffer);
+        glDeleteVertexArrays(1, &m_vao);
     }
 
 
@@ -44,6 +46,36 @@ namespace glimac {
         glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
             glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * m_offsetPosition.size(), &m_offsetPosition[0], GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
+/***** PRIVATE METHODS *****/
+
+    void Instance::generateVertexArray(const Object& obj) {
+        //Avoid memory leak
+        if(glIsVertexArray(m_vao) == GL_TRUE) glDeleteVertexArrays(1, &m_vao);
+
+        //VAO Creation
+        glGenVertexArrays(1, &m_vao);
+
+        const GLuint VERTEX_ATTR_POSITION = 0;
+        const GLuint VERTEX_ATTR_NORMAL = 1;
+        const GLuint VERTEX_ATTR_TEXTURE = 2;
+
+        glBindVertexArray(m_vao);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, obj.ibo());
+            glBindBuffer(GL_ARRAY_BUFFER, obj.vbo());
+
+                    glEnableVertexAttribArray(VERTEX_ATTR_POSITION);
+                    glVertexAttribPointer(VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(ShapeVertex), (const GLvoid*)(offsetof(ShapeVertex, position)));
+
+                    glEnableVertexAttribArray(VERTEX_ATTR_NORMAL);
+                    glVertexAttribPointer(VERTEX_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(ShapeVertex), (const GLvoid*)(offsetof(ShapeVertex, normal)));
+
+                    glEnableVertexAttribArray(VERTEX_ATTR_TEXTURE);
+                    glVertexAttribPointer(VERTEX_ATTR_TEXTURE, 2, GL_FLOAT, GL_FALSE, sizeof(ShapeVertex), (const GLvoid*)(offsetof(ShapeVertex, texCoords)));
+
+            glBindBuffer(GL_ARRAY_BUFFER, 0); 
+        glBindVertexArray(0);
     }
 
 /***** GETTERS & SETTERS *****/
@@ -58,10 +90,6 @@ namespace glimac {
 
     std::vector<glm::vec3>& Instance::offsetPosition() {
         return m_offsetPosition;
-    }
-
-    const VertexArray& Instance::vao() const {
-        return m_vao;
     }
 
 /***** OTHERS METHODS *****/
@@ -85,8 +113,13 @@ namespace glimac {
         refresh();
     }
 
+    void Instance::changeFirstInstance(const glm::vec3& position) {
+        m_offsetPosition[0] = position;
+        refresh();
+    }  
+
     void Instance::drawInstances(const Scene& scene, const ShadingProgram& prog) const {
-        m_vao.bindVAO();
+        glBindVertexArray(m_vao);
             glm::mat4 MVMatrix = scene.viewMatrix();
 
             //Send matrix to the CG
@@ -95,7 +128,7 @@ namespace glimac {
             glUniformMatrix4fv(prog.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
 
             glDrawElementsInstanced(GL_TRIANGLES, nbIndexPerObj(), GL_UNSIGNED_INT, 0, nbInstances());
-        m_vao.unbindVAO();
+        glBindVertexArray(0);
     }
 
 }

@@ -28,8 +28,6 @@ class Object {
         const GLuint ibo() const;
         const GLsizei nbVertex() const;
         const GLsizei nbIndex() const;
-
-        void draw(const Scene& scene, const ShadingProgram& prog, const glm::mat4& MVMat) const;
 };
 
 }

@@ -2,12 +2,9 @@
 CubeList *-- CubeType
 CubeList *-- Instance
 
-Instance *-- VertexArray
+Instance *-- Object
 Instance o-- Scene
 Instance o-- ShadingProgram
-
-VertexArray *-- ShaderAttrib
-VertexArray *-- Object
 
 Object o-- Cube
 Object o-- CubeEdges
@@ -31,11 +28,6 @@ enum CubeType {
     WATER
 }
 
-enum ShaderAttrib {
-    POS
-    POS_NORM
-    POS_NORM_TEXT
-}
 
 class CubeList {
 -vector<CubeType> m_world;
@@ -51,7 +43,7 @@ __
 }
 
 class Instance {
--VertexArray m_vao;
+-GLuint m_vao;
 -GLuint m_buffer;
 -vector<vec3> m_offsetPosition;
 -GLsizei m_nbIndexPerObj;
@@ -59,6 +51,8 @@ __
 .. Constructor ..
 +Instance(uint nbInstances, Object obj);
 +refresh();
+.. Private Methods ..
+-void generateVertexArray(Object obj);
 .. Getters & Setters ..
 + ();
 .. Add & Remove ..
@@ -66,16 +60,6 @@ __
 +removeInstance(vec3 position);
 .. OpenGl Calls ..
 +drawInstances(Scene scene, ShadingProgram prog);
-}
-
-class VertexArray {
--GLuint m_vao;
-__
-.. Constructor ..
-+VertexArray(ShaderAttrib attrib, Object Obj);
-.. Binding ..
-+void bindVAO();
-+void unbindVAO();
 }
 
 class Object {
@@ -90,8 +74,6 @@ __
 +Object(CubeEdges cubeEdges);
 .. Getters & Setters ..
 +();
-.. OpenGl Calls ..
-+void draw(Scene scene, ShadingProgram prog, mat4 MVMat);
 }
 
 class Scene {

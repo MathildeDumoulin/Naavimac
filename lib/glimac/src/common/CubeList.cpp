@@ -2,7 +2,6 @@
 #include <GL/glew.h>
 
 #include <glimac/common/Object.hpp>
-#include <glimac/common/VertexArray.hpp>
 
 #include "app/const.hpp"
 

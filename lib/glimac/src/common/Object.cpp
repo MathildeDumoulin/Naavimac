@@ -50,14 +50,4 @@ const GLsizei Object::nbIndex() const {
     return m_nbIndex;
 }
 
-
-void Object::draw(const Scene& scene, const ShadingProgram& prog, const glm::mat4& MVMat) const {
-    //Send matrix to the CG
-    glUniformMatrix4fv(prog.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMat));
-    glUniformMatrix4fv(prog.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(scene.projMat() * MVMat));
-    glUniformMatrix4fv(prog.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMat))));
-
-    glDrawElements(GL_TRIANGLES, m_nbIndex, GL_UNSIGNED_INT, 0);
-}
-
 }
