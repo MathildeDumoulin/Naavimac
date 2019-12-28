@@ -1,0 +1,150 @@
+@startuml
+CubeList *-- CubeType
+CubeList *-- Instance
+
+Instance *-- VertexArray
+Instance o-- Scene
+Instance o-- ShadingProgram
+
+VertexArray *-- ShaderAttrib
+VertexArray *-- Object
+
+Object o-- Cube
+Object o-- CubeEdges
+Object o-- Scene
+Object o-- ShadingProgram
+
+Scene *-- FreeflyCamera
+
+ShadingProgram *-- Program
+ShadingProgram *-- FilePath
+
+Primitive <|-- Cube
+Primitive <|-- CubeEdges
+Primitive <|-- Line
+
+CubeEdges *-- Line
+
+enum CubeType {
+    NONE
+    DIRT
+    WATER
+}
+
+enum ShaderAttrib {
+    POS
+    POS_NORM
+    POS_NORM_TEXT
+}
+
+class CubeList {
+-vector<CubeType> m_world;
+-map<CubeType, Instance*> m_instances;
+__
+.. Constructor ..
++CubeList(Object obj);
+.. Getters & Setters..
++void type(vec3 vec, CubeType newType);
++CubeType type(vec3 vec);
+..More Methods..
++();
+}
+
+class Instance {
+-VertexArray m_vao;
+-GLuint m_buffer;
+-vector<vec3> m_offsetPosition;
+-GLsizei m_nbIndexPerObj;
+__
+.. Constructor ..
++Instance(uint nbInstances, Object obj);
++refresh();
+.. Getters & Setters ..
++ ();
+.. Add & Remove ..
++addInstance(vec3 position);
++removeInstance(vec3 position);
+.. OpenGl Calls ..
++drawInstances(Scene scene, ShadingProgram prog);
+}
+
+class VertexArray {
+-GLuint m_vao;
+__
+.. Constructor ..
++VertexArray(ShaderAttrib attrib, Object Obj);
+.. Binding ..
++void bindVAO();
++void unbindVAO();
+}
+
+class Object {
+-GLuint m_vbo;
+-GLuint m_ibo;
+-GLsizei m_nbVertex;
+-GLsizei m_nbIndex;
+__
+.. Constructor ..
++Object(GLsizei nbVertex, GLsizei nbIndex, ShapeVertex* vertices, uint32_t* indexes);
++Object(Cube cube);
++Object(CubeEdges cubeEdges);
+.. Getters & Setters ..
++();
+.. OpenGl Calls ..
++void draw(Scene scene, ShadingProgram prog, mat4 MVMat);
+}
+
+class Scene {
+-FreeflyCamera m_cam;
+-mat4 m_projMat;
+-vec3 m_selection;
+__
+.. Constructor ..
++Scene();
+.. Getters & Setters ..
++();
+}
+
+class ShadingProgram {
+-Program m_Program;
+-GLuint uMVMatrix;
+-GLuint uMVPMatrix;
+-GLuint uNormalMatrix;
+-GLuint uTexture;
+__
+.. Constructor ..
++ShadingProgram(FilePath appPath, char* vs, char* fs);
+.. More Methods ..
++void use();
+}
+
+class Primitive {
+#vector<ShapeVertex> m_Vertices;
+#vector<uint32_t> m_Indexes;
+#GLsizei m_nbVertex;
+#GLsizei m_nbIndex;
+__
+.. Constructor ..
++Primitive();
+.. Getters & Setters ..
++();
+}
+
+class Cube {
+.. Constructor ..
++Cube();
+}
+
+class CubeEdges {
+.. Constructor ..
++CubeEdges(float thickness);
+}
+
+class Line {
+.. Constructor ..
++Line(float length, float thickness);
+.. More Methods ..
++transform(mat4 mat)
+}
+
+@enduml

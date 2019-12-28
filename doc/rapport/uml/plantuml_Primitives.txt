@@ -1,0 +1,31 @@
+@startuml
+Primitive <|-- Cube
+Primitive <|-- CubeEdges
+Primitive <|-- Line
+
+CubeEdges *-- Line
+
+class Primitive {
+#vector<ShapeVertex> m_Vertices;
+#vector<uint32_t> m_Indexes;
+#GLsizei m_nbVertex;
+#GLsizei m_nbIndex;
+
++Primitive();
++SeveralGetters()
++SeveralSetters()
+}
+
+class Cube {
++Cube();
+}
+
+class CubeEdges {
++CubeEdges(float thickness);
+}
+
+class Line {
++Line(float length, float thickness);
++transform(mat4 mat)
+}
+@enduml
