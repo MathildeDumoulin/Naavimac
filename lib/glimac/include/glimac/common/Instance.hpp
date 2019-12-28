@@ -10,26 +10,27 @@
 
 namespace glimac {
 
-
-// Utiliser les stratégies pour modifier le vector m_offset en fonction du type de cube (et intégrer le changement de texture dans la statégie)
-// Comme ça, on appelle le changement de stratégie, on refresh la liste des instances et on dessine les cubes avec la bonne texture !!
-class Instances {
+class Instance {
     private:
+        VertexArray m_vao;
         GLuint m_buffer;
-        std::vector<glm::vec3> m_offset;
+        std::vector<glm::vec3> m_offsetPosition;
         GLsizei m_nbIndexPerObj;
 
     public:
-        Instances(const unsigned int nbInstances, const Object& obj, const VertexArray& vao);
-        ~Instances();
-
-        void createCubesGround();
+        Instance(const unsigned int nbInstances, const Object& obj);
+        ~Instance();
         void refresh() const;
 
         const size_t nbInstances() const;
         const GLsizei nbIndexPerObj() const;
+        std::vector<glm::vec3>& offsetPosition();
+        const VertexArray& vao() const;
+
         bool isThereSomething(const glm::vec3& position) const;
         void addInstance(const glm::vec3& position);
+        void removeInstance(const glm::vec3& position);
+
         void drawInstances(const Scene& scene, const ShadingProgram& prog) const;
 };
 

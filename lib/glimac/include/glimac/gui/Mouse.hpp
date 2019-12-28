@@ -5,7 +5,7 @@
 #include <glimac/common/glm.hpp>
 #include <glimac/gui/SDLWindowManager.hpp>
 #include <glimac/common/Scene.hpp>
-#include <glimac/common/Instances.hpp>
+#include <glimac/common/CubeList.hpp>
 #include <GL/glew.h>
 
 #include "app/const.hpp"
@@ -34,7 +34,7 @@ class Mouse {
         const glm::ivec2 position() const;
         void updatePosition(const SDLWindowManager& window);
 
-        void updateSelection(Scene& scene, const Instances& inst) const;
+        void updateSelection(Scene& scene, const CubeList& list) const;
 };
 
 }

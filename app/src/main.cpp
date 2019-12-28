@@ -9,7 +9,7 @@
 #include <glimac/common/Image.hpp>
 #include <glimac/common/Object.hpp>
 #include <glimac/common/VertexArray.hpp>
-#include <glimac/common/Instances.hpp>
+#include <glimac/common/Instance.hpp>
 #include <glimac/primitives/Cube.hpp>
 #include <glimac/primitives/CubeEdges.hpp>
 #include <glimac/cam/FreeflyCamera.hpp>
@@ -22,6 +22,8 @@
 #include "app/const.hpp"
 
 #include "glimac/common/Scene.hpp"
+
+#include "glimac/common/CubeList.hpp"
 
 
 
@@ -53,10 +55,9 @@ int main(int argc, char** argv) {
 
     //CUBE
     Object cubeObj = Object(Cube()); //VBO and IBO
-    VertexArray cube(POS_NORM_TEXT, cubeObj);
 
-    Instances cubeList(nbCubesAtStart, cubeObj, cube); //Create instance of CubeObjects
-    cubeList.createCubesGround();
+    CubeList cubeList(cubeObj);
+
 
     //CUBE EDGES
     Object cubeEdgesObj = Object(CubeEdges(0.05));
@@ -90,7 +91,7 @@ int main(int argc, char** argv) {
                     if(e.key.keysym.sym == SDLK_RIGHT) scene.selection().x++;
                     if(e.key.keysym.sym == SDLK_COMMA) scene.selection().z--;
                     if(e.key.keysym.sym == SDLK_SEMICOLON) scene.selection().z++;
-                    if(e.key.keysym.sym == SDLK_SPACE) cubeList.addInstance(scene.selection());
+                    if(e.key.keysym.sym == SDLK_SPACE) cubeList.type(scene.selection(), DIRT);
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
@@ -104,10 +105,8 @@ int main(int argc, char** argv) {
 
                         //Draw smaller cubes to make mouse selection easier
                         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                        cube.bindVAO();
                             smallCubeProgram.use();
-                                cubeList.drawInstances(scene, smallCubeProgram);        
-                        cube.unbindVAO();
+                                cubeList.instance(DIRT)->drawInstances(scene, texturedCubeProgram);        
 
                         //Update selection position
                         mouse.updateSelection(scene, cubeList);
@@ -153,10 +152,9 @@ int main(int argc, char** argv) {
 
         interface.draw();
 
-        cube.bindVAO(); // Binding VAO
-            texturedCubeProgram.use();
-                cubeList.drawInstances(scene, texturedCubeProgram);        
-        cube.unbindVAO();
+        texturedCubeProgram.use();
+            cubeList.instance(DIRT)->drawInstances(scene, texturedCubeProgram);        
+
 
         cubeEdges.bindVAO();
             selectionCubeProgram.use();

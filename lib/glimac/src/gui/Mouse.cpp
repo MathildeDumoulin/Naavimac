@@ -31,7 +31,7 @@ namespace glimac {
         m_position = window.getMousePosition();
     }
 
-    void Mouse::updateSelection(Scene& scene, const Instances& inst) const {
+    void Mouse::updateSelection(Scene& scene, const CubeList& list) const {
         GLfloat depth;
         glReadPixels(m_position.x, windowHeight - m_position.y - 1, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
         glm::vec4 viewport = glm::vec4(0, 0, windowWidth, windowHeight);
@@ -45,7 +45,7 @@ namespace glimac {
         );
 
         scene.selection() = realObjCoord;
-        if(!inst.isThereSomething(scene.selection())) {
+        if(list.type(scene.selection()) == NONE) {
             scene.selection() = scene.cam().position() + 10.0f*glm::normalize(scene.selection() - scene.cam().position());
             scene.selection() = glm::vec3(
                 (scene.selection().x >= 0) ? floor(scene.selection().x + 0.5) : ceil(scene.selection().x - 0.5),
