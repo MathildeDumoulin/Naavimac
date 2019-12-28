@@ -40,6 +40,10 @@ namespace glimac {
     }
 
     const int CubeList::indexFromPosition(const glm::vec3& vec) const {
+        assert(vec.x >= worldMinX && vec.x <= worldMaxX && 
+                    vec.y >= worldMinY && vec.y <= worldMaxY && 
+                        vec.z >= worldMinZ && vec.z <= worldMaxZ);
+
         int index = (vec.x - worldMinX) * (worldSizeZ + 1) * (worldSizeY + 1);
         index += (vec.y - worldMinY) * (worldSizeZ + 1);
         index += vec.z - worldMinZ;
@@ -86,10 +90,13 @@ namespace glimac {
                     int index = indexFromPosition(vec);
 
                     CubeType oldType = m_world[index];
+
+                    if(oldType == newType) return;
+
                     m_world[index] = newType;
 
-                    if (oldType != NONE) m_instances.at(oldType)->removeInstance(vec);
-                    if (newType != NONE) m_instances.at(newType)->addInstance(vec);
+                    if(oldType != NONE) m_instances.at(oldType)->removeInstance(vec);
+                    if(newType != NONE) m_instances.at(newType)->addInstance(vec);
         }
     }
 
