@@ -1,4 +1,5 @@
 #include "glimac/cam/FreeflyCamera.hpp"
+#include <cmath>
 
 namespace glimac {
 
@@ -53,6 +54,66 @@ glm::mat4 FreeflyCamera::getViewMatrix() const {
 
 const glm::vec3 FreeflyCamera::position() const {
     return m_position;
+}
+
+const glm::vec3 FreeflyCamera::frontVector() const {
+    return m_frontVector;
+}
+
+const glm::vec3 FreeflyCamera::leftVector() const {
+    return m_leftVector;
+}
+
+const glm::vec3 FreeflyCamera::upVector() const {
+    return m_upVector;
+}
+
+
+const glm::vec3 FreeflyCamera::dominantHorizontalAxis() const {
+    glm::vec3 horizontalAxis(0,0,0);
+
+    float x = m_leftVector.x;
+    float y = m_leftVector.y;
+    float z = m_leftVector.z;
+
+    if(abs(x) >= abs(y) && abs(x) >= abs(z)) {
+        horizontalAxis = glm::vec3(1, 0, 0);
+        if(x >= 0) horizontalAxis = -horizontalAxis;
+    }
+    else if(abs(y) >= abs(x) && abs(y) >= abs(z)) {
+        horizontalAxis = glm::vec3(0, 1, 0);
+        if(y >= 0) horizontalAxis = -horizontalAxis;
+    }
+    else if(abs(z) >= abs(x) && abs(z) >= abs(y)){
+        horizontalAxis = glm::vec3(0, 0, 1);
+        if(z >= 0) horizontalAxis = -horizontalAxis;
+    }
+
+    return horizontalAxis;
+}
+
+
+const glm::vec3 FreeflyCamera::dominantVerticalAxis() const {
+    glm::vec3 verticalAxis(0,0,0);
+
+    float x = m_upVector.x;
+    float y = m_upVector.y;
+    float z = m_upVector.z;
+
+    if(abs(x) >= abs(y) && abs(x) >= abs(z)) {
+        verticalAxis = glm::vec3(1, 0, 0);
+        if(x <= 0) verticalAxis = -verticalAxis;
+    }
+    else if(abs(y) >= abs(x) && abs(y) >= abs(z)) {
+        verticalAxis = glm::vec3(0, 1, 0);
+        if(y <= 0) verticalAxis = -verticalAxis;
+    }
+    else if(abs(z) >= abs(x) && abs(z) >= abs(y)){
+        verticalAxis = glm::vec3(0, 0, 1);
+        if(z <= 0) verticalAxis = -verticalAxis;
+    }
+
+    return verticalAxis;
 }
 
 }

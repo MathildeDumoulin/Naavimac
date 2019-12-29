@@ -27,6 +27,12 @@ class FreeflyCamera {
 
         glm::mat4 getViewMatrix() const;
         const glm::vec3 position() const;
+        const glm::vec3 frontVector() const;
+        const glm::vec3 leftVector() const;
+        const glm::vec3 upVector() const;
+
+        const glm::vec3 dominantHorizontalAxis() const;
+        const glm::vec3 dominantVerticalAxis() const;
 };
 
 }

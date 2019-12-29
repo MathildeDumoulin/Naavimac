@@ -114,6 +114,7 @@ int main(int argc, char** argv) {
                 case SDL_MOUSEBUTTONUP:
                     mouse.leftDown(false);
                     mouse.rightDown(false);
+                    mouse.resetOffsetCounter();
                     break;
 
                 case SDL_MOUSEMOTION:
@@ -144,7 +145,6 @@ int main(int argc, char** argv) {
 
         // Rendering
         interface.render();
-
 
         /*********************************
          * HERE SHOULD COME THE RENDERING CODE

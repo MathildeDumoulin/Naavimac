@@ -31,6 +31,10 @@ namespace glimac {
         m_position = window.getMousePosition();
     }
 
+    void Mouse::resetOffsetCounter() {
+        m_offsetCounter = glm::ivec2(0, 0);
+    }
+
     void Mouse::updateSelection(Scene& scene, const CubeList& list) const {
         //Read inside the frame buffer to get depth information
         //Transform mouse window coords into world coords
@@ -69,21 +73,28 @@ namespace glimac {
 
         glm::vec3 currentSelection = scene.selection();
 
-        int step = 6;
+        int step = 5; //Speed of the changing selection position (the lower is the value, the faster is the motion)
 
-        if(abs(offsetPosition.x) >= abs(offsetPosition.y)) offsetPosition.y = 0; else offsetPosition.x = 0;
+        //Relative to the mouse (window coords)
+        if(abs(offsetPosition.x) >= abs(offsetPosition.y)) offsetPosition.y = 0; else offsetPosition.x = 0; //Permit to apply changes only on one axis each time
 
         if(offsetPosition.x > 0) ++m_offsetCounter.x; else if(offsetPosition.x < 0) --m_offsetCounter.x;
-
         if(offsetPosition.y > 0) ++m_offsetCounter.y; else if(offsetPosition.y < 0) --m_offsetCounter.y;
 
-        if(m_offsetCounter.x >= step) { scene.selection(glm::vec3(currentSelection.x + 1, currentSelection.y, currentSelection.z)); m_offsetCounter.x = 0; }
-        if(m_offsetCounter.x <= -step) { scene.selection(glm::vec3(currentSelection.x - 1, currentSelection.y, currentSelection.z)); m_offsetCounter.x = 0; }
 
-        if(m_offsetCounter.y >= step) { scene.selection(glm::vec3(currentSelection.x, currentSelection.y - 1, currentSelection.z)); m_offsetCounter.y = 0; }
-        if(m_offsetCounter.y <= -step) { scene.selection(glm::vec3(currentSelection.x, currentSelection.y + 1, currentSelection.z)); m_offsetCounter.y = 0; }
+        //Relative to the 3D space
+        glm::vec3 horizontalAxis = scene.cam().dominantHorizontalAxis();
+        glm::vec3 verticalAxis = scene.cam().dominantVerticalAxis();
 
-        if(scene.selection() != currentSelection) inst.changeFirstInstance(scene.selection());
+
+        //Use the offsetCounter to change the selection position or not
+        if(m_offsetCounter.x >= step) { scene.moveSelection(horizontalAxis); m_offsetCounter.x = 0; }
+        if(m_offsetCounter.x <= -step) { scene.moveSelection(-horizontalAxis); m_offsetCounter.x = 0; }
+
+        if(m_offsetCounter.y >= step) { scene.moveSelection(-verticalAxis); m_offsetCounter.y = 0; } //Here, + and - are inversed because of the window Y coords which are also inversed
+        if(m_offsetCounter.y <= -step) { scene.moveSelection(verticalAxis); m_offsetCounter.y = 0; }
+
+        if(scene.selection() != currentSelection) inst.changeFirstInstance(scene.selection()); //Update the GPU only if the selection changes
     }
 
 }
