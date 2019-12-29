@@ -18,7 +18,9 @@ class Scene {
         Scene() = default;
 
         FreeflyCamera& cam();
-        glm::vec3& selection();
+        const glm::vec3& selection() const;
+        void selection(const glm::vec3& vec);
+        void moveSelection(const glm::vec3& vec);
         glm::mat4 viewMatrix() const;
         glm::mat4 projMat() const;
 

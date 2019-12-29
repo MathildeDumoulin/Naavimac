@@ -26,7 +26,7 @@ namespace glimac {
 
 /***** PRIVATE METHODS *****/
 
-    const glm::vec3 CubeList::positionFromIndex(int index) const {
+    const glm::vec3 CubeList::positionFromIndex(unsigned int index) const {
         assert(index < (worldSizeX+1)*(worldSizeY+1)*(worldSizeZ+1) && index >= 0);
 
         float x = index / ((worldSizeZ + 1) * (worldSizeY + 1)) + worldMinX;
@@ -39,7 +39,7 @@ namespace glimac {
         return glm::vec3(x, y, z);
     }
 
-    const int CubeList::indexFromPosition(const glm::vec3& vec) const {
+    const unsigned int CubeList::indexFromPosition(const glm::vec3& vec) const {
         assert(vec.x >= worldMinX && vec.x <= worldMaxX && 
                     vec.y >= worldMinY && vec.y <= worldMaxY && 
                         vec.z >= worldMinZ && vec.z <= worldMaxZ);
@@ -61,11 +61,13 @@ namespace glimac {
             for(int x = worldMinX; x <= worldMaxX; ++x) {
                 for(int z = worldMinZ; z <= worldMaxZ; ++z) {
                     m_world[indexFromPosition(glm::vec3(x, y, z))] = DIRT; //Change type in the m_world vector
-                    m_instances.at(DIRT)->offsetPosition().at(count) = glm::vec3(x, y, z); //Add position into the DIRT instance drawing vector
+                    m_instances.at(DIRT)->offsetPosition().at(count) = glm::vec3(x, y, z); //Add position into the DIRT instance drawing vector (fill the vector)
                     ++count;
                 }
             }
         }
+
+        assert(count == nbCubesAtStart);
 
         m_instances.at(DIRT)->refresh(); //Send data to GPU
     }
@@ -73,11 +75,13 @@ namespace glimac {
 /***** GETTERS & SETTERS *****/
 
     const CubeType CubeList::type(const glm::vec3& vec) const {
+        //Check if the position is inside the world and return the index corresponding
         if(vec.x >= worldMinX && vec.x <= worldMaxX && 
             vec.y >= worldMinY && vec.y <= worldMaxY && 
                 vec.z >= worldMinZ && vec.z <= worldMaxZ) {
                     return m_world[indexFromPosition(vec)];
         }
+        //If the position is outside the world, return NONE (important for the mouse selection)
         else {
             return NONE;
         }

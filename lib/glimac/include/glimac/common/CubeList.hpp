@@ -20,8 +20,8 @@ class CubeList {
         std::vector<CubeType> m_world;
         std::map<CubeType, std::shared_ptr<Instance>> m_instances;
 
-        const glm::vec3 positionFromIndex(int index) const;
-        const int indexFromPosition(const glm::vec3& vec) const;
+        const glm::vec3 positionFromIndex(unsigned int index) const;
+        const unsigned int indexFromPosition(const glm::vec3& vec) const;
 
         void createStartCubesGround();
 

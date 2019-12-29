@@ -6,8 +6,26 @@ FreeflyCamera& Scene::cam() {
     return m_cam;
 }
 
-glm::vec3& Scene::selection() {
+const glm::vec3& Scene::selection() const {
     return m_selection;
+}
+
+void Scene::selection(const glm::vec3& vec) {
+    if(vec.x >= worldMinX && vec.x <= worldMaxX && 
+        vec.y >= worldMinY && vec.y <= worldMaxY && 
+            vec.z >= worldMinZ && vec.z <= worldMaxZ) {
+                m_selection = vec;
+            }
+}
+
+void Scene::moveSelection(const glm::vec3& vec) {
+    glm::vec3 newSelection = m_selection;
+
+    newSelection.x += vec.x;
+    newSelection.y += vec.y;
+    newSelection.z += vec.z;
+
+    selection(newSelection);
 }
 
 glm::mat4 Scene::viewMatrix() const {

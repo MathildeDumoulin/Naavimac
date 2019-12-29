@@ -82,12 +82,12 @@ int main(int argc, char** argv) {
                     if(e.key.keysym.sym == SDLK_d) scene.cam().moveLeft(-1);
                     if(e.key.keysym.sym == SDLK_a) scene.cam().moveUp(-1);
                     if(e.key.keysym.sym == SDLK_e) scene.cam().moveUp(1);
-                    if(e.key.keysym.sym == SDLK_UP) scene.selection().y++;
-                    if(e.key.keysym.sym == SDLK_DOWN) scene.selection().y--;
-                    if(e.key.keysym.sym == SDLK_LEFT) scene.selection().x--;
-                    if(e.key.keysym.sym == SDLK_RIGHT) scene.selection().x++;
-                    if(e.key.keysym.sym == SDLK_COMMA) scene.selection().z--;
-                    if(e.key.keysym.sym == SDLK_SEMICOLON) scene.selection().z++;
+                    if(e.key.keysym.sym == SDLK_UP) scene.moveSelection(glm::vec3(0,1,0)); cubeEdges.changeFirstInstance(scene.selection());
+                    if(e.key.keysym.sym == SDLK_DOWN) scene.moveSelection(glm::vec3(0,-1,0)); cubeEdges.changeFirstInstance(scene.selection());
+                    if(e.key.keysym.sym == SDLK_LEFT) scene.moveSelection(glm::vec3(-1,0,0)); cubeEdges.changeFirstInstance(scene.selection());
+                    if(e.key.keysym.sym == SDLK_RIGHT) scene.moveSelection(glm::vec3(1,0,0)); cubeEdges.changeFirstInstance(scene.selection());
+                    if(e.key.keysym.sym == SDLK_COMMA) scene.moveSelection(glm::vec3(0,0,-1)); cubeEdges.changeFirstInstance(scene.selection());
+                    if(e.key.keysym.sym == SDLK_SEMICOLON) scene.moveSelection(glm::vec3(0,0,1)); cubeEdges.changeFirstInstance(scene.selection());
                     if(e.key.keysym.sym == SDLK_SPACE) cubeList.type(scene.selection(), DIRT);
                     break;
 
@@ -107,6 +107,7 @@ int main(int argc, char** argv) {
 
                         //Update selection position
                         mouse.updateSelection(scene, cubeList);
+                        cubeEdges.changeFirstInstance(scene.selection());
                     }
                     break;
 
@@ -121,6 +122,10 @@ int main(int argc, char** argv) {
                         mouse.updatePosition(windowManager);
                         scene.cam().rotateUp(-offsetMouse.y/2.f);
                         scene.cam().rotateLeft(-offsetMouse.x/2.f);
+                    }
+
+                    if(mouse.rightDown()) {
+                        mouse.updateSelectionMotion(scene, windowManager, cubeEdges);
                     }
                     break;
             }
@@ -153,7 +158,6 @@ int main(int argc, char** argv) {
             cubeList.instance(DIRT)->drawInstances(scene, texturedCubeProgram);        
 
         selectionCubeProgram.use();
-            cubeEdges.changeFirstInstance(scene.selection());
             cubeEdges.drawInstances(scene, selectionCubeProgram);
 
         // Update the display

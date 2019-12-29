@@ -15,6 +15,7 @@ namespace glimac {
 class Mouse {
     private:
         glm::ivec2 m_position = glm::ivec2(0, 0);
+        glm::ivec2 m_offsetCounter = glm::ivec2(0, 0);
         bool m_leftDown = false;
         bool m_middleDown = false;
         bool m_rightDown = false;
@@ -35,6 +36,7 @@ class Mouse {
         void updatePosition(const SDLWindowManager& window);
 
         void updateSelection(Scene& scene, const CubeList& list) const;
+        void updateSelectionMotion(Scene& scene, const SDLWindowManager& window, Instance& inst);
 };
 
 }
