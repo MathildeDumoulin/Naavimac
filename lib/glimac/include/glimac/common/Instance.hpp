@@ -32,7 +32,7 @@ class Instance {
         void removeInstance(const glm::vec3& position);
         void changeFirstInstance(const glm::vec3& position);
 
-        void drawInstances(const Scene& scene, const ShadingProgram& prog) const;
+        void drawInstances(const Scene& scene, const ShadingProgram& prog, GLenum mode = GL_TRIANGLES) const;
 };
 
 }

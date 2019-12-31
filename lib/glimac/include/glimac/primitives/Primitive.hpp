@@ -15,6 +15,22 @@ class Primitive {
         std::vector<uint32_t> m_Indexes;
         GLsizei m_nbVertex;
         GLsizei m_nbIndex;
+
+        void pushQuad(const std::vector<ShapeVertexHomo> &quad) {
+            assert(quad.size() == 4);
+
+            uint32_t offset = m_nbVertex;       
+            std::vector<uint32_t> newIndex = {
+                offset+0, offset+1, offset+2, //First tri
+                offset+1, offset+2, offset+3 //Second tri
+            };
+            
+            m_Vertices.insert(m_Vertices.begin() + m_nbVertex, quad.cbegin(), quad.cend());
+            m_Indexes.insert(m_Indexes.begin() + m_nbIndex, newIndex.cbegin(), newIndex.cend());
+
+            m_nbVertex += 4;
+            m_nbIndex += 6;            
+        }
     
     public:
         Primitive(const size_t& sizeVertex, const size_t& sizeIndex)

@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
         FilePath applicationPath(argv[0]);
         ShadingProgram texturedCubeProgram(applicationPath, "texturedCube.vs.glsl", "texturedCube.fs.glsl");
         ShadingProgram smallCubeProgram(applicationPath, "smallCube.vs.glsl", "texturedCube.fs.glsl");
-        ShadingProgram selectionCubeProgram(applicationPath, "selectionCube.vs.glsl", "selectionCube.fs.glsl");
+        ShadingProgram selectionCubeProgram(applicationPath, "selectionCube.vs.glsl", "selectionCube.fs.glsl", "selectionCube.gs.glsl");
 
 
     //CUBE
@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
 
 
     //CUBE EDGES
-    Object cubeEdgesObj = Object(CubeEdges(0.05));
+    Object cubeEdgesObj = Object(CubeEdges());
     Instance cubeEdges(1, cubeEdgesObj);
 
 
@@ -158,7 +158,7 @@ int main(int argc, char** argv) {
             cubeList.instance(DIRT)->drawInstances(scene, texturedCubeProgram);        
 
         selectionCubeProgram.use();
-            cubeEdges.drawInstances(scene, selectionCubeProgram);
+            cubeEdges.drawInstances(scene, selectionCubeProgram, GL_LINES);
 
         // Update the display
         windowManager.swapBuffers();

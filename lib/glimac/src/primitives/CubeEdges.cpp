@@ -1,5 +1,4 @@
 #include "glimac/primitives/CubeEdges.hpp"
-#include "glimac/primitives/Line.hpp"
 #include <iostream>
 #include <cassert>
 #include <algorithm>
@@ -8,45 +7,36 @@ namespace glimac {
 
 /***** CLASS CUBE EDGES - METHODS *****/
 
-    CubeEdges::CubeEdges(const float& thickness) : Primitive(96, 432) {
-        const Line line(1+thickness, thickness);
+    CubeEdges::CubeEdges() : Primitive(8, 24) {
 
-        float offset = 1/2.f;
+        const std::vector<ShapeVertexHomo> quad = createQuad(1); //Create 4 vertices
 
         std::vector<glm::mat4> transforms = {
-            glm::rotate(glm::translate(glm::mat4(), glm::vec3(-offset, 0, offset)), glm::radians(90.f), glm::vec3(1, 0, 0)), //Front face 1
-            glm::rotate(glm::translate(glm::mat4(), glm::vec3(0, -offset, offset)), glm::radians(90.f), glm::vec3(0, 1, 0)), //Front face 2
-            glm::rotate(glm::translate(glm::mat4(), glm::vec3(offset, 0, offset)), glm::radians(90.f), glm::vec3(1, 0, 0)), //Front face 3
-            glm::rotate(glm::translate(glm::mat4(), glm::vec3(0, offset, offset)), glm::radians(90.f), glm::vec3(0, 1, 0)), //Front face 4
-            glm::rotate(glm::translate(glm::mat4(), glm::vec3(-offset, 0, -offset)), glm::radians(90.f), glm::vec3(1, 0, 0)), //Back face 1
-            glm::rotate(glm::translate(glm::mat4(), glm::vec3(0, -offset, -offset)), glm::radians(90.f), glm::vec3(0, 1, 0)), //Back face 2
-            glm::rotate(glm::translate(glm::mat4(), glm::vec3(offset, 0, -offset)), glm::radians(90.f), glm::vec3(1, 0, 0)), //Back face 3
-            glm::rotate(glm::translate(glm::mat4(), glm::vec3(0, offset, -offset)), glm::radians(90.f), glm::vec3(0, 1, 0)), //Back face 4
-            glm::translate(glm::mat4(), glm::vec3(-offset, offset, 0)), //Left side 1
-            glm::translate(glm::mat4(), glm::vec3(-offset, -offset, 0)), //Left side 2
-            glm::translate(glm::mat4(), glm::vec3(offset, offset, 0)), //Right side 1
-            glm::translate(glm::mat4(), glm::vec3(offset, -offset, 0)) //Right side 2
+            glm::translate(glm::mat4(), glm::vec3(0, 0, 0.5)), //Front face
+            glm::translate(glm::mat4(), glm::vec3(0, 0, -0.5)) //Back face
         };
 
+        // Fill Vertices Data
         for(const auto &mat:transforms) {
-            Line currentLine = line; //Create a new line
+            std::vector<ShapeVertexHomo> face = quad; //Create a face from the 4 vertices
 
-            currentLine.transform(mat); //Put the line in the right place in 3D space
-            pushLine(currentLine); //Push VBO and IBO into CubeEdges data
+            transformShapeVertexVector(face, mat); //Put the face in the right place in 3D space
+            m_Vertices.insert(m_Vertices.begin() + m_nbVertex, face.cbegin(), face.cend());
+            m_nbVertex += 4;
         }
+
+        // Fill Indexes Data
+        std::vector<uint32_t> indexes = {
+            0, 1, 0, 2, 0, 4,
+            1, 3, 1, 5,
+            2, 3, 2, 6,
+            3, 7,
+            4, 5, 4, 6,
+            5, 7,
+            6, 7
+        };
+        m_Indexes.insert(m_Indexes.begin() + m_nbIndex, indexes.cbegin(), indexes.cend());
+        m_nbIndex += 24;
     }
 
-
-    void CubeEdges::pushLine(Line& line) {
-        
-        uint32_t offset = m_nbVertex;       
-
-        std::for_each(line.indexes().begin(), line.indexes().end(), [offset](uint32_t& val) {val += offset;});
-        
-        m_Vertices.insert(m_Vertices.begin() + m_nbVertex, line.vertices().cbegin(), line.vertices().cend());
-        m_Indexes.insert(m_Indexes.begin() + m_nbIndex, line.indexes().cbegin(), line.indexes().cend());
-
-        m_nbVertex += 8;
-        m_nbIndex += 36;
-    }
 }

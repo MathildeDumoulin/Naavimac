@@ -10,9 +10,6 @@
 namespace glimac {
 
 class Cube : public Primitive<ShapeVertex> {
-    private:
-        void pushQuad(const std::vector<ShapeVertexHomo> &quad);
-    
     public:
         Cube();
 };

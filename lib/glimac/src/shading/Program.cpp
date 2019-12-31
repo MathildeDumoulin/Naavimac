@@ -36,6 +36,7 @@ Program buildProgram(const GLchar* vsSrc, const GLchar* fsSrc) {
 		throw std::runtime_error("Compilation error for fragment shader: " + fs.getInfoLog());
 	}
 
+
 	Program program;
 	program.attachShader(vs);
 	program.attachShader(fs);
@@ -48,7 +49,7 @@ Program buildProgram(const GLchar* vsSrc, const GLchar* fsSrc) {
 }
 
 // Load source code from files and build a GLSL program
-Program loadProgram(const FilePath& vsFile, const FilePath& fsFile) {
+Program loadProgram(const FilePath& vsFile, const FilePath& fsFile, const FilePath& gsFile) {
 	Shader vs = loadShader(GL_VERTEX_SHADER, vsFile);
 	Shader fs = loadShader(GL_FRAGMENT_SHADER, fsFile);
 
@@ -60,9 +61,19 @@ Program loadProgram(const FilePath& vsFile, const FilePath& fsFile) {
 		throw std::runtime_error("Compilation error for fragment shader (from file " + std::string(fsFile) + "): " + fs.getInfoLog());
 	}
 
+
 	Program program;
 	program.attachShader(vs);
 	program.attachShader(fs);
+
+	if (gsFile.hasExt("glsl")) {
+		Shader gs = loadShader(GL_GEOMETRY_SHADER, gsFile);
+		if(!gs.compile()) {
+			throw std::runtime_error("Compilation error for geometry shader (from file " + std::string(gsFile) + "): " + gs.getInfoLog());
+		}
+		program.attachShader(gs);
+	}
+
 
 	if(!program.link()) {
         throw std::runtime_error("Link error (for files " + vsFile.str() + " and " + fsFile.str() + "): " + program.getInfoLog());

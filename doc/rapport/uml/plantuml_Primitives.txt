@@ -3,8 +3,6 @@ Primitive <|-- Cube
 Primitive <|-- CubeEdges
 Primitive <|-- Line
 
-CubeEdges *-- Line
-
 class Primitive {
 #vector<ShapeVertex> m_Vertices;
 #vector<uint32_t> m_Indexes;
@@ -21,7 +19,7 @@ class Cube {
 }
 
 class CubeEdges {
-+CubeEdges(float thickness);
++CubeEdges();
 }
 
 class Line {

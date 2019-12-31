@@ -118,7 +118,7 @@ namespace glimac {
         refresh();
     }  
 
-    void Instance::drawInstances(const Scene& scene, const ShadingProgram& prog) const {
+    void Instance::drawInstances(const Scene& scene, const ShadingProgram& prog, GLenum mode) const {
         glBindVertexArray(m_vao);
             glm::mat4 MVMatrix = scene.viewMatrix();
 
@@ -127,7 +127,7 @@ namespace glimac {
             glUniformMatrix4fv(prog.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(scene.projMat() * MVMatrix));
             glUniformMatrix4fv(prog.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
 
-            glDrawElementsInstanced(GL_TRIANGLES, nbIndexPerObj(), GL_UNSIGNED_INT, 0, nbInstances());
+            glDrawElementsInstanced(mode, nbIndexPerObj(), GL_UNSIGNED_INT, 0, nbInstances());
         glBindVertexArray(0);
     }
 

@@ -54,7 +54,7 @@ private:
 Program buildProgram(const GLchar* vsSrc, const GLchar* fsSrc);
 
 // Load source code from files and build a GLSL program
-Program loadProgram(const FilePath& vsFile, const FilePath& fsFile);
+Program loadProgram(const FilePath& vsFile, const FilePath& fsFile, const FilePath& gsFile);
 
 
 }

@@ -13,7 +13,7 @@ uniform mat4 uNormalMatrix;
 
 
 void main() {
-    vec3 aVertexPosition2 = aVertexPosition + aOffset;
+    vec3 aVertexPosition2 = aVertexPosition * 1.02 + aOffset;
 
     //Homogene coords
     vec4 vertexPosition = vec4(aVertexPosition2, 1);

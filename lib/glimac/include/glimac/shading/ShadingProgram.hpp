@@ -14,7 +14,7 @@ struct ShadingProgram {
     GLuint uNormalMatrix;
     GLuint uTexture;
 
-    ShadingProgram(const FilePath& applicationPath, const char* vs, const char* fs);
+    ShadingProgram(const FilePath& applicationPath, const char* vs, const char* fs, const char* gs = "");
     void use() const;
 };
 

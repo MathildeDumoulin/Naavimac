@@ -20,8 +20,6 @@ Primitive <|-- Cube
 Primitive <|-- CubeEdges
 Primitive <|-- Line
 
-CubeEdges *-- Line
-
 enum CubeType {
     NONE
     DIRT
@@ -59,7 +57,7 @@ __
 +addInstance(vec3 position);
 +removeInstance(vec3 position);
 .. OpenGl Calls ..
-+drawInstances(Scene scene, ShadingProgram prog);
++drawInstances(Scene scene, ShadingProgram prog, GLenum mode);
 }
 
 class Object {
@@ -119,7 +117,7 @@ class Cube {
 
 class CubeEdges {
 .. Constructor ..
-+CubeEdges(float thickness);
++CubeEdges();
 }
 
 class Line {
