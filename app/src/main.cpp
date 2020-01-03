@@ -59,6 +59,7 @@ int main(int argc, char** argv) {
     //CUBE EDGES
     Object cubeEdgesObj = Object(CubeEdges());
     Instance cubeEdges(1, cubeEdgesObj);
+    cubeEdges.changeFirstInstance(scene.selection());
 
 
     glEnable(GL_DEPTH_TEST);
