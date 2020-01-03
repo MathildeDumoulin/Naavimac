@@ -7,8 +7,8 @@
 Feature                    | Done? 
 :-------------------:      | :---: 
 Drawing a scene with cubes | YES   
-Editing cubes (types)      | NOT YET (not complete, waiting for textures)
-Create/Delete/Extrude/Dig  | SOON
+Editing cubes (types)      | NOT YET (not complete, waiting for colored cubes)
+Create/Delete/Extrude/Dig  | YES
 Procedural generation      | NOT YET
 Dual light conditions      | SOON
 
@@ -22,7 +22,7 @@ Sculpting tool                     | NO
 Loading/Saving map                 | NOT YET
 Loading 3D Models                  | NO
 Spatial discretization             | NO
-Textured cubes                     | SOON
+Textured cubes                     | ALMOST DONE
 
 ### *Our features:*
 

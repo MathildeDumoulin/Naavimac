@@ -17,8 +17,8 @@ namespace glimac {
                 elt = NONE;
             }
 
-            m_instances.insert(std::make_pair(DIRT, std::make_shared<Instance>(nbCubesAtStart, obj)));
-            m_instances.insert(std::make_pair(WATER, std::make_shared<Instance>(0, obj)));
+            m_instances.insert(std::make_pair(DIRT, std::make_shared<Instance>(nbCubesAtStart, obj, "./bin/assets/textures/diffuse_downloaded.png")));
+            m_instances.insert(std::make_pair(WATER, std::make_shared<Instance>(0, obj, "./bin/assets/textures/diffuse_downloaded_2.png")));
 
             createStartCubesGround();
     }

@@ -16,10 +16,14 @@ class Instance {
         std::vector<glm::vec3> m_offsetPosition;
         GLsizei m_nbIndexPerObj;
 
+        GLuint m_diffuseTexture;
+
+        void loadTextures(const std::string& diffuseFp);
+
         void generateVertexArray(const Object& obj);
 
     public:
-        Instance(const unsigned int nbInstances, const Object& obj);
+        Instance(const unsigned int nbInstances, const Object& obj, const std::string& diffuseFp = "");
         ~Instance();
         void refresh() const;
 
