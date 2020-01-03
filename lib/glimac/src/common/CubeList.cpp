@@ -104,6 +104,30 @@ namespace glimac {
         }
     }
 
+    void CubeList::extrude(Scene& scene, Instance& selectionInst) {
+        glm::vec3 select = scene.selection();
+        glm::vec3 normal = scene.faceAxis();
+        CubeType cubeType = type(select);
+
+        if(cubeType != NONE) {
+            type(select + normal, cubeType); //Change the type of the adjacent cube
+            scene.selection(select + normal); //Update the position of the selection
+            selectionInst.changeFirstInstance(scene.selection()); //Update the GPU
+        }
+    }
+
+    void CubeList::dig(Scene& scene, Instance& selectionInst) {
+        glm::vec3 select = scene.selection();
+        glm::vec3 normal = scene.faceAxis();
+
+        type(select, NONE); //Delete the current cube
+
+        if(type(select - normal) != NONE) {
+            scene.selection(select - normal); //Update the position of the selection
+            selectionInst.changeFirstInstance(scene.selection()); //Update the GPU
+        }
+    }
+
     std::shared_ptr<Instance> CubeList::instance(const CubeType& type) {
         return m_instances.at(type);
     }

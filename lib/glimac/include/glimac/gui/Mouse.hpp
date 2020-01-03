@@ -36,8 +36,8 @@ class Mouse {
         void updatePosition(const SDLWindowManager& window);
         void resetOffsetCounter();
 
-        void updateSelection(Scene& scene, const CubeList& list) const;
-        void updateSelectionMotion(Scene& scene, const SDLWindowManager& window, Instance& inst);
+        void updateSelection(Scene& scene, const CubeList& list);
+        void updateSelectionMotion(Scene& scene, const SDLWindowManager& window, Instance& selectionInst);
 };
 
 }

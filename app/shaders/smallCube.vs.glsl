@@ -18,7 +18,7 @@ out vec2 vTexCoords; //Vertex texture coords
 
 
 void main() {
-    vec3 aVertexPosition2 = aVertexPosition * 0.9 + aOffset;
+    vec3 aVertexPosition2 = aVertexPosition * 0.95 + aOffset;
 
     //Homogene coords
     vec4 vertexPosition = vec4(aVertexPosition2, 1);

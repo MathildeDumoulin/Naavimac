@@ -89,6 +89,9 @@ int main(int argc, char** argv) {
                     if(e.key.keysym.sym == SDLK_COMMA) scene.moveSelection(glm::vec3(0,0,-1)); cubeEdges.changeFirstInstance(scene.selection());
                     if(e.key.keysym.sym == SDLK_SEMICOLON) scene.moveSelection(glm::vec3(0,0,1)); cubeEdges.changeFirstInstance(scene.selection());
                     if(e.key.keysym.sym == SDLK_SPACE) cubeList.type(scene.selection(), DIRT);
+                    if(e.key.keysym.sym == SDLK_DELETE) cubeList.type(scene.selection(), NONE);
+                    if(e.key.keysym.sym == SDLK_o) cubeList.extrude(scene, cubeEdges);
+                    if(e.key.keysym.sym == SDLK_p) cubeList.dig(scene, cubeEdges);
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
@@ -100,7 +103,7 @@ int main(int argc, char** argv) {
                         mouse.rightDown(true);
                         mouse.updatePosition(windowManager);
 
-                        //Draw smaller cubes to make mouse selection easier
+                        //Draw smaller cubes to make mouse selection be easier
                         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                             smallCubeProgram.use();
                                 cubeList.instance(DIRT)->drawInstances(scene, texturedCubeProgram);        

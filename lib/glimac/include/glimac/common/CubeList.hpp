@@ -32,6 +32,9 @@ class CubeList {
         void type(const glm::vec3& vec, const CubeType& newType); //Setter
         const CubeType type(const glm::vec3& vec) const; //Getter
 
+        void extrude(Scene& scene, Instance& selectionInst);
+        void dig(Scene& scene, Instance& selectionInst);
+
         std::shared_ptr<Instance> instance(const CubeType& type);
 };  
 

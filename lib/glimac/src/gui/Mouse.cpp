@@ -1,4 +1,5 @@
 #include "glimac/gui/Mouse.hpp"
+#include "glimac/common/math.hpp"
 #include <iostream>
 
 namespace glimac {
@@ -35,7 +36,9 @@ namespace glimac {
         m_offsetCounter = glm::ivec2(0, 0);
     }
 
-    void Mouse::updateSelection(Scene& scene, const CubeList& list) const {
+
+
+    void Mouse::updateSelection(Scene& scene, const CubeList& list) {
         //Read inside the frame buffer to get depth information
         //Transform mouse window coords into world coords
         GLfloat depth;
@@ -45,11 +48,12 @@ namespace glimac {
         glm::vec3 objCoord = glm::unProject(winCoord, scene.viewMatrix(), scene.projMat(), viewport);
 
         //Round coords
-        glm::vec3 realObjCoord(
-            (objCoord.x >= 0) ? floor(objCoord.x + 0.5) : ceil(objCoord.x - 0.5),
-            (objCoord.y >= 0) ? floor(objCoord.y + 0.5) : ceil(objCoord.y - 0.5),
-            (objCoord.z >= 0) ? floor(objCoord.z + 0.5) : ceil(objCoord.z - 0.5)
-        );
+        glm::vec3 realObjCoord = roundCoords(objCoord);
+
+        //faceAxis will be the normal vector of the selected face
+        glm::vec3 difference = glm::vec3(objCoord - realObjCoord);
+        glm::vec3 faceAxis = dominantAxis(difference);
+
 
         //Affect coords to the selection
         scene.selection(realObjCoord);
@@ -57,17 +61,19 @@ namespace glimac {
         //If the realObjCoord is actually an empty cube, recalculate a new selection at the good spot on the window
         if(list.type(realObjCoord) == NONE) {
             glm::vec3 newCoord = scene.cam().position() + 10.0f*glm::normalize(realObjCoord - scene.cam().position());
-            newCoord = glm::vec3(
-                (newCoord.x >= 0) ? floor(newCoord.x + 0.5) : ceil(newCoord.x - 0.5),
-                (newCoord.y >= 0) ? floor(newCoord.y + 0.5) : ceil(newCoord.y - 0.5),
-                (newCoord.z >= 0) ? floor(newCoord.z + 0.5) : ceil(newCoord.z - 0.5)
-            );
-            scene.selection(newCoord);
+            newCoord = roundCoords(newCoord);
+
+            scene.selection(newCoord); //Update the selection position
+
+            scene.faceAxis(scene.cam().dominantHorizontalAxis()); //faceAxis gets the dominant horizontal axis of the camera
         }
+
+        //faceAxis gets the axis corresponding of the face selected by the mouse
+        scene.faceAxis(faceAxis);
 
     }
 
-    void Mouse::updateSelectionMotion(Scene& scene, const SDLWindowManager& window, Instance& inst) {
+    void Mouse::updateSelectionMotion(Scene& scene, const SDLWindowManager& window, Instance& selectionInst) {
         glm::ivec2 offsetPosition = window.getMousePosition() - m_position;
         updatePosition(window);
 
@@ -94,7 +100,7 @@ namespace glimac {
         if(m_offsetCounter.y >= step) { scene.moveSelection(-verticalAxis); m_offsetCounter.y = 0; } //Here, + and - are inversed because of the window Y coords which are also inversed
         if(m_offsetCounter.y <= -step) { scene.moveSelection(verticalAxis); m_offsetCounter.y = 0; }
 
-        if(scene.selection() != currentSelection) inst.changeFirstInstance(scene.selection()); //Update the GPU only if the selection changes
+        if(scene.selection() != currentSelection) selectionInst.changeFirstInstance(scene.selection()); //Update the GPU only if the selection changes
     }
 
 }

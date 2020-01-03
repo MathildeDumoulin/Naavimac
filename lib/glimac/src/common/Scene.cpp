@@ -25,7 +25,15 @@ void Scene::moveSelection(const glm::vec3& vec) {
     newSelection.y += vec.y;
     newSelection.z += vec.z;
 
-    selection(newSelection);
+    selection(newSelection); //Update the position of the selection
+}
+
+const glm::vec3& Scene::faceAxis() const {
+    return m_faceAxis;
+}
+
+void Scene::faceAxis(const glm::vec3& vec) {
+    m_faceAxis = vec;
 }
 
 glm::mat4 Scene::viewMatrix() const {
