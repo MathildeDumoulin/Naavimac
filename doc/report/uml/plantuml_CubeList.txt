@@ -6,10 +6,7 @@ Instance *-- Object
 Instance o-- Scene
 Instance o-- ShadingProgram
 
-Object o-- Cube
-Object o-- CubeEdges
-Object o-- Scene
-Object o-- ShadingProgram
+Object *-- Primitive
 
 Scene *-- FreeflyCamera
 
@@ -24,6 +21,7 @@ enum CubeType {
     NONE
     DIRT
     WATER
+    COLOR
 }
 
 
@@ -34,30 +32,33 @@ __
 .. Constructor ..
 +CubeList(Object obj);
 .. Getters & Setters..
-+void type(vec3 vec, CubeType newType);
-+CubeType type(vec3 vec);
++void type(vec3 position, CubeType newType, vec3 color = default);
++CubeType type(vec3 position);
++void extrude(Scene& scene, Instance& selection);
++void dig(Scene& scene, Instance& selection);
 ..More Methods..
 +();
 }
 
-class Instance {
--GLuint m_vao;
--GLuint m_buffer;
--vector<vec3> m_offsetPosition;
--GLsizei m_nbIndexPerObj;
+abstract class Instance {
+#GLuint m_vao;
+#GLuint m_bufferPosition;
+#vector<vec3> m_offsetPosition;
+#GLsizei m_nbIndexPerObj;
 __
 .. Constructor ..
 +Instance(uint nbInstances, Object obj);
 +refresh();
 .. Private Methods ..
 -void generateVertexArray(Object obj);
+{abstract} void loadTextures(string filepath);
 .. Getters & Setters ..
 + ();
 .. Add & Remove ..
-+addInstance(vec3 position);
-+removeInstance(vec3 position);
+{abstract} void addInstance(vec3 position, vec3 color = default);
+{abstract} void removeInstance(vec3 position);
 .. OpenGl Calls ..
-+drawInstances(Scene scene, ShadingProgram prog, GLenum mode);
+{abstract} void drawInstances(Scene scene, ShadingProgram prog, GLenum mode);
 }
 
 class Object {
@@ -78,6 +79,7 @@ class Scene {
 -FreeflyCamera m_cam;
 -mat4 m_projMat;
 -vec3 m_selection;
+-vec3 m_faceAxis;
 __
 .. Constructor ..
 +Scene();
@@ -93,7 +95,7 @@ class ShadingProgram {
 -GLuint uTexture;
 __
 .. Constructor ..
-+ShadingProgram(FilePath appPath, char* vs, char* fs);
++ShadingProgram(FilePath appPath, char* vs, char* fs, char* gs = default);
 .. More Methods ..
 +void use();
 }
@@ -107,6 +109,8 @@ __
 .. Constructor ..
 +Primitive();
 .. Getters & Setters ..
++();
+.. More Methods ..
 +();
 }
 
@@ -122,7 +126,7 @@ class CubeEdges {
 
 class Line {
 .. Constructor ..
-+Line(float length, float thickness);
++Line(float length);
 .. More Methods ..
 +transform(mat4 mat)
 }

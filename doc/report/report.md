@@ -7,7 +7,7 @@
 Feature                    | Done? 
 :-------------------:      | :---: 
 Drawing a scene with cubes | YES   
-Editing cubes (types)      | NOT YET (not complete, waiting for colored cubes)
+Editing cubes (types)      | YES
 Create/Delete/Extrude/Dig  | YES
 Procedural generation      | NOT YET
 Dual light conditions      | SOON
@@ -22,7 +22,7 @@ Sculpting tool                     | NO
 Loading/Saving map                 | NOT YET
 Loading 3D Models                  | NO
 Spatial discretization             | NO
-Textured cubes                     | ALMOST DONE
+Textured cubes                     | YES
 
 ### *Our features:*
 
@@ -36,11 +36,24 @@ ____________________________________
 
 ### **Preamble**:
 
+#### Notes:
+In UML drawings, things are a lot simplified. For instance, *Object* and *const Object&* are written the same way because they actually are used the same way.
+If you need more details, please take a look at the header files or compile the Doxygen documentation as mentionned in the Readme.
+
+#### Primitive:
+We knew we will need several primitives sharing the same attributes (vertices and indexes) so we made a super class Primitive.
+This class stores all the required data used to describe a form.
+Here is the simple UML hierarchy:
+
+[Primitive Hierarchy UML](uml/png/Primitives_Hierarchy_UML_v01.png)
+
 #### Cube Primitive:
 The first thing we had to do for this project was to draw a cube with OpenGL.
 Because we already knew the cube will be textured, we decided to create it with 24 vertices (4 per face). Of course, as we are doing indexed rendering, we also needed 36 indexes per cube.
 
 Instead of thinking too much about the vertices' position in 3D space and their normals, we decided to create only one face with homogeneous coordinates and then, to use 6 different matrices to place this face in the right space. Then, we just had to push the vertices and indexes attributes inside our cube primitive.
+
+**GIF REQUIRED HERE**
 
 #### CubeEdges Primitive:
 For the selection, we wanted to show only the edges of the current selected cube. It looked pretty easy to do by using a simple GL_LINES. But how to deal with its thickness since drawing wide lines (using glLineWidth with a value of more than 1.0) seems to be a deprecated feature, because not supported by every GPU?
@@ -57,6 +70,9 @@ DESSSSIIINNNN
 Finally, OpenGL draws two triangles which form the new "line" on the screen.
 To be honest, we did not succeed to get exactly what we wanted since the cube corners are straight, the lines make some aliasing and the thickness is not consistent (on the screen) wherever the camera is. However, doing that was an interesting step discovering more and more how the 3D pipeline really works.
 
+#### Line Primitive:
+Simply push two vertices in the data array.
+
 #### Object:
 The Object Class is really simple. Its goal is to get vertices and indexes data and to push it into the GPU Buffers (creating a VBO and a IBO).
 
@@ -69,23 +85,52 @@ Object cubeObj = Object(Cube());
 The Instance Class is one of the more important. It firstly binds Object Buffers inside a Vertex Array Object. And above all, it defines a new Buffer (vec3 - position in world) sent to the GPU to allow Instanced Rendering.
 
 How to create an instance?
+Actually, it is **impossible** because the Instance class is **abstract**.
+
+[Instance Hierarchy UML](uml/png/Instance_Hierarchy_UML_v01.png)
+
+Indeed, we have to create *TexturedCube* or *ColorCube* instead.
+
+#### TexturedCubeInst:
+Here, we have a new OpenGl Id which defines the texture used for the cube.
+
+To create a TexturedCube:
 ```cpp
-Instance cube(1, cubeObj); // First parameter defines the number of instance, second parameter is the Object "form" we want to draw.
+TexturedCubeInst cube(1, cubeObj, "path_to_texture"); // First parameter defines the number of instance, second parameter is the Object "form" we want to draw, third parameter is the path to the image texture
 ```
 
 Main methods:
 ```cpp
 drawInstances(const Scene&, const ShadingProgram&, GLenum mode); // Draw all the instances
-addInstance(const vec3&); // Add a new position inside the buffer
-removeInstance(const vec3&); // Remove a specific position from the buffer
+addInstance(vec3 position); // Add a new position inside the buffer
+removeInstance(vec3 position); // Remove a specific position from the buffer
 ```
+
+#### ColorCubeInst:
+In this one, we define another buffer (vec3 - color) to send into the GPU. Like this, each time the Instanced Rendering is done, shaders take the position and the color corresponding to draw the instances.
+
+To create a ColorCube:
+```cpp
+ColorCubeInst cube(1, cubeObj); // First parameter defines the number of instance, second parameter is the Object "form" we want to draw
+// Default color is white (1.f, 1.f, 1.f)
+```
+
+Main methods:
+```cpp
+drawInstances(const Scene&, const ShadingProgram&, GLenum mode); // Draw all the instances (same as the other one but implementation is different)
+addInstance(const glm::vec3& position, const glm::vec3& color); // Add a new position and a new color inside the buffers
+removeInstance(const glm::vec3& position); // Remove a specific position and color from the buffers
+```
+
+
+
 
 ### **Drawing a scene with cubes**:
 Now, we know how to draw several cubes. Great! We still need to deal with the different types of cube. The idea is pretty simple, let's take a look at the CubeList class!
 
 ```cpp
 enum CubeType {
-    NONE, DIRT, WATER
+    NONE, DIRT, WATER, COLOR
 };
 
 class CubeList {
@@ -99,10 +144,11 @@ class CubeList {
         CubeList(const Object& obj);
         ~CubeList() = default;
 
-        void type(const glm::vec3& vec, const CubeType& newType); //Setter
-        const CubeType type(const glm::vec3& vec) const; //Getter
+        void type(const glm::vec3& position, const CubeType& newType, const glm::vec3& color = glm::vec3(1.f,1.f,1.f)); //Setter
+        const CubeType type(const glm::vec3& position) const; //Getter
 
-        std::shared_ptr<Instance> instance(const CubeType& type);
+        void extrude(Scene& scene, Instance& selectionInst);
+        void dig(Scene& scene, Instance& selectionInst);
 };  
 ```
 
@@ -115,7 +161,11 @@ The Class has two member attributes:
 
 Why doing this way? *2 reasons:*
 - Let us imagine the world is very big but only a few cubes are really drawn, it would take a lot of memory to have a structure containing a position (vec3) AND a type for each single possible cube of the world since only a few ones are really existing.
-- To make the Instanced Rendering work, we need to send the position of the specific cubes in a buffer. So, having several arrays (one per type) ready to send to the GPU is essential.
+- To make the Instanced Rendering work, we need to send the position of the specific cubes in a buffer. So, having several arrays (one per type) ready to be sent to the GPU is essential.
+
+Here is the collaboration UML drawing of the CubeList Class:
+
+[CubeList Collaboration UML](uml/png/CubeList_Collaboration_UML_v01.png)
 
 ### **Editing cubes (types)**:
 TO DO !

@@ -8,22 +8,29 @@ class Primitive {
 #vector<uint32_t> m_Indexes;
 #GLsizei m_nbVertex;
 #GLsizei m_nbIndex;
-
+__
+.. Constructor ..
 +Primitive();
-+SeveralGetters()
-+SeveralSetters()
+.. Getters & Setters ..
++();
+.. More Methods ..
++();
 }
 
 class Cube {
+.. Constructor ..
 +Cube();
 }
 
 class CubeEdges {
+.. Constructor ..
 +CubeEdges();
 }
 
 class Line {
-+Line(float length, float thickness);
+.. Constructor ..
++Line(float length);
+.. More Methods ..
 +transform(mat4 mat)
 }
 @enduml
