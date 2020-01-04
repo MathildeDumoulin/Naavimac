@@ -52,6 +52,11 @@ int main(int argc, char** argv) {
         ShadingProgram smallCubeProgram(applicationPath, "smallCube.vs.glsl", "smallCube.fs.glsl");
         ShadingProgram selectionCubeProgram(applicationPath, "selectionCube.vs.glsl", "selectionCube.fs.glsl", "selectionCube.gs.glsl");
 
+   
+    //This vector will store control points for RBFs
+    std::vector <Controls> cpList;
+    //Reading txt file for RBFs control points
+    readFile("cp1.txt",cpList);
 
     //CUBE
     Object cubeObj = Object(Cube()); //VBO and IBO
