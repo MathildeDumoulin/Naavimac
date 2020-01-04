@@ -5,6 +5,7 @@
 #include <glimac/shading/Program.hpp>
 #include <glimac/shading/ShadingProgram.hpp>
 #include <glimac/common/FilePath.hpp>
+#include <glimac/common/FileHandling.hpp>
 #include <glimac/common/glm.hpp>
 #include <glimac/common/Image.hpp>
 #include <glimac/common/Object.hpp>
