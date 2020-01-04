@@ -1,0 +1,55 @@
+@startuml
+
+Instance <|-- TexturedCubeInst
+Instance <|-- ColorCubeInst
+
+
+abstract class Instance {
+#GLuint m_vao;
+#GLuint m_bufferPosition;
+#vector<vec3> m_offsetPosition;
+#GLsizei m_nbIndexPerObj;
+__
+.. Constructor ..
++Instance(uint nbInstances, Object obj);
++refresh();
+.. Private Methods ..
+-void generateVertexArray(Object obj);
+{abstract} void loadTextures(string filepath);
+.. Getters & Setters ..
++ ();
+.. Add & Remove ..
+{abstract} void addInstance(vec3 position, vec3 color = default);
+{abstract} void removeInstance(vec3 position);
+.. OpenGl Calls ..
+{abstract} void drawInstances(Scene scene, ShadingProgram prog, GLenum mode);
+}
+
+class TexturedCubeInst {
+-GLuint m_diffuseTexture;
+-loadTextures(string filepath);
+__
+.. Constructor ..
++TexturedCubeInst(uint nbInstances, Object obj, string filepath);
+.. Add & Remove ..
++void addInstance(vec3 position, vec3 color = default);
++void removeInstance(vec3 position);
+.. OpenGl Calls ..
++void drawInstances(Scene scene, ShadingProgram prog, GLenum mode);
+}
+
+class ColorCubeInst {
+-GLuint m_bufferColor;
+-vector<vec3> m_offsetColor;
+__
+.. Constructor ..
++ColorCubeInst(uint nbInstances, Object obj);
++refresh();
+.. Add & Remove ..
++void addInstance(vec3 position, vec3 color = default);
++void removeInstance(vec3 position);
+.. OpenGl Calls ..
++void drawInstances(Scene scene, ShadingProgram prog, GLenum mode);
+}
+
+@enduml
