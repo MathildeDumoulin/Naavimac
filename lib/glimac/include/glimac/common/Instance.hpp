@@ -10,33 +10,32 @@
 namespace glimac {
 
 class Instance {
-    private:
+    protected:
         GLuint m_vao;
-        GLuint m_buffer;
+        GLuint m_bufferPosition;
         std::vector<glm::vec3> m_offsetPosition;
         GLsizei m_nbIndexPerObj;
 
-        GLuint m_diffuseTexture;
-
-        void loadTextures(const std::string& diffuseFp);
+        virtual void loadTextures(const std::string& diffuseFp) = 0;
 
         void generateVertexArray(const Object& obj);
 
     public:
-        Instance(const unsigned int nbInstances, const Object& obj, const std::string& diffuseFp = "");
-        ~Instance();
-        void refresh() const;
+        Instance(const unsigned int nbInstances, const Object& obj);
+        virtual ~Instance();
+        virtual void refresh() const;
 
         const size_t nbInstances() const;
         const GLsizei nbIndexPerObj() const;
         std::vector<glm::vec3>& offsetPosition();
+        virtual const glm::vec3 getColor(const glm::vec3& position) const;
 
         bool isThereSomething(const glm::vec3& position) const;
-        void addInstance(const glm::vec3& position);
-        void removeInstance(const glm::vec3& position);
+        virtual void addInstance(const glm::vec3& position, const glm::vec3& color = glm::vec3(1.f,1.f,1.f)) = 0;
+        virtual void removeInstance(const glm::vec3& position) = 0;
         void changeFirstInstance(const glm::vec3& position);
 
-        void drawInstances(const Scene& scene, const ShadingProgram& prog, GLenum mode = GL_TRIANGLES) const;
+        virtual void drawInstances(const Scene& scene, const ShadingProgram& prog, GLenum mode = GL_TRIANGLES) const = 0;
 };
 
 }

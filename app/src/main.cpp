@@ -9,6 +9,7 @@
 #include <glimac/common/Image.hpp>
 #include <glimac/common/Object.hpp>
 #include <glimac/common/Instance.hpp>
+#include <glimac/common/ColorCubeInst.hpp>
 #include <glimac/primitives/Cube.hpp>
 #include <glimac/primitives/CubeEdges.hpp>
 #include <glimac/cam/FreeflyCamera.hpp>
@@ -46,7 +47,8 @@ int main(int argc, char** argv) {
         //Load, compile and tell OpenGL to use these shaders
         FilePath applicationPath(argv[0]);
         ShadingProgram texturedCubeProgram(applicationPath, "texturedCube.vs.glsl", "texturedCube.fs.glsl");
-        ShadingProgram smallCubeProgram(applicationPath, "smallCube.vs.glsl", "texturedCube.fs.glsl");
+        ShadingProgram colorCubeProgram(applicationPath, "colorCube.vs.glsl", "colorCube.fs.glsl");
+        ShadingProgram smallCubeProgram(applicationPath, "smallCube.vs.glsl", "smallCube.fs.glsl");
         ShadingProgram selectionCubeProgram(applicationPath, "selectionCube.vs.glsl", "selectionCube.fs.glsl", "selectionCube.gs.glsl");
 
 
@@ -58,7 +60,7 @@ int main(int argc, char** argv) {
 
     //CUBE EDGES
     Object cubeEdgesObj = Object(CubeEdges());
-    Instance cubeEdges(1, cubeEdgesObj);
+    ColorCubeInst cubeEdges(1, cubeEdgesObj);
     cubeEdges.changeFirstInstance(scene.selection());
 
 
@@ -91,6 +93,7 @@ int main(int argc, char** argv) {
                     if(e.key.keysym.sym == SDLK_SEMICOLON) scene.moveSelection(glm::vec3(0,0,1)); cubeEdges.changeFirstInstance(scene.selection());
                     if(e.key.keysym.sym == SDLK_SPACE) cubeList.type(scene.selection(), DIRT);
                     if(e.key.keysym.sym == SDLK_w) cubeList.type(scene.selection(), WATER);
+                    if(e.key.keysym.sym == SDLK_c) cubeList.type(scene.selection(), COLOR, glm::vec3(1,0,0));
                     if(e.key.keysym.sym == SDLK_DELETE) cubeList.type(scene.selection(), NONE);
                     if(e.key.keysym.sym == SDLK_o) cubeList.extrude(scene, cubeEdges);
                     if(e.key.keysym.sym == SDLK_p) cubeList.dig(scene, cubeEdges);
@@ -110,6 +113,7 @@ int main(int argc, char** argv) {
                             smallCubeProgram.use();
                                 cubeList.instance(DIRT)->drawInstances(scene, texturedCubeProgram);
                                 cubeList.instance(WATER)->drawInstances(scene, texturedCubeProgram);        
+                                cubeList.instance(COLOR)->drawInstances(scene, texturedCubeProgram);        
 
                         //Update selection position
                         mouse.updateSelection(scene, cubeList);
@@ -161,8 +165,11 @@ int main(int argc, char** argv) {
         interface.draw();
 
         texturedCubeProgram.use();
-            cubeList.instance(DIRT)->drawInstances(scene, texturedCubeProgram);    
-            cubeList.instance(WATER)->drawInstances(scene, texturedCubeProgram);    
+            cubeList.instance(DIRT)->drawInstances(scene, texturedCubeProgram);
+            cubeList.instance(WATER)->drawInstances(scene, texturedCubeProgram);
+
+        colorCubeProgram.use();    
+            cubeList.instance(COLOR)->drawInstances(scene, texturedCubeProgram);    
 
         selectionCubeProgram.use();
             cubeEdges.drawInstances(scene, selectionCubeProgram, GL_LINES);

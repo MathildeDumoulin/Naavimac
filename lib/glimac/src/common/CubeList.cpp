@@ -1,4 +1,6 @@
 #include "glimac/common/CubeList.hpp"
+#include "glimac/common/TexturedCubeInst.hpp"
+#include "glimac/common/ColorCubeInst.hpp"
 #include <GL/glew.h>
 
 #include <glimac/common/Object.hpp>
@@ -17,8 +19,9 @@ namespace glimac {
                 elt = NONE;
             }
 
-            m_instances.insert(std::make_pair(DIRT, std::make_shared<Instance>(nbCubesAtStart, obj, "./bin/assets/textures/diffuse_downloaded.png")));
-            m_instances.insert(std::make_pair(WATER, std::make_shared<Instance>(0, obj, "./bin/assets/textures/diffuse_downloaded_2.png")));
+            m_instances.insert(std::make_pair(DIRT, std::make_shared<TexturedCubeInst>(nbCubesAtStart, obj, "./bin/assets/textures/diffuse_downloaded.png")));
+            m_instances.insert(std::make_pair(WATER, std::make_shared<TexturedCubeInst>(0, obj, "./bin/assets/textures/diffuse_downloaded_2.png")));
+            m_instances.insert(std::make_pair(COLOR, std::make_shared<ColorCubeInst>(0, obj)));
 
             createStartCubesGround();
     }
@@ -74,12 +77,12 @@ namespace glimac {
 
 /***** GETTERS & SETTERS *****/
 
-    const CubeType CubeList::type(const glm::vec3& vec) const {
+    const CubeType CubeList::type(const glm::vec3& position) const {
         //Check if the position is inside the world and return the index corresponding
-        if(vec.x >= worldMinX && vec.x <= worldMaxX && 
-            vec.y >= worldMinY && vec.y <= worldMaxY && 
-                vec.z >= worldMinZ && vec.z <= worldMaxZ) {
-                    return m_world[indexFromPosition(vec)];
+        if(position.x >= worldMinX && position.x <= worldMaxX && 
+            position.y >= worldMinY && position.y <= worldMaxY && 
+                position.z >= worldMinZ && position.z <= worldMaxZ) {
+                    return m_world[indexFromPosition(position)];
         }
         //If the position is outside the world, return NONE (important for the mouse selection)
         else {
@@ -87,20 +90,22 @@ namespace glimac {
         }
     }
 
-    void CubeList::type(const glm::vec3& vec, const CubeType& newType) {
-        if(vec.x >= worldMinX && vec.x <= worldMaxX && 
-            vec.y >= worldMinY && vec.y <= worldMaxY && 
-                vec.z >= worldMinZ && vec.z <= worldMaxZ) {
-                    int index = indexFromPosition(vec);
+    void CubeList::type(const glm::vec3& position, const CubeType& newType, const glm::vec3& color) {
+        if(position.x >= worldMinX && position.x <= worldMaxX && 
+            position.y >= worldMinY && position.y <= worldMaxY && 
+                position.z >= worldMinZ && position.z <= worldMaxZ) {
+                    int index = indexFromPosition(position);
 
                     CubeType oldType = m_world[index];
 
-                    if(oldType == newType) return;
+                    if(oldType != COLOR && newType != COLOR && oldType == newType) return;
 
                     m_world[index] = newType;
 
-                    if(oldType != NONE) m_instances.at(oldType)->removeInstance(vec);
-                    if(newType != NONE) m_instances.at(newType)->addInstance(vec);
+                    if(oldType != NONE) m_instances.at(oldType)->removeInstance(position);
+
+                    if(newType == COLOR) m_instances.at(newType)->addInstance(position, color);
+                    if(newType != NONE) m_instances.at(newType)->addInstance(position);
         }
     }
 
@@ -110,7 +115,8 @@ namespace glimac {
         CubeType cubeType = type(select);
 
         if(cubeType != NONE) {
-            type(select + normal, cubeType); //Change the type of the adjacent cube
+            if(cubeType == COLOR) type(select + normal, cubeType, m_instances.at(COLOR)->getColor(select));
+            else type(select + normal, cubeType); //Change the type of the adjacent cube
             scene.selection(select + normal); //Update the position of the selection
             selectionInst.changeFirstInstance(scene.selection()); //Update the GPU
         }

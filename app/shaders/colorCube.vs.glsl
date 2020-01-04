@@ -16,11 +16,11 @@ uniform mat4 uNormalMatrix;
 out vec3 vPosition_vs; //View space vertex position
 out vec3 vNormal_vs; //View space vertex normal
 out vec2 vTexCoords; //Vertex texture coords
-out vec3 vColor;
+out vec3 vColor; //Vertex texture coords
 
 
 void main() {
-    vec3 aVertexPosition2 = aVertexPosition * 0.95 + aOffset;
+    vec3 aVertexPosition2 = aVertexPosition + aOffset;
 
     //Homogene coords
     vec4 vertexPosition = vec4(aVertexPosition2, 1);
