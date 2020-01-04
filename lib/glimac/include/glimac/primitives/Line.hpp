@@ -10,12 +10,10 @@
 
 namespace glimac {
 
-class Line : public Primitive<ShapeVertexHomo> {
-    private:
-        void pushQuad(const std::vector<ShapeVertexHomo> &quad);
-    
+class Line : public Primitive<ShapeVertexHomo> {   
     public:
-        Line(const float& length, const float& thickness);
+        Line(const float& length);
+        ~Line() = default;
 
         void transform(const glm::mat4& mat);
 };

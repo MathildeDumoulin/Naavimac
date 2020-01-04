@@ -7,37 +7,26 @@ namespace glimac {
 
 /***** CLASS LINE - METHODS *****/
 
-    Line::Line(const float& length, const float& thickness) : Primitive(8, 36) {
-
+    Line::Line(const float& length) : Primitive(2, 2) {
         float offset = length/2.f;
 
-        const std::vector<ShapeVertexHomo> quad = createQuad(thickness); //Create 4 vertices
+        // Fill Vertices Data
+        glm::vec4 normal(0.f, 0.f, 1.f, 0.f);
+        glm::vec2 texCoords(0.f, 0.f);
 
-        std::vector<glm::mat4> transforms = {
-            glm::translate(glm::mat4(), glm::vec3(0, 0, offset)), //Front face
-            glm::translate(glm::mat4(), glm::vec3(0, 0, -offset)) //Back face
+        std::vector<ShapeVertexHomo> vertices = {
+            ShapeVertexHomo(glm::vec4(-offset, 0, 0, 1), normal, texCoords),
+            ShapeVertexHomo(glm::vec4(offset, 0, 0, 1), normal, texCoords)
         };
 
-        // Fill Vertices Data
-        for(const auto &mat:transforms) {
-            std::vector<ShapeVertexHomo> face = quad; //Create a face from the 4 vertices
+        m_Vertices.insert(m_Vertices.begin(), vertices.cbegin(), vertices.cend());
+        m_nbVertex += 2;
 
-            transformShapeVertexVector(face, mat); //Put the face in the right place in 3D space
-            m_Vertices.insert(m_Vertices.begin() + m_nbVertex, face.cbegin(), face.cend());
-            m_nbVertex += 4;
-        }
 
         // Fill Indexes Data
-        std::vector<uint32_t> indexes = {
-            0, 1, 2, 1, 2, 3,
-            4, 5, 6, 5, 6, 7,
-            0, 2, 4, 2, 4, 6,
-            1, 3, 5, 3, 5, 7,
-            2, 3, 6, 3, 6, 7,
-            0, 1, 4, 1, 4, 5
-        };
-        m_Indexes.insert(m_Indexes.begin() + m_nbIndex, indexes.cbegin(), indexes.cend());
-        m_nbIndex += 36;
+        std::vector<uint32_t> indexes = {0, 1};
+        m_Indexes.insert(m_Indexes.begin(), indexes.cbegin(), indexes.cend());
+        m_nbIndex += 2;
     }
 
 

@@ -12,6 +12,7 @@ namespace glimac {
 class Cube : public Primitive<ShapeVertex> {
     public:
         Cube();
+        ~Cube() = default;
 };
 
 }
