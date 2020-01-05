@@ -45,7 +45,7 @@ We knew we will need several primitives sharing the same attributes (vertices an
 This class stores all the required data used to describe a form.
 Here is the simple UML hierarchy:
 
-[Primitive Hierarchy UML](uml/png/Primitives_Hierarchy_UML_v01.png)
+![Primitive Hierarchy UML](uml/png/Primitives_Hierarchy_UML_v01.png)
 
 #### Cube Primitive:
 The first thing we had to do for this project was to draw a cube with OpenGL.
@@ -53,7 +53,9 @@ Because we already knew the cube will be textured, we decided to create it with 
 
 Instead of thinking too much about the vertices' position in 3D space and their normals, we decided to create only one face with homogeneous coordinates and then, to use 6 different matrices to place this face in the right space. Then, we just had to push the vertices and indexes attributes inside our cube primitive.
 
+*****
 **GIF REQUIRED HERE**
+*****
 
 #### CubeEdges Primitive:
 For the selection, we wanted to show only the edges of the current selected cube. It looked pretty easy to do by using a simple GL_LINES. But how to deal with its thickness since drawing wide lines (using glLineWidth with a value of more than 1.0) seems to be a deprecated feature, because not supported by every GPU?
@@ -65,13 +67,15 @@ Here is the idea:
 
 From 8 points ("real" vertices of the Cube Primitive), we submit 12 lines to the Geometry Shader. It takes the Clip-Space position of both points composing a line. It calculates the direction of the line (simple vector) and its normal. Then, it applies the normal to each point in both "plus and minus" direction to generate two new vertices.
 
-DESSSSIIINNNN
+*****
+**GIF REQUIRED HERE**
+*****
 
 Finally, OpenGL draws two triangles which form the new "line" on the screen.
 To be honest, we did not succeed to get exactly what we wanted since the cube corners are straight, the lines make some aliasing and the thickness is not consistent (on the screen) wherever the camera is. However, doing that was an interesting step discovering more and more how the 3D pipeline really works.
 
 #### Line Primitive:
-Simply push two vertices in the data array.
+We simply push two vertices in the data array.
 
 #### Object:
 The Object Class is really simple. Its goal is to get vertices and indexes data and to push it into the GPU Buffers (creating a VBO and a IBO).
@@ -87,7 +91,7 @@ The Instance Class is one of the more important. It firstly binds Object Buffers
 How to create an instance?
 Actually, it is **impossible** because the Instance class is **abstract**.
 
-[Instance Hierarchy UML](uml/png/Instance_Hierarchy_UML_v01.png)
+![Instance Hierarchy UML](uml/png/Instance_Hierarchy_UML_v01.png)
 
 Indeed, we have to create *TexturedCube* or *ColorCube* instead.
 
@@ -102,9 +106,10 @@ TexturedCubeInst cube(1, cubeObj, "path_to_texture"); // First parameter defines
 Main methods:
 ```cpp
 drawInstances(const Scene&, const ShadingProgram&, GLenum mode); // Draw all the instances
-addInstance(vec3 position); // Add a new position inside the buffer
-removeInstance(vec3 position); // Remove a specific position from the buffer
+addInstance(const glm::vec3& position); // Add a new position inside the buffer
+removeInstance(const glm::vec3& position); // Remove a specific position from the buffer
 ```
+![Textured Cube Image](img/Textured_Cube.png)
 
 #### ColorCubeInst:
 In this one, we define another buffer (vec3 - color) to send into the GPU. Like this, each time the Instanced Rendering is done, shaders take the position and the color corresponding to draw the instances.
@@ -122,8 +127,7 @@ addInstance(const glm::vec3& position, const glm::vec3& color); // Add a new pos
 removeInstance(const glm::vec3& position); // Remove a specific position and color from the buffers
 ```
 
-
-
+![Color Cube Image](img/Color_Cube.png)
 
 ### **Drawing a scene with cubes**:
 Now, we know how to draw several cubes. Great! We still need to deal with the different types of cube. The idea is pretty simple, let's take a look at the CubeList class!
@@ -152,7 +156,7 @@ class CubeList {
 };  
 ```
 
-To define the type, we use an enum. We thought using a strategy design pattern but it was not so appropriate in this context.
+To define the type, we use an enum. We thought using a strategy design pattern but it was not very appropriate in this context.
 
 The Class has two member attributes: 
 - **m_world** is a simple array of CubeType. It describes every single cube in the world (even non existing cubes). Like this, we can instantly know what is the CubeType corresponding of a specific position (dealing with a bit of index-position conversion behind it). If there is no cube, the CubeType is : NONE.
@@ -165,15 +169,51 @@ Why doing this way? *2 reasons:*
 
 Here is the collaboration UML drawing of the CubeList Class:
 
-[CubeList Collaboration UML](uml/png/CubeList_Collaboration_UML_v01.png)
+![CubeList Collaboration UML](uml/png/CubeList_Collaboration_UML_v01.png)
+
+When the CubeList is created, the DIRT Instance is filled with 3 layers of cubes (by default). These layers stand in the middle of the world (between -1 and 1 on the Y axis).
+Indeed, the world stretches around the (0, 0, 0) point from -size/2 to +size/2 on each axis.
 
 ### **Editing cubes (types)**:
-TO DO !
+To select a specific cube, we have a cursor (selection). This one is done thank to the CubeEdges primitive. Like this, we can only show the edges of the selected cube.
+Unfortunately, the cursor is not always visible. We wanted to make a "X-Ray" view (like in Blender, for instance) to make it be visible everywhere but we did not have the time to succeed on this task. Of course, we could just "disable depth" and draw the cube at the end, but it was a bit weird to see the cursor when we are not supposed to see it...
+
+Then, changing the type of a specific cube is pretty easy: we just need to call the type() method. 
+```cpp
+void CubeList::type(const glm::vec3& position, const CubeType& newType, const glm::vec3& color) {
+    //Firstly, we check if the position is inside the world (normally yes because the selection can not go outside)
+    if(position.x >= worldMinX && position.x <= worldMaxX && 
+        position.y >= worldMinY && position.y <= worldMaxY && 
+            position.z >= worldMinZ && position.z <= worldMaxZ) {
+                //We get the index corresponding to the position in the m_world array
+                int index = indexFromPosition(position); 
+
+                CubeType oldType = m_world[index];
+
+                if(oldType != COLOR && newType != COLOR && oldType == newType) return;
+
+                //We update the m_world array
+                m_world[index] = newType;
+
+                //We remove the position from the corresponding buffer of oldType
+                if(oldType != NONE) m_instances.at(oldType)->removeInstance(position);
+
+                //We add the position (and color) into the corresponding buffer of newType
+                if(newType == COLOR) {
+                    m_instances.at(newType)->addInstance(position, color);
+                    return;
+                }
+                if(newType != NONE) m_instances.at(newType)->addInstance(position);
+    }
+}
+```
 
 ### **Create/Delete/Extrude/Dig**:
 These functions are directly linked to the CubeType. Indeed, to **Create** a cube, we simply change its type from *NONE* to *SOMETHING* and vice-versa to **Delete** a cube.
 
-Extrude/Dig : TO DO !
+**Extrude** and **Dig** use the **Create** and **Delete** functions to work. We did not really understand the goal of these functions since we can create or delete any cube, anywhere. So we thought, they are tools to make the world building easier/faster.
+
+Starting from there, we used our Mouse Picking Selection (see later) to chose the axis to work on. Like this, when we click on one cube's face, we deduce the normal of the selected face and so, the axis we want to work on for adding or removing cubes. As explained in the Mouse Picking Selection part, we used a hacky non-accurate method to make it works (with a lot of round numbers).
 
 ### **Procedural generation**:
 TO DO !
@@ -181,14 +221,14 @@ TO DO !
 ### **Dual light conditions**:
 TO DO !
 
-### **Improved selection (mouse picking)**:
+### **Improved selection (Mouse Picking Selection)**:
 To allow the mouse selection, we did some cheating OpenGL hacks.
 The idea is very simple and absolutely not optimized:
 
-When we press the Right Mouse Button, we draw the scene a first time but with smaller cubes (just a bit smaller, we will see later why) and we transform the Mouse coordinates from Screen Space to World Space. To get the appropriate depth, we use the glReadPixels function.
+When we press the Right Mouse Button, we draw the scene a first time but with smaller cubes (just a bit smaller, we will see later why) and we transform the Mouse coordinates from Screen Space to World Space. To get the appropriate depth, we use the glReadPixels function. We should use a FrameBuffer Object to optimize.
 
 Like this, we have floating points coordinates, so we make them round.
-Then, we check if the current position in World Space corresponds to a not-NONE cube. If so, we update the position of the selection to this cube. If not, we calculate a new position in the same direction (camera/mouse) and we arbitrarily place it 10 cubes in "front" of the camera. 
+Then, we check if the current position in World Space corresponds to a not-NONE cube. If so, we update the position of the selection to this cube. If not, we calculate a new position in the same direction (camera/mouse) and we arbitrarily place it 10 cubes in "front" of the camera.
 
 Now, why drawing smaller cubes?
 
@@ -197,12 +237,17 @@ BUT since we do not draw our cubes from only one buffer, it is more complicated 
 
 So doing the way we do, it works pretty well and it is pretty easy to understand. The only problem comes with the depth value. Sometimes, where you expect something like 1.500 or less, you get 1.504 and it makes the round operation wrong. The cube selected is not the good one. The solution is to draw the cubes just a bit smaller and like this, the round operation works well every time (because the faces of the cube are closer to the gravity center).
 
+**Note:** if we hold the Right Mouse Button and move the Mouse, the selection will move too following the main axis of the motion. The main axis is calculated thank to the *upVector* and the *leftVector* of the camera. The control is not perfect for a lot of reasons but it does work.
+
 ### **Painting tool**:
 ### **Sculpting tool**:
 ### **Loading/Saving map**:
 ### **Loading 3D Models**:
 ### **Spatial discretization**:
 ### **Textured cubes**:
+Actually, it is not hard stuff. We made a very simple implementation using only one texture (a diffuse map). We load it and simply send it to OpenGL. In the Fragment Shader, we calculate the fragment's color using the texture and the lights!
+
+To make it more complex and improve the realism, we should use several maps (glossy, reflection, etc) and do some multi-texturing. 
 
 ____________________________________
 
