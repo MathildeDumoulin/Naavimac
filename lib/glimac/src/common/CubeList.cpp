@@ -104,7 +104,10 @@ namespace glimac {
 
                     if(oldType != NONE) m_instances.at(oldType)->removeInstance(position);
 
-                    if(newType == COLOR) m_instances.at(newType)->addInstance(position, color);
+                    if(newType == COLOR) {
+                        m_instances.at(newType)->addInstance(position, color);
+                        return;
+                    }
                     if(newType != NONE) m_instances.at(newType)->addInstance(position);
         }
     }
