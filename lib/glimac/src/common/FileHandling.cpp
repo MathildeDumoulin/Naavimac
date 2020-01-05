@@ -7,7 +7,7 @@
 
 namespace glimac{
 	
-	void readFile(std::string fileName, std::vector<Controls> &controls){
+	void readFileCP(std::string fileName, std::vector<Controls> &controls){
 		std::ifstream file("../assets/controlPoints/"+fileName, std::ios::in); 
 		if(file)
 		{

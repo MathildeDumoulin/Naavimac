@@ -26,14 +26,17 @@ namespace glimac {
    	double gaussian(glm::vec3 vec1, glm::vec3 vec2, const float epsilon);
    	double multiquadric(glm::vec3 vec1, glm::vec3 vec2, const float epsilon);
 
-   	//will display result depending on chosen RBF
-   	double chooseRBF(int type); // 0 for gaussian, 1 for multiquadric
 
-    ///get Omega for the current RBF
-    const Eigen::VectorXd getOmega(const std::vector <Controls> &controls);
+    double getNorm(const glm::vec3 vec);
+
+   	//will give a result depending on chosen RBF
+   	//double chooseRBF(int type); // 0 for gaussian, 1 for multiquadric
+
+    ///solve system to get Omega for the current RBF
+    //const Eigen::VectorXf getOmega(const std::vector <Controls> &controls);
 
     ///applying our RBF to our scene 
-    void applyRbf(CubeList &cubeList, const std::vector <Controls> &controls, int RbfType);
+    //void applyRbf(CubeList &cubeList, const std::vector <Controls> &controls, int RbfType);
 }
 
 #endif

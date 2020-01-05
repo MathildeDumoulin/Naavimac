@@ -9,7 +9,7 @@
 
 namespace glimac {
 	///Reading file containing control points for RBFs
-	void readFile(std::string fileName, std::vector<Controls> &controls);
+	void readFileCP(std::string fileName, std::vector<Controls> &controls);
 }
 
 #endif
