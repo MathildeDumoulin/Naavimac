@@ -32,11 +32,11 @@ namespace glimac {
    	//will give a result depending on chosen RBF
    	//double chooseRBF(int type); // 0 for gaussian, 1 for multiquadric
 
-    ///solve system to get Omega for the current RBF
-    //const Eigen::VectorXf getOmega(const std::vector <Controls> &controls);
+    ///solve system to get Omega
+    const Eigen::VectorXd getOmega(const std::vector <Controls> &controls);
 
-    ///applying our RBF to our scene 
-    //void applyRbf(CubeList &cubeList, const std::vector <Controls> &controls, int RbfType);
+    ///applying our RBF to our scene with found omega
+    void generateTerrain(CubeList cubeList, const std::vector <Controls> &controls);
 }
 
 #endif

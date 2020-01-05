@@ -53,6 +53,7 @@ int main(int argc, char** argv) {
         ShadingProgram selectionCubeProgram(applicationPath, "selectionCube.vs.glsl", "selectionCube.fs.glsl", "selectionCube.gs.glsl");
 
    
+    //RBF
     //This vector will store control points for RBFs
     std::vector <Controls> cpList;
     //Reading txt file for RBFs control points
