@@ -13,7 +13,7 @@ namespace glimac {
 
 /***** CONSTRUCTORS & DESTRUCTOR *****/
 
-    CubeList::CubeList(const Object& obj) 
+    CubeList::CubeList(const Object& obj, const std::string filename) 
         : m_world((worldSizeX+1) * (worldSizeY+1) * (worldSizeZ+1)) {
             for(auto &elt:m_world) {
                 elt = NONE;
@@ -23,7 +23,16 @@ namespace glimac {
             m_instances.insert(std::make_pair(WATER, std::make_shared<TexturedCubeInst>(0, obj, "./bin/assets/textures/diffuse_downloaded_2.png")));
             m_instances.insert(std::make_pair(COLOR, std::make_shared<ColorCubeInst>(0, obj)));
 
+
+            /*
+            if(filename != ""){
+                applyRBF(filename);
+            }else{
+                createStartCubesGround();
+            }*/
+
             createStartCubesGround();
+            
     }
 
 
@@ -73,6 +82,27 @@ namespace glimac {
         assert(count == nbCubesAtStart);
 
         m_instances.at(DIRT)->refresh(); //Send data to GPU
+    }
+
+    void CubeList::applyRBF(const std::string filename){
+        std::vector <Controls> cpList;
+        readFileCP(filename,cpList);
+        omega(cpList);
+
+        for(int y = -1; y <= 4; ++y){
+            for(int x = worldMinX; x <= worldMaxX; ++x){
+                for(int z = worldMinZ; z <= worldMaxZ; ++z){
+                    glm::vec3 currentPos = glm::vec3(x, y, z);
+                    double weight = resultRBF(cpList, currentPos);
+                    //std::cout << weight << std::endl;
+                    if(weight >= 0.5){
+                        type(currentPos, DIRT);
+                    }else{
+
+                    }
+                }
+            }
+        }
     }
 
 /***** GETTERS & SETTERS *****/

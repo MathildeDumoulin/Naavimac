@@ -5,7 +5,6 @@
 #include <glimac/shading/Program.hpp>
 #include <glimac/shading/ShadingProgram.hpp>
 #include <glimac/common/FilePath.hpp>
-#include <glimac/common/FileHandling.hpp>
 #include <glimac/common/glm.hpp>
 #include <glimac/common/Image.hpp>
 #include <glimac/common/Object.hpp>
@@ -52,26 +51,13 @@ int main(int argc, char** argv) {
         ShadingProgram smallCubeProgram(applicationPath, "smallCube.vs.glsl", "smallCube.fs.glsl");
         ShadingProgram selectionCubeProgram(applicationPath, "selectionCube.vs.glsl", "selectionCube.fs.glsl", "selectionCube.gs.glsl");
 
-   
-    //RBF
-    //This vector will store control points for RBFs
-    std::vector <Controls> cpList;
-    //Reading txt file for RBFs control points
-    readFileCP("cp1.txt",cpList);
-    
-    for(int i = 0; i < cpList.size(); i++){
-        std::cout << cpList.at(i).pos << std::endl;
-        std::cout << cpList.at(i).weight << std::endl;
-    }
-    
-    omega(cpList);
-    //std::cout << omega << std::endl;
-    
+
 
     //CUBE
     Object cubeObj = Object(Cube()); //VBO and IBO
 
-    CubeList cubeList(cubeObj);
+    //CubeList cubeList(cubeObj);
+    CubeList cubeList(cubeObj, "cp1.txt");
 
 
     //CUBE EDGES
