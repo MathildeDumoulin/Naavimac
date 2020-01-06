@@ -61,8 +61,11 @@ int main(int argc, char** argv) {
     
     for(int i = 0; i < cpList.size(); i++){
         std::cout << cpList.at(i).pos << std::endl;
-        std::cout << cpList.at(i).value << std::endl;
+        std::cout << cpList.at(i).weight << std::endl;
     }
+    
+    omega(cpList);
+    //std::cout << omega << std::endl;
     
 
     //CUBE

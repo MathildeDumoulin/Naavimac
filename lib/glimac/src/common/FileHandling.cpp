@@ -19,8 +19,7 @@ namespace glimac{
 				coordValue >> cp.pos.x;
 				coordValue >> cp.pos.y;
 				coordValue >> cp.pos.z;
-				coordValue >> cp.value;
-
+				coordValue >> cp.weight;
 				controls.push_back(cp);
         		
 			}

@@ -26,13 +26,15 @@ namespace glimac {
    	double multiquadric(glm::vec3 vec1, glm::vec3 vec2, const float epsilon);
 
     double getNorm(const glm::vec3 vec);
+
+    const double phi(const double &x);
    
 
    	//will give a result depending on chosen RBF
    	//double chooseRBF(int type); // 0 for gaussian, 1 for multiquadric
 
     ///solve system to get Omega
-    const Eigen::VectorXd getOmega(const std::vector <Controls> &controls);
+    void omega(std::vector <Controls> &controls);
 
     ///applying our RBF to our scene with found omega
     //void generateTerrain(CubeList cubeList, const std::vector <Controls> &controls);
