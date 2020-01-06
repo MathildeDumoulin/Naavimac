@@ -12,14 +12,17 @@ namespace glimac{
 		if(file)
 		{
     		std::string line;
-    		for( std::string line; getline(file, line);)
+    		while(getline(file, line))
 			{
-			    Controls cp;
-        		file >> cp.pos.x;
-        		file >> cp.pos.y;
-        		file >> cp.pos.z;
-        		file >> cp.value;
-        		std::cout << cp.pos.x << " " << cp.pos.y << " " << cp.pos.z << " value : " << cp.value << std::endl;
+				Controls cp;
+				std::stringstream coordValue(line);
+				coordValue >> cp.pos.x;
+				coordValue >> cp.pos.y;
+				coordValue >> cp.pos.z;
+				coordValue >> cp.value;
+
+				controls.push_back(cp);
+        		
 			}
 			file.close();  
 		}

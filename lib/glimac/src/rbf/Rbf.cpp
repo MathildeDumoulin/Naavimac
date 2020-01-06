@@ -17,18 +17,20 @@ namespace glimac{
     	return (double)sqrt(vec.x*vec.x + vec.y*vec.y + vec.z*vec.z);
   	} 
 
-  	const double phi(const double &d){
-    	return exp(-0.2*d*d);
+  	//example, will be replaced later with custom rbfs
+  	const double phi(const double &x){
+    	return exp(-0.3*x*x);
 	}
 
 	const Eigen::VectorXd getOmega(const std::vector <Controls> &controls){
 		
-		//filling our constraint matrix
+		//generating constraint matrix
 		Eigen::MatrixXd M_cons = Eigen::MatrixXd::Zero(controls.size(), controls.size());
-	    for(unsigned int i = 0; i < controls.size(); i++){
-	        for(unsigned int j = 0; j< controls.size(); j++){
-	        //phi may be missing here
-	          M_cons(i,j) = phi(getNorm(controls.at(i).pos-controls.at(j).pos));
+	    for(int i = 0; i < controls.size(); i++){
+	        for(int j = 0; j< controls.size(); j++){
+	          //filling our first matrix with phi results
+	        	M_cons(i,j) = phi(getNorm(controls.at(i).pos-controls.at(j).pos));
+	          //M_cons(i,j) = phi(double(glm::distance(controls.at(i).pos - controls.at(j).pos)));
 	        }
 	    }
 	    
@@ -38,19 +40,10 @@ namespace glimac{
 	        V_weight[i]=controls.at(i).weight;
 	    }
 
-	    //Resolving system to find omega's value
+	    //Finding all omega's value
 	    Eigen::PartialPivLU<Eigen::MatrixXd> lu(M_cons);
 	    Eigen::VectorXd omega = lu.solve(V_weight);
-
 	    return omega;
-	}
-
-	//maybe return a vector here 
-	void generateTerrain(CubeList cubeList, const std::vector <Controls> &controls){
-		Eigen::VectorXd omega = getOmega(controls);
-		float weight = 0.0;
-
-		//loop with cubes + control points
 	}
 	
 };

@@ -58,6 +58,12 @@ int main(int argc, char** argv) {
     std::vector <Controls> cpList;
     //Reading txt file for RBFs control points
     readFileCP("cp1.txt",cpList);
+    
+    for(int i = 0; i < cpList.size(); i++){
+        std::cout << cpList.at(i).pos << std::endl;
+        std::cout << cpList.at(i).value << std::endl;
+    }
+    
 
     //CUBE
     Object cubeObj = Object(Cube()); //VBO and IBO
