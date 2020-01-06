@@ -22,10 +22,18 @@ namespace glimac{
     	return d;
 	}
 
+  	double resultRBF(std::vector <Controls> &controls, glm::vec3 vec){
+  		double weight;
+  		for(int i = 0; i < controls.size(); i++) {
+  			weight += controls.at(i).weight*phi(double(glm::distance(vec, controls.at(i).pos)));
+		}
+		return weight;
+  	}
+
 	void omega(std::vector <Controls> &controls){
 
 		Eigen::MatrixXd constraint = Eigen::MatrixXd::Zero(controls.size(), controls.size());
-
+		//Filling constraint matrix
 		for(int i = 0; i < controls.size(); i++) {
 			for(int j = 0; j < controls.size(); j++) {
 				constraint(i, j) = phi(double(glm::distance(controls.at(i).pos, controls.at(j).pos)));
@@ -33,16 +41,19 @@ namespace glimac{
 		}
 
 		Eigen::MatrixXd reverse = constraint.inverse();
+		//vector containing all weights from control points 
 		Eigen::VectorXd weights(controls.size());
 		Eigen::VectorXd finalValues(controls.size());
 
-		
+		//Filling weights vector with our control points weights
 		for (int i = 0; i < controls.size(); i++){
 			weights(i) = controls.at(i).weight;
 		}
 
+		//computing omega values
 		finalValues = reverse*weights;
 		
+		//assign each omega value to its control point's value attribute
 		for(int i = 0; i < controls.size(); i++){
 			controls.at(i).value = finalValues(i);
 		}
