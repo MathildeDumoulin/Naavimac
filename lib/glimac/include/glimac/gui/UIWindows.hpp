@@ -2,12 +2,17 @@
 #define UIWINDOWS_HPP__
 #pragma once
 
-#include "imgui/imgui.h"
-#include "glimac/common/Scene.hpp"
-#include "glimac/common/CubeList.hpp"
-#include <glimac/primitives/CubeEdges.hpp>
-#include <glimac/common/Object.hpp>
+#include <imgui/imgui.h>
+#include <glimac/common/Scene.hpp>
+#include <glimac/common/CubeList.hpp>
+#include <glimac/common/ColorCubeInst.hpp>
 
-//void cubesWindow(Scene &scene, CubeList &cubeList, Object &cubeEdgesObj);
+
+namespace glimac{
+
+	void cubesWindow(Scene &scene, CubeList &cubeList,const glm::vec3 &position, ColorCubeInst &cubeEdgesObj);
+	void lightWindow(Scene &scene);
+
+}
 
 #endif

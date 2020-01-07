@@ -59,40 +59,6 @@ namespace glimac {
         ImGui::NewFrame();
     }
 
-    //void cubesWindow(Scene& scene, const glm::vec3& position) 
-         /*
-         ImGui::Begin("Cubes");
-            ImGui::Text("Change cube type");
-            if (ImGui::Button("Dirt"))
-            {
-                cubeList.type(scene, scene.selection(), DIRT);
-            }ImGui::SameLine();
-            if (ImGui::Button("Water"))
-            {
-                cubeList.type(scene, scene.selection(), WATER);
-            }
-            if (ImGui::Button("Color"))
-            {
-                cubeList.type(scene, scene.selection(), COLOR, glm::vec3(1,0,0));
-            }ImGui::SameLine();
-            if (ImGui::Button("Light"))
-            {
-                cubeList.type(scene, scene.selection(), LIGHT);
-            }
-
-            ImGui::Text("Terrain options");
-            if (ImGui::Button("Dig"))
-            {
-                cubeList.dig(scene, cubeEdges);
-            }ImGui::SameLine();
-            if (ImGui::Button("Extrude"))
-            {
-                cubeList.extrude(scene, cubeEdges);
-            }
-            ImGui::End();
-            */
-    
-
     void IMGUIWindowManager::render() const {
         ImGui::Render();
         glViewport(0, 0, (int)m_io->DisplaySize.x, (int)m_io->DisplaySize.y);

@@ -13,6 +13,7 @@
 #include <glimac/common/LightCubeInst.hpp>
 #include <glimac/primitives/Cube.hpp>
 #include <glimac/primitives/CubeEdges.hpp>
+#include <glimac/gui/UIWindows.hpp>
 #include <glimac/cam/FreeflyCamera.hpp>
 #include <iostream>
 #include <vector>
@@ -152,36 +153,8 @@ int main(int argc, char** argv) {
         // Start the Dear ImGui frame
         interface.startFrame(windowManager);
         {
-            ImGui::Begin("Cubes");
-            ImGui::Text("Change cube type");
-            if (ImGui::Button("Dirt"))
-            {
-                cubeList.type(scene, scene.selection(), DIRT);
-            }ImGui::SameLine();
-            if (ImGui::Button("Water"))
-            {
-                cubeList.type(scene, scene.selection(), WATER);
-            }
-            if (ImGui::Button("Color"))
-            {
-                cubeList.type(scene, scene.selection(), COLOR, glm::vec3(1,0,0));
-            }ImGui::SameLine();
-            if (ImGui::Button("Light"))
-            {
-                cubeList.type(scene, scene.selection(), LIGHT);
-            }
-
-            ImGui::Text("Terrain options");
-            if (ImGui::Button("Dig"))
-            {
-                cubeList.dig(scene, cubeEdges);
-            }ImGui::SameLine();
-            if (ImGui::Button("Extrude"))
-            {
-                cubeList.extrude(scene, cubeEdges);
-            }
-            ImGui::End();
-           //interface.cubesWindow(scene, scene.selection());
+            cubesWindow(scene, cubeList, scene.selection(), cubeEdges);
+            lightWindow(scene);
         }
 
         // Rendering
