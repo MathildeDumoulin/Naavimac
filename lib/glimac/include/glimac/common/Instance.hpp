@@ -31,8 +31,8 @@ class Instance {
         virtual const glm::vec3 getColor(const glm::vec3& position) const;
 
         bool isThereSomething(const glm::vec3& position) const;
-        virtual void addInstance(const glm::vec3& position, const glm::vec3& color = glm::vec3(1.f,1.f,1.f)) = 0;
-        virtual void removeInstance(const glm::vec3& position) = 0;
+        virtual void addInstance(const glm::vec3& position, const glm::vec3& color = glm::vec3(1.f,1.f,1.f));
+        virtual void removeInstance(const glm::vec3& position);
         void changeFirstInstance(const glm::vec3& position);
 
         virtual void drawInstances(const Scene& scene, const ShadingProgram& prog, GLenum mode = GL_TRIANGLES) const = 0;

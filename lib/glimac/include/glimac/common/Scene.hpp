@@ -5,12 +5,14 @@
 #include "app/const.hpp"
 #include "glimac/cam/FreeflyCamera.hpp"
 #include "glimac/common/glm.hpp"
+#include "glimac/common/Lighting.hpp"
 
 namespace glimac {
 
 class Scene {
     private:
         FreeflyCamera m_cam;
+        Lighting m_lighting;
         glm::mat4 m_projMat = glm::perspective(glm::radians(camViewAngle), float(windowWidth)/float(windowHeight), nearClipPlane, farClipPlane);
         glm::vec3 m_selection = glm::vec3(0.f, 0.f, 0.f);
         glm::vec3 m_faceAxis = glm::vec3(0.f, 0.f, 0.f);
@@ -19,6 +21,8 @@ class Scene {
         Scene() = default;
 
         FreeflyCamera& cam();
+        Lighting& changeLighting();
+        const Lighting& lighting() const;
         const glm::vec3& selection() const;
         void selection(const glm::vec3& vec);
         void moveSelection(const glm::vec3& vec);

@@ -14,6 +14,12 @@ struct ShadingProgram {
     GLuint uNormalMatrix;
     GLuint uTexture;
 
+    GLuint uSunLightDir;
+    GLuint uSunLightInt;
+    GLuint uPointLightsInt;
+    GLuint uPointLights;
+    GLuint uNbLight;
+
     ShadingProgram(const FilePath& applicationPath, const char* vs, const char* fs, const char* gs = "");
     void use() const;
 };

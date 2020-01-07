@@ -10,6 +10,7 @@
 #include <glimac/common/Object.hpp>
 #include <glimac/common/Instance.hpp>
 #include <glimac/common/ColorCubeInst.hpp>
+#include <glimac/common/LightCubeInst.hpp>
 #include <glimac/primitives/Cube.hpp>
 #include <glimac/primitives/CubeEdges.hpp>
 #include <glimac/cam/FreeflyCamera.hpp>
@@ -24,6 +25,9 @@
 #include "glimac/common/Scene.hpp"
 
 #include "glimac/common/CubeList.hpp"
+#include "glimac/common/Lighting.hpp"
+
+
 
 
 
@@ -42,15 +46,16 @@ int main(int argc, char** argv) {
     Scene scene;
 
 
+
     //INITIALISATION
 
         //Load, compile and tell OpenGL to use these shaders
         FilePath applicationPath(argv[0]);
         ShadingProgram texturedCubeProgram(applicationPath, "texturedCube.vs.glsl", "texturedCube.fs.glsl");
         ShadingProgram colorCubeProgram(applicationPath, "colorCube.vs.glsl", "colorCube.fs.glsl");
+        ShadingProgram lightCubeProgram(applicationPath, "lightCube.vs.glsl", "lightCube.fs.glsl");
         ShadingProgram smallCubeProgram(applicationPath, "smallCube.vs.glsl", "smallCube.fs.glsl");
         ShadingProgram selectionCubeProgram(applicationPath, "selectionCube.vs.glsl", "selectionCube.fs.glsl", "selectionCube.gs.glsl");
-
 
 
     //CUBE
@@ -93,10 +98,11 @@ int main(int argc, char** argv) {
                     if(e.key.keysym.sym == SDLK_RIGHT) scene.moveSelection(glm::vec3(1,0,0)); cubeEdges.changeFirstInstance(scene.selection());
                     if(e.key.keysym.sym == SDLK_COMMA) scene.moveSelection(glm::vec3(0,0,-1)); cubeEdges.changeFirstInstance(scene.selection());
                     if(e.key.keysym.sym == SDLK_SEMICOLON) scene.moveSelection(glm::vec3(0,0,1)); cubeEdges.changeFirstInstance(scene.selection());
-                    if(e.key.keysym.sym == SDLK_SPACE) cubeList.type(scene.selection(), DIRT);
-                    if(e.key.keysym.sym == SDLK_w) cubeList.type(scene.selection(), WATER);
-                    if(e.key.keysym.sym == SDLK_c) cubeList.type(scene.selection(), COLOR, glm::vec3(1,0,0));
-                    if(e.key.keysym.sym == SDLK_DELETE) cubeList.type(scene.selection(), NONE);
+                    if(e.key.keysym.sym == SDLK_SPACE) cubeList.type(scene, scene.selection(), DIRT);
+                    if(e.key.keysym.sym == SDLK_w) cubeList.type(scene, scene.selection(), WATER);
+                    if(e.key.keysym.sym == SDLK_c) cubeList.type(scene, scene.selection(), COLOR, glm::vec3(1,0,0));
+                    if(e.key.keysym.sym == SDLK_l) cubeList.type(scene, scene.selection(), LIGHT);
+                    if(e.key.keysym.sym == SDLK_DELETE) cubeList.type(scene, scene.selection(), NONE);
                     if(e.key.keysym.sym == SDLK_o) cubeList.extrude(scene, cubeEdges);
                     if(e.key.keysym.sym == SDLK_p) cubeList.dig(scene, cubeEdges);
                     break;
@@ -116,6 +122,7 @@ int main(int argc, char** argv) {
                                 cubeList.instance(DIRT)->drawInstances(scene, texturedCubeProgram);
                                 cubeList.instance(WATER)->drawInstances(scene, texturedCubeProgram);        
                                 cubeList.instance(COLOR)->drawInstances(scene, texturedCubeProgram);        
+                                cubeList.instance(LIGHT)->drawInstances(scene, texturedCubeProgram);        
 
                         //Update selection position
                         mouse.updateSelection(scene, cubeList);
@@ -171,7 +178,10 @@ int main(int argc, char** argv) {
             cubeList.instance(WATER)->drawInstances(scene, texturedCubeProgram);
 
         colorCubeProgram.use();    
-            cubeList.instance(COLOR)->drawInstances(scene, texturedCubeProgram);    
+            cubeList.instance(COLOR)->drawInstances(scene, colorCubeProgram);    
+
+        lightCubeProgram.use();    
+            cubeList.instance(LIGHT)->drawInstances(scene, lightCubeProgram);  
 
         selectionCubeProgram.use();
             cubeEdges.drawInstances(scene, selectionCubeProgram, GL_LINES);

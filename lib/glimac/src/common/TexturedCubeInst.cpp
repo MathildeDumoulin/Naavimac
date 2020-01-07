@@ -52,21 +52,10 @@ namespace glimac {
 
 /***** OTHERS METHODS *****/
 
-    void TexturedCubeInst::addInstance(const glm::vec3& position, const glm::vec3& color) {
-        //Color is not used in this Class so we do not use it
-        if(!isThereSomething(position)) m_offsetPosition.push_back(position);
-        refresh();
-    }
-
-    void TexturedCubeInst::removeInstance(const glm::vec3& position) {
-        if(isThereSomething(position)) {
-            m_offsetPosition.erase(std::remove(m_offsetPosition.begin(), m_offsetPosition.end(), position), m_offsetPosition.end());
-        }
-        refresh();
-    }
 
     void TexturedCubeInst::drawInstances(const Scene& scene, const ShadingProgram& prog, GLenum mode) const {
         glUniform1i(prog.uTexture, 0);
+        scene.lighting().sendLights(prog);
 
         glBindVertexArray(m_vao);
             glm::mat4 MVMatrix = scene.viewMatrix();

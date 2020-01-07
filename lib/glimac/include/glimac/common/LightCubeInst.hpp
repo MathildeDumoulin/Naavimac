@@ -1,5 +1,5 @@
-#ifndef TEXTURED_CUBE_INST_HPP__
-#define TEXTURED_CUBE_INST_HPP__
+#ifndef LIGHT_CUBE_INST_HPP__
+#define LIGHT_CUBE_INST_HPP__
 #pragma once
 
 #include <vector>
@@ -10,15 +10,16 @@
 
 namespace glimac {
 
-class TexturedCubeInst : public Instance {
+class LightCubeInst : public Instance {
     private:
-        GLuint m_diffuseTexture;
-
         virtual void loadTextures(const std::string& diffuseFp) override;
 
     public:
-        TexturedCubeInst(const unsigned int nbInstances, const Object& obj, const std::string& diffuseFp = "");
-        ~TexturedCubeInst();
+        LightCubeInst(const unsigned int nbInstances, const Object& obj);
+        ~LightCubeInst() = default;
+
+        virtual const glm::vec3 getColor(const glm::vec3& position) const override;
+
 
         virtual void drawInstances(const Scene& scene, const ShadingProgram& prog, GLenum mode = GL_TRIANGLES) const override;
 };

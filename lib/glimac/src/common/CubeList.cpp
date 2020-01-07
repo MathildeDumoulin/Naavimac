@@ -1,6 +1,7 @@
 #include "glimac/common/CubeList.hpp"
 #include "glimac/common/TexturedCubeInst.hpp"
 #include "glimac/common/ColorCubeInst.hpp"
+#include "glimac/common/LightCubeInst.hpp"
 #include <GL/glew.h>
 
 #include <glimac/common/Object.hpp>
@@ -22,6 +23,7 @@ namespace glimac {
             m_instances.insert(std::make_pair(DIRT, std::make_shared<TexturedCubeInst>(nbCubesAtStart, obj, "./bin/assets/textures/diffuse_downloaded.png")));
             m_instances.insert(std::make_pair(WATER, std::make_shared<TexturedCubeInst>(0, obj, "./bin/assets/textures/diffuse_downloaded_2.png")));
             m_instances.insert(std::make_pair(COLOR, std::make_shared<ColorCubeInst>(0, obj)));
+            m_instances.insert(std::make_pair(LIGHT, std::make_shared<LightCubeInst>(0, obj)));
 
 
             /*
@@ -96,7 +98,7 @@ namespace glimac {
                     double weight = resultRBF(cpList, currentPos);
                     //std::cout << weight << std::endl;
                     if(weight >= 0.5){
-                        type(currentPos, DIRT);
+                        //type(currentPos, DIRT);
                     }else{
 
                     }
@@ -120,25 +122,33 @@ namespace glimac {
         }
     }
 
-    void CubeList::type(const glm::vec3& position, const CubeType& newType, const glm::vec3& color) {
+    void CubeList::type(Scene& scene, const glm::vec3& position, const CubeType& newType, const glm::vec3& color) {
         if(position.x >= worldMinX && position.x <= worldMaxX && 
             position.y >= worldMinY && position.y <= worldMaxY && 
                 position.z >= worldMinZ && position.z <= worldMaxZ) {
+
                     int index = indexFromPosition(position);
-
                     CubeType oldType = m_world[index];
+                    size_t nbLights = scene.lighting().nbLights();
 
+                    if(newType == LIGHT && nbLights >= nbLightsMax) return;
                     if(oldType != COLOR && newType != COLOR && oldType == newType) return;
 
                     m_world[index] = newType;
 
                     if(oldType != NONE) m_instances.at(oldType)->removeInstance(position);
+                    if(oldType == LIGHT) {
+                        scene.changeLighting().removeLight(position);
+                    }
 
                     if(newType == COLOR) {
                         m_instances.at(newType)->addInstance(position, color);
                         return;
                     }
                     if(newType != NONE) m_instances.at(newType)->addInstance(position);
+                    if(newType == LIGHT) {
+                        scene.changeLighting().addLight(position);
+                    }
         }
     }
 
@@ -148,8 +158,8 @@ namespace glimac {
         CubeType cubeType = type(select);
 
         if(cubeType != NONE) {
-            if(cubeType == COLOR) type(select + normal, cubeType, m_instances.at(COLOR)->getColor(select));
-            else type(select + normal, cubeType); //Change the type of the adjacent cube
+            if(cubeType == COLOR) type(scene, select + normal, cubeType, m_instances.at(COLOR)->getColor(select));
+            else type(scene, select + normal, cubeType); //Change the type of the adjacent cube
             scene.selection(select + normal); //Update the position of the selection
             selectionInst.changeFirstInstance(scene.selection()); //Update the GPU
         }
@@ -159,7 +169,7 @@ namespace glimac {
         glm::vec3 select = scene.selection();
         glm::vec3 normal = scene.faceAxis();
 
-        type(select, NONE); //Delete the current cube
+        type(scene, select, NONE); //Delete the current cube
 
         if(type(select - normal) != NONE) {
             scene.selection(select - normal); //Update the position of the selection

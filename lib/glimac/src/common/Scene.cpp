@@ -6,6 +6,14 @@ FreeflyCamera& Scene::cam() {
     return m_cam;
 }
 
+Lighting& Scene::changeLighting() {
+    return m_lighting;
+}
+
+const Lighting& Scene::lighting() const {
+    return m_lighting;
+}
+
 const glm::vec3& Scene::selection() const {
     return m_selection;
 }

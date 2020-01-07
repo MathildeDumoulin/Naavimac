@@ -106,6 +106,19 @@ namespace glimac {
 
 /***** OTHERS METHODS *****/
 
+    void Instance::addInstance(const glm::vec3& position, const glm::vec3& color) {
+        //Color is not used in this Class by default so we do not use it
+        if(!isThereSomething(position)) m_offsetPosition.push_back(position);
+        refresh();
+    }
+
+    void Instance::removeInstance(const glm::vec3& position) {
+        if(isThereSomething(position)) {
+            m_offsetPosition.erase(std::remove(m_offsetPosition.begin(), m_offsetPosition.end(), position), m_offsetPosition.end());
+        }
+        refresh();
+    }
+
     bool Instance::isThereSomething(const glm::vec3& position) const {
         for(const auto &inst:m_offsetPosition) {
             if(position == inst) return true;

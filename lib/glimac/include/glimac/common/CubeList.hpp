@@ -15,7 +15,7 @@
 namespace glimac {
 
 enum CubeType {
-    NONE, DIRT, WATER, COLOR
+    NONE, DIRT, WATER, COLOR, LIGHT
 };
 
 class CubeList {
@@ -33,7 +33,7 @@ class CubeList {
         CubeList(const Object& obj, const std::string filename = "");
         ~CubeList() = default;
 
-        void type(const glm::vec3& position, const CubeType& newType, const glm::vec3& color = glm::vec3(1.f,1.f,1.f)); //Setter
+        void type(Scene& scene, const glm::vec3& position, const CubeType& newType, const glm::vec3& color = glm::vec3(1.f,1.f,1.f)); //Setter
         const CubeType type(const glm::vec3& position) const; //Getter
 
         void extrude(Scene& scene, Instance& selectionInst);

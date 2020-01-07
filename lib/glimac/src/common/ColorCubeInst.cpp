@@ -102,6 +102,8 @@ namespace glimac {
     }
 
     void ColorCubeInst::drawInstances(const Scene& scene, const ShadingProgram& prog, GLenum mode) const {
+        scene.lighting().sendLights(prog);
+
         glBindVertexArray(m_vao);
             glm::mat4 MVMatrix = scene.viewMatrix();
 

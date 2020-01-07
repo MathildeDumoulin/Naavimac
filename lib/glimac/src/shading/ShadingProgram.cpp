@@ -8,6 +8,12 @@ ShadingProgram::ShadingProgram(const FilePath& applicationPath, const char* vs, 
         uMVPMatrix = glGetUniformLocation(m_Program.getGLId(), "uMVPMatrix");
         uNormalMatrix = glGetUniformLocation(m_Program.getGLId(), "uNormalMatrix");
         uTexture = glGetUniformLocation(m_Program.getGLId(), "uTexture");
+
+        uSunLightDir = glGetUniformLocation(m_Program.getGLId(), "uSunLightDir");
+        uSunLightInt = glGetUniformLocation(m_Program.getGLId(), "uSunLightInt");
+        uPointLightsInt = glGetUniformLocation(m_Program.getGLId(), "uPointLightsInt");
+        uPointLights = glGetUniformLocation(m_Program.getGLId(), "uPointLights");
+        uNbLight = glGetUniformLocation(m_Program.getGLId(), "uNbLight");
 }
 
 void ShadingProgram::use() const {

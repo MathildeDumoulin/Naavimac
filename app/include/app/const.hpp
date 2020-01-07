@@ -31,4 +31,6 @@ const float camViewAngle = 70.f;
 const float nearClipPlane = 0.1f;
 const float farClipPlane = 100.f;
 
+const int nbLightsMax = 5;
+
 #endif
