@@ -46,6 +46,9 @@ namespace glimac {
         return *m_io;
     }
 
+    void IMGUIWindowManager::clearColor(const ImVec4 &vec){
+        m_clearColor = vec;
+    }
 
 /***** IMGUI FUNCTIONS *****/
 

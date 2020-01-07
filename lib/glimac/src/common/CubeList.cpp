@@ -97,8 +97,8 @@ namespace glimac {
                     glm::vec3 currentPos = glm::vec3(x, y, z);
                     double weight = resultRBF(cpList, currentPos);
                     //std::cout << weight << std::endl;
-                    std::cout << weight << std::endl;
-                    if(weight >= 0.5){
+                    //std::cout << weight << std::endl;
+                    if(weight >= 28){
                         type(scene,currentPos, DIRT);
                     }else{
 

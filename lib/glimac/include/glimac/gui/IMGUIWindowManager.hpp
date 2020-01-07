@@ -20,12 +20,15 @@ class IMGUIWindowManager{
 
     public:
         //Constructor & Destructor
-        IMGUIWindowManager(SDLWindowManager& sdl, ImVec4 color = ImVec4(0.f, 0.f, 0.f, 1.00f));
+        IMGUIWindowManager(SDLWindowManager& sdl, ImVec4 color = ImVec4(0.7f, 0.7f, 0.7f, 1.00f));
         ~IMGUIWindowManager();
 
         //Getters & Setters
         const ImVec4& clearColor() const;
         const ImGuiIO& io() const;
+
+        //setter for color
+        void clearColor(const ImVec4 &vec);
 
         //ImGui functions
         bool processEvent(SDL_Event& e);

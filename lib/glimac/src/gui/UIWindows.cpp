@@ -39,20 +39,24 @@ namespace glimac{
         ImGui::End();
 	}
 
-	void lightWindow(Scene &scene){
-		ImGui::Begin("Light");
+	void lightWindow(Scene &scene, IMGUIWindowManager &interface){
+		ImGui::Begin("Lighting");
             ImGui::Text("Day Time / Night time");
             if (ImGui::Button("Switch"))
             {
                 if(scene.lighting().sunLightInt()== glm::vec3(0,0,0)){
                     scene.changeLighting().activateSun();
+                    interface.clearColor(ImVec4(0.7,0.7,0.7,1));
                     
                 }else{
                     scene.changeLighting().deactivateSun();
+                    interface.clearColor(ImVec4(0,0,0,1));
                 }
                
             }
+            ImGui::Text("Light Intensity");
         ImGui::End();
 	}
+
 }
 
