@@ -157,8 +157,34 @@ int main(int argc, char** argv) {
         interface.startFrame(windowManager);
 
         {
-            ImGui::Begin("Another Window");
-            ImGui::Text("Hello from another window!");
+            ImGui::Begin("Cubes");
+            ImGui::Text("Change cube type");
+            if (ImGui::Button("Dirt"))
+            {
+                cubeList.type(scene, scene.selection(), DIRT);
+            }
+            if (ImGui::Button("Water"))
+            {
+                cubeList.type(scene, scene.selection(), WATER);
+            }
+            if (ImGui::Button("Color"))
+            {
+                cubeList.type(scene, scene.selection(), COLOR, glm::vec3(1,0,0));
+            }
+            if (ImGui::Button("Light"))
+            {
+                cubeList.type(scene, scene.selection(), LIGHT);
+            }
+
+            ImGui::Text("Terrain options");
+            if (ImGui::Button("Dig"))
+            {
+                cubeList.dig(scene, cubeEdges);
+            }
+            if (ImGui::Button("Extrude"))
+            {
+                cubeList.extrude(scene, cubeEdges);
+            }
             ImGui::End();
         }
 
@@ -171,7 +197,7 @@ int main(int argc, char** argv) {
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clear window
 
-        interface.draw();
+        
 
         texturedCubeProgram.use();
             cubeList.instance(DIRT)->drawInstances(scene, texturedCubeProgram);
@@ -186,6 +212,9 @@ int main(int argc, char** argv) {
         selectionCubeProgram.use();
             cubeEdges.drawInstances(scene, selectionCubeProgram, GL_LINES);
 
+
+        interface.draw();
+        
         // Update the display
         windowManager.swapBuffers();
     }
