@@ -8,6 +8,6 @@
 #include <glimac/primitives/CubeEdges.hpp>
 #include <glimac/common/Object.hpp>
 
-void cubesWindow(Scene &scene, CubeList &cubeList, Object &cubeEdgesObj);
+//void cubesWindow(Scene &scene, CubeList &cubeList, Object &cubeEdgesObj);
 
 #endif
