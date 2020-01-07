@@ -9,6 +9,7 @@ Instance o-- ShadingProgram
 Object *-- Primitive
 
 Scene *-- FreeflyCamera
+Scene *-- Lighting
 
 ShadingProgram *-- Program
 ShadingProgram *-- FilePath
@@ -22,6 +23,7 @@ enum CubeType {
     DIRT
     WATER
     COLOR
+    LIGHT
 }
 
 
@@ -55,8 +57,8 @@ __
 .. Getters & Setters ..
 + ();
 .. Add & Remove ..
-{abstract} void addInstance(vec3 position, vec3 color = default);
-{abstract} void removeInstance(vec3 position);
++void addInstance(vec3 position, vec3 color = default);
++void removeInstance(vec3 position);
 .. OpenGl Calls ..
 {abstract} void drawInstances(Scene scene, ShadingProgram prog, GLenum mode);
 }
@@ -77,6 +79,7 @@ __
 
 class Scene {
 -FreeflyCamera m_cam;
+-Lighting m_lighting;
 -mat4 m_projMat;
 -vec3 m_selection;
 -vec3 m_faceAxis;
