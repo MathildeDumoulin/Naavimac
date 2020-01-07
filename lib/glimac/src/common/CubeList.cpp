@@ -26,14 +26,14 @@ namespace glimac {
             m_instances.insert(std::make_pair(LIGHT, std::make_shared<LightCubeInst>(0, obj)));
 
 
-            /*
+            
             if(filename != ""){
                 applyRBF(filename);
             }else{
                 createStartCubesGround();
-            }*/
+            }
 
-            createStartCubesGround();
+            //createStartCubesGround();
             
     }
 
@@ -97,7 +97,9 @@ namespace glimac {
                     glm::vec3 currentPos = glm::vec3(x, y, z);
                     double weight = resultRBF(cpList, currentPos);
                     //std::cout << weight << std::endl;
+                    std::cout << weight << std::endl;
                     if(weight >= 0.5){
+                        
                         //type(currentPos, DIRT);
                     }else{
 

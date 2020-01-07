@@ -13,6 +13,7 @@
 #include <glimac/common/LightCubeInst.hpp>
 #include <glimac/primitives/Cube.hpp>
 #include <glimac/primitives/CubeEdges.hpp>
+#include <glimac/gui/UIWindows.hpp>
 #include <glimac/cam/FreeflyCamera.hpp>
 #include <iostream>
 #include <vector>
@@ -26,10 +27,6 @@
 
 #include "glimac/common/CubeList.hpp"
 #include "glimac/common/Lighting.hpp"
-
-
-
-
 
 using namespace glimac;
 
@@ -61,8 +58,8 @@ int main(int argc, char** argv) {
     //CUBE
     Object cubeObj = Object(Cube()); //VBO and IBO
 
-    //CubeList cubeList(cubeObj);
-    CubeList cubeList(cubeObj, "cp1.txt");
+    CubeList cubeList(cubeObj);
+    //CubeList cubeList(cubeObj, "cp1.txt");
 
 
     //CUBE EDGES
@@ -155,37 +152,9 @@ int main(int argc, char** argv) {
 
         // Start the Dear ImGui frame
         interface.startFrame(windowManager);
-
         {
-            ImGui::Begin("Cubes");
-            ImGui::Text("Change cube type");
-            if (ImGui::Button("Dirt"))
-            {
-                cubeList.type(scene, scene.selection(), DIRT);
-            }
-            if (ImGui::Button("Water"))
-            {
-                cubeList.type(scene, scene.selection(), WATER);
-            }
-            if (ImGui::Button("Color"))
-            {
-                cubeList.type(scene, scene.selection(), COLOR, glm::vec3(1,0,0));
-            }
-            if (ImGui::Button("Light"))
-            {
-                cubeList.type(scene, scene.selection(), LIGHT);
-            }
-
-            ImGui::Text("Terrain options");
-            if (ImGui::Button("Dig"))
-            {
-                cubeList.dig(scene, cubeEdges);
-            }
-            if (ImGui::Button("Extrude"))
-            {
-                cubeList.extrude(scene, cubeEdges);
-            }
-            ImGui::End();
+            cubesWindow(scene, cubeList, scene.selection(), cubeEdges);
+            lightWindow(scene);
         }
 
         // Rendering
@@ -214,7 +183,7 @@ int main(int argc, char** argv) {
 
 
         interface.draw();
-        
+
         // Update the display
         windowManager.swapBuffers();
     }
