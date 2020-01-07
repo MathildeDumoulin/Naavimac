@@ -58,7 +58,7 @@ int main(int argc, char** argv) {
     //CUBE
     Object cubeObj = Object(Cube()); //VBO and IBO
 
-    CubeList cubeList(scene, cubeObj, "cp2.txt");
+    CubeList cubeList(scene, cubeObj);
     //CubeList cubeList(cubeObj, "cp1.txt");
 
 
@@ -155,7 +155,7 @@ int main(int argc, char** argv) {
         {
             cubesWindow(scene, cubeList, scene.selection(), cubeEdges);
             lightWindow(scene, interface);
-            
+            RBFWindow(scene, cubeList);
         }
 
         // Rendering

@@ -2,6 +2,8 @@
 
 namespace glimac{
 	void cubesWindow(Scene &scene, CubeList &cubeList,const glm::vec3 &position,ColorCubeInst &cubeEdgesObj){
+		ImGui::SetNextWindowSize(ImVec2(200, 200));
+		ImGui::SetNextWindowPos(ImVec2(10, 10));
 		ImGui::Begin("Cubes");
             ImGui::Text("Change cube type");
             if (ImGui::Button("Dirt"))
@@ -40,6 +42,8 @@ namespace glimac{
 	}
 
 	void lightWindow(Scene &scene, IMGUIWindowManager &interface){
+		ImGui::SetNextWindowSize(ImVec2(200, 120));
+		ImGui::SetNextWindowPos(ImVec2(220, 10));
 		ImGui::Begin("Lighting");
             ImGui::Text("Day Time / Night time");
             if (ImGui::Button("Switch"))
@@ -63,5 +67,20 @@ namespace glimac{
         ImGui::End();
 	}
 
+	void RBFWindow(Scene &scene, CubeList &cubeList){
+		ImGui::SetNextWindowSize(ImVec2(200, 120));
+		ImGui::SetNextWindowPos(ImVec2(430, 10));
+
+		static char rbfFile[128] = "cp1.txt";
+        ImGui::Begin("Files");
+			ImGui::Text("Load RBF :");
+			ImGui::InputText("", rbfFile, IM_ARRAYSIZE(rbfFile));
+			
+			if (ImGui::Button("Generate"))
+	       	{
+	        	cubeList.applyRBF(scene, rbfFile);   
+	        }
+        ImGui::End();
+    }
 }
 

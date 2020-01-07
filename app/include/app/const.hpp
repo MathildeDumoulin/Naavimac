@@ -21,8 +21,8 @@ const int nbCubesAtStart = (worldSizeX+1)*3*(worldSizeZ+1);
 
 /***** WINDOW SETTINGS *****/
 
-const int windowWidth = 600;
-const int windowHeight = 600;
+const int windowWidth = 900;
+const int windowHeight = 900;
 
 
 /***** SCENE SETTINGS *****/

@@ -20,8 +20,8 @@ namespace glimac {
                 elt = NONE;
             }
 
-            m_instances.insert(std::make_pair(DIRT, std::make_shared<TexturedCubeInst>(nbCubesAtStart, obj, "./bin/assets/textures/diffuse_downloaded.png")));
-            m_instances.insert(std::make_pair(WATER, std::make_shared<TexturedCubeInst>(0, obj, "./bin/assets/textures/diffuse_downloaded_2.png")));
+            m_instances.insert(std::make_pair(DIRT, std::make_shared<TexturedCubeInst>(nbCubesAtStart, obj, "./bin/assets/textures/diffuse_DIRT.png")));
+            m_instances.insert(std::make_pair(WATER, std::make_shared<TexturedCubeInst>(0, obj, "./bin/assets/textures/diffuse_WATER.png")));
             m_instances.insert(std::make_pair(COLOR, std::make_shared<ColorCubeInst>(0, obj)));
             m_instances.insert(std::make_pair(LIGHT, std::make_shared<LightCubeInst>(0, obj)));
 
@@ -98,10 +98,10 @@ namespace glimac {
                     double weight = resultRBF(cpList, currentPos);
                     //std::cout << weight << std::endl;
                     //std::cout << weight << std::endl;
-                    if(weight >= 28){
-                        type(scene,currentPos, DIRT);
+                    if(weight >= 30){
+                        type(scene, currentPos, DIRT);
                     }else{
-
+                        type(scene, currentPos, NONE);
                     }
                 }
             }

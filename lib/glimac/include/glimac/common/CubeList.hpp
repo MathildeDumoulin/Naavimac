@@ -28,7 +28,6 @@ class CubeList {
         const unsigned int indexFromPosition(const glm::vec3& vec) const;
 
         void createStartCubesGround();
-        void applyRBF(Scene &scene, std::string filename);
 
     public:
         CubeList(Scene &scene, const Object& obj, const std::string filename = "");
@@ -36,6 +35,7 @@ class CubeList {
 
         void type(Scene& scene, const glm::vec3& position, const CubeType& newType, const glm::vec3& color = glm::vec3(1.f,1.f,1.f)); //Setter
         const CubeType type(const glm::vec3& position) const; //Getter
+        void applyRBF(Scene &scene, std::string filename);
 
         void extrude(Scene& scene, Instance& selectionInst);
         void dig(Scene& scene, Instance& selectionInst);
