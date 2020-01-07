@@ -2,6 +2,7 @@
 
 Instance <|-- TexturedCubeInst
 Instance <|-- ColorCubeInst
+Instance <|-- LightCubeInst
 
 
 abstract class Instance {
@@ -19,8 +20,8 @@ __
 .. Getters & Setters ..
 + ();
 .. Add & Remove ..
-{abstract} void addInstance(vec3 position, vec3 color = default);
-{abstract} void removeInstance(vec3 position);
++void addInstance(vec3 position, vec3 color = default);
++void removeInstance(vec3 position);
 .. OpenGl Calls ..
 {abstract} void drawInstances(Scene scene, ShadingProgram prog, GLenum mode);
 }
@@ -44,6 +45,17 @@ class ColorCubeInst {
 __
 .. Constructor ..
 +ColorCubeInst(uint nbInstances, Object obj);
++refresh();
+.. Add & Remove ..
++void addInstance(vec3 position, vec3 color = default);
++void removeInstance(vec3 position);
+.. OpenGl Calls ..
++void drawInstances(Scene scene, ShadingProgram prog, GLenum mode);
+}
+
+class LightCubeInst {
+.. Constructor ..
++LightCubeInst(uint nbInstances, Object obj);
 +refresh();
 .. Add & Remove ..
 +void addInstance(vec3 position, vec3 color = default);

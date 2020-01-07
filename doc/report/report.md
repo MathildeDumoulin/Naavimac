@@ -10,7 +10,7 @@ Drawing a scene with cubes | YES
 Editing cubes (types)      | YES
 Create/Delete/Extrude/Dig  | YES
 Procedural generation      | NOT YET
-Dual light conditions      | SOON
+Dual light conditions      | YES
 
 ### *Optionnal features:*
 
@@ -53,9 +53,7 @@ Because we already knew the cube will be textured, we decided to create it with 
 
 Instead of thinking too much about the vertices' position in 3D space and their normals, we decided to create only one face with homogeneous coordinates and then, to use 6 different matrices to place this face in the right space. Then, we just had to push the vertices and indexes attributes inside our cube primitive.
 
-*****
-**GIF REQUIRED HERE**
-*****
+![Textured Cube Image](img/Anim_Cube_v01.gif)
 
 #### CubeEdges Primitive:
 For the selection, we wanted to show only the edges of the current selected cube. It looked pretty easy to do by using a simple GL_LINES. But how to deal with its thickness since drawing wide lines (using glLineWidth with a value of more than 1.0) seems to be a deprecated feature, because not supported by every GPU?
@@ -67,9 +65,7 @@ Here is the idea:
 
 From 8 points ("real" vertices of the Cube Primitive), we submit 12 lines to the Geometry Shader. It takes the Clip-Space position of both points composing a line. It calculates the direction of the line (simple vector) and its normal. Then, it applies the normal to each point in both "plus and minus" direction to generate two new vertices.
 
-*****
-**GIF REQUIRED HERE**
-*****
+![Textured Cube Image](img/Anim_CubeEdges_Line_v01.gif)
 
 Finally, OpenGL draws two triangles which form the new "line" on the screen.
 To be honest, we did not succeed to get exactly what we wanted since the cube corners are straight, the lines make some aliasing and the thickness is not consistent (on the screen) wherever the camera is. However, doing that was an interesting step discovering more and more how the 3D pipeline really works.
@@ -128,6 +124,22 @@ removeInstance(const glm::vec3& position); // Remove a specific position and col
 ```
 
 ![Color Cube Image](img/Color_Cube.png)
+
+#### LightCubeInst:
+This one is very simple because it represents a simple white cube.
+We could use the ColorCubeInst to draw this one but we did not need another buffer storring color data because they are all white. 
+
+To create a LightCube:
+```cpp
+LightCubeInst cube(1, cubeObj); // First parameter defines the number of instance, second parameter is the Object "form" we want to draw
+```
+
+Main methods:
+```cpp
+drawInstances(const Scene&, const ShadingProgram&, GLenum mode); // Draw all the instances (same as the other one but implementation is different)
+addInstance(const glm::vec3& position, const glm::vec3& color); // Add a new position and a new color inside the buffers
+removeInstance(const glm::vec3& position); // Remove a specific position and color from the buffers
+```
 
 ### **Drawing a scene with cubes**:
 Now, we know how to draw several cubes. Great! We still need to deal with the different types of cube. The idea is pretty simple, let's take a look at the CubeList class!

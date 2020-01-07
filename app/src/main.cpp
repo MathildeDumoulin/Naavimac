@@ -119,10 +119,10 @@ int main(int argc, char** argv) {
                         //Draw smaller cubes to make mouse selection be easier
                         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                             smallCubeProgram.use();
-                                cubeList.instance(DIRT)->drawInstances(scene, texturedCubeProgram);
-                                cubeList.instance(WATER)->drawInstances(scene, texturedCubeProgram);        
-                                cubeList.instance(COLOR)->drawInstances(scene, texturedCubeProgram);        
-                                cubeList.instance(LIGHT)->drawInstances(scene, texturedCubeProgram);        
+                                cubeList.instance(DIRT)->drawInstances(scene, smallCubeProgram);
+                                cubeList.instance(WATER)->drawInstances(scene, smallCubeProgram);        
+                                cubeList.instance(COLOR)->drawInstances(scene, smallCubeProgram);        
+                                cubeList.instance(LIGHT)->drawInstances(scene, smallCubeProgram);        
 
                         //Update selection position
                         mouse.updateSelection(scene, cubeList);
