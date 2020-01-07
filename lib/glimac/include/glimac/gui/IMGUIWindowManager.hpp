@@ -6,6 +6,8 @@
 #include "imgui/imgui_impl_sdl.h"
 #include "imgui/imgui_impl_opengl3.h"
 
+#include <glimac/common/glm.hpp>
+#include <glimac/common/CubeList.hpp>
 #include <glimac/gui/SDLWindowManager.hpp>
 
 
@@ -28,6 +30,7 @@ class IMGUIWindowManager{
         //ImGui functions
         bool processEvent(SDL_Event& e);
         void startFrame(SDLWindowManager& sdl) const;
+        //void cubesWindow(Scene& scene, const glm::vec3& position, const glm::vec3& color = glm::vec3(1.f,0.f,0.f));
         void render() const;
         void draw() const;
 

@@ -27,10 +27,6 @@
 #include "glimac/common/CubeList.hpp"
 #include "glimac/common/Lighting.hpp"
 
-
-
-
-
 using namespace glimac;
 
 
@@ -61,8 +57,8 @@ int main(int argc, char** argv) {
     //CUBE
     Object cubeObj = Object(Cube()); //VBO and IBO
 
-    //CubeList cubeList(cubeObj);
-    CubeList cubeList(cubeObj, "cp1.txt");
+    CubeList cubeList(cubeObj);
+    //CubeList cubeList(cubeObj, "cp1.txt");
 
 
     //CUBE EDGES
@@ -119,10 +115,10 @@ int main(int argc, char** argv) {
                         //Draw smaller cubes to make mouse selection be easier
                         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                             smallCubeProgram.use();
-                                cubeList.instance(DIRT)->drawInstances(scene, texturedCubeProgram);
-                                cubeList.instance(WATER)->drawInstances(scene, texturedCubeProgram);        
-                                cubeList.instance(COLOR)->drawInstances(scene, texturedCubeProgram);        
-                                cubeList.instance(LIGHT)->drawInstances(scene, texturedCubeProgram);        
+                                cubeList.instance(DIRT)->drawInstances(scene, smallCubeProgram);
+                                cubeList.instance(WATER)->drawInstances(scene, smallCubeProgram);        
+                                cubeList.instance(COLOR)->drawInstances(scene, smallCubeProgram);        
+                                cubeList.instance(LIGHT)->drawInstances(scene, smallCubeProgram);        
 
                         //Update selection position
                         mouse.updateSelection(scene, cubeList);
@@ -155,14 +151,13 @@ int main(int argc, char** argv) {
 
         // Start the Dear ImGui frame
         interface.startFrame(windowManager);
-
         {
             ImGui::Begin("Cubes");
             ImGui::Text("Change cube type");
             if (ImGui::Button("Dirt"))
             {
                 cubeList.type(scene, scene.selection(), DIRT);
-            }
+            }ImGui::SameLine();
             if (ImGui::Button("Water"))
             {
                 cubeList.type(scene, scene.selection(), WATER);
@@ -170,7 +165,7 @@ int main(int argc, char** argv) {
             if (ImGui::Button("Color"))
             {
                 cubeList.type(scene, scene.selection(), COLOR, glm::vec3(1,0,0));
-            }
+            }ImGui::SameLine();
             if (ImGui::Button("Light"))
             {
                 cubeList.type(scene, scene.selection(), LIGHT);
@@ -180,12 +175,13 @@ int main(int argc, char** argv) {
             if (ImGui::Button("Dig"))
             {
                 cubeList.dig(scene, cubeEdges);
-            }
+            }ImGui::SameLine();
             if (ImGui::Button("Extrude"))
             {
                 cubeList.extrude(scene, cubeEdges);
             }
             ImGui::End();
+           //interface.cubesWindow(scene, scene.selection());
         }
 
         // Rendering
@@ -214,7 +210,7 @@ int main(int argc, char** argv) {
 
 
         interface.draw();
-        
+
         // Update the display
         windowManager.swapBuffers();
     }
