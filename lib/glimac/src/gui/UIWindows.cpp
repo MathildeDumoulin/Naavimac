@@ -55,6 +55,11 @@ namespace glimac{
                
             }
             ImGui::Text("Light Intensity");
+
+            static float f1=5.0f;
+            ImGui::SliderFloat("", &f1, 0.0f, 10.0f, "intensity : %.1f");
+            scene.changeLighting().pointLightsInt(glm::vec3(f1,f1,f1));
+
         ImGui::End();
 	}
 
