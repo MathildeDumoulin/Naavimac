@@ -58,7 +58,7 @@ int main(int argc, char** argv) {
     //CUBE
     Object cubeObj = Object(Cube()); //VBO and IBO
 
-    CubeList cubeList(cubeObj);
+    CubeList cubeList(scene, cubeObj);
     //CubeList cubeList(cubeObj, "cp1.txt");
 
 

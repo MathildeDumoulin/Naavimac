@@ -14,7 +14,7 @@ namespace glimac {
 
 /***** CONSTRUCTORS & DESTRUCTOR *****/
 
-    CubeList::CubeList(const Object& obj, const std::string filename) 
+    CubeList::CubeList(Scene &scene, const Object& obj, const std::string filename) 
         : m_world((worldSizeX+1) * (worldSizeY+1) * (worldSizeZ+1)) {
             for(auto &elt:m_world) {
                 elt = NONE;
@@ -28,7 +28,7 @@ namespace glimac {
 
             
             if(filename != ""){
-                applyRBF(filename);
+                applyRBF(scene, filename);
             }else{
                 createStartCubesGround();
             }
@@ -86,7 +86,7 @@ namespace glimac {
         m_instances.at(DIRT)->refresh(); //Send data to GPU
     }
 
-    void CubeList::applyRBF(const std::string filename){
+    void CubeList::applyRBF(Scene &scene, const std::string filename){
         std::vector <Controls> cpList;
         readFileCP(filename,cpList);
         omega(cpList);
@@ -99,8 +99,7 @@ namespace glimac {
                     //std::cout << weight << std::endl;
                     std::cout << weight << std::endl;
                     if(weight >= 0.5){
-                        
-                        //type(currentPos, DIRT);
+                        type(scene,currentPos, DIRT);
                     }else{
 
                     }

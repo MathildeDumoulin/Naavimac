@@ -7,18 +7,22 @@ namespace glimac{
             if (ImGui::Button("Dirt"))
             {
                 cubeList.type(scene, position, DIRT);
-            }ImGui::SameLine();
+            }
             if (ImGui::Button("Water"))
             {
                 cubeList.type(scene, position, WATER);
             }
-            if (ImGui::Button("Color"))
-            {
-                cubeList.type(scene, position, COLOR, glm::vec3(1,0,0));
-            }ImGui::SameLine();
             if (ImGui::Button("Light"))
             {
                 cubeList.type(scene, position, LIGHT);
+            }
+
+            static float col1[3]={ 1.0f,0.0f,0.0f};
+            ImGui::ColorEdit3("Color", col1);
+            //std::cout << col1[0] << std::endl;
+            if (ImGui::Button("Color"))
+            {
+                cubeList.type(scene, position, COLOR, glm::vec3(col1[0],col1[1],col1[2]));
             }
 
             ImGui::Text("Terrain options");
@@ -30,6 +34,8 @@ namespace glimac{
             {
                 cubeList.extrude(scene, cubeEdgesObj);
             }
+
+            
         ImGui::End();
 	}
 
