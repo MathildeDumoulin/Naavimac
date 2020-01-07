@@ -1,5 +1,7 @@
 # Naavimac - Project Report
 
+![Navimac Presentation Image](img/Naavimac_Pres.png)
+
 ## **LIST OF FEATURES**
 
 ### *Required features:*
@@ -9,7 +11,7 @@ Feature                    | Done?
 Drawing a scene with cubes | YES   
 Editing cubes (types)      | YES
 Create/Delete/Extrude/Dig  | YES
-Procedural generation      | NOT YET
+Procedural generation      | YES
 Dual light conditions      | YES
 
 ### *Optionnal features:*
@@ -57,7 +59,7 @@ Because we already knew the cube will be textured, we decided to create it with 
 
 Instead of thinking too much about the vertices' position in 3D space and their normals, we decided to create only one face with homogeneous coordinates and then, to use 6 different matrices to place this face in the right space. Then, we just had to push the vertices and indexes attributes inside our cube primitive.
 
-![Textured Cube Image](img/Anim_Cube_v01.gif)
+![Animation Cube GIF](img/Anim_Cube_v01.gif)
 
 #### CubeEdges Primitive:
 For the selection, we wanted to show only the edges of the current selected cube. It looked pretty easy to do by using a simple GL_LINES. But how to deal with its thickness since drawing wide lines (using glLineWidth with a value of more than 1.0) seems to be a deprecated feature, because not supported by every GPU?
@@ -69,7 +71,7 @@ Here is the idea:
 
 From 8 points ("real" vertices of the Cube Primitive), we submit 12 lines to the Geometry Shader. It takes the Clip-Space position of both points composing a line. It calculates the direction of the line (simple vector) and its normal. Then, it applies the normal to each point in both "plus and minus" direction to generate two new vertices.
 
-![Textured Cube Image](img/Anim_CubeEdges_Line_v01.gif)
+![Animation Line GIF](img/Anim_CubeEdges_Line_v01.gif)
 
 Finally, OpenGL draws two triangles which form the new "line" on the screen.
 

@@ -5,7 +5,7 @@
 // Doxygen menu
 /// \version 0.1
 /// \mainpage
-/// \image html myImage.jpg
+/// \image html myImage.png
 /// \tableofcontents
 /// \section introduction_sec What is this?
 /// Naavimac is a C++/OpenGL project made for IMAC 3rd Semester !
