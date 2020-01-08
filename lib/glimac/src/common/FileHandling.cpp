@@ -7,6 +7,7 @@
 
 namespace glimac{
 	
+	///Reading file containing control points for RBFs
 	void readFileCP(std::string fileName, std::vector<Controls> &controls){
 		std::ifstream file("../assets/controlPoints/"+fileName, std::ios::in); 
 		if(file)

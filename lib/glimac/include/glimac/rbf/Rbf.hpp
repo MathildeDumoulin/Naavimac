@@ -29,11 +29,11 @@ namespace glimac {
 
     double getNorm(const glm::vec3 vec);
 
-    double resultRBF(std::vector <Controls> &controls, glm::vec3 vec);
+    double resultRBF(std::vector <Controls> &controls, glm::vec3 vec, int type, float epsilon);
 
-    const double phi(const double &x);
+    const double phi(const double &x, int type, float e);
 
-    void omega(std::vector <Controls> &controls);
+    void omega(std::vector <Controls> &controls, int type, float epsilon);
 
 }
 

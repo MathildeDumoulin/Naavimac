@@ -86,22 +86,29 @@ namespace glimac {
         m_instances.at(DIRT)->refresh(); //Send data to GPU
     }
 
-    void CubeList::applyRBF(Scene &scene, const std::string filename){
+    void CubeList::applyRBF(Scene &scene, const std::string filename, int typeRBF, float epsilon){
         std::vector <Controls> cpList;
         readFileCP(filename,cpList);
-        omega(cpList);
+        omega(cpList, typeRBF, epsilon);
 
-        for(int y = -1; y <= 4; ++y){
+        for(int y = -1; y <= 3; ++y){
             for(int x = worldMinX; x <= worldMaxX; ++x){
                 for(int z = worldMinZ; z <= worldMaxZ; ++z){
+
                     glm::vec3 currentPos = glm::vec3(x, y, z);
-                    double weight = resultRBF(cpList, currentPos);
+                    type(scene, currentPos, NONE);
+                    double weight = resultRBF(cpList, currentPos, typeRBF, epsilon);
                     //std::cout << weight << std::endl;
-                    //std::cout << weight << std::endl;
-                    if(weight >= 30){
+                    std::cout << weight << std::endl;
+                    if(weight >= 0){
                         type(scene, currentPos, DIRT);
                     }else{
-                        type(scene, currentPos, NONE);
+                        if(y<=0){
+                            type(scene, currentPos, WATER);
+                        }else{
+                            type(scene, currentPos, NONE);
+                        }
+                        
                     }
                 }
             }

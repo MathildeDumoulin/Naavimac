@@ -13,30 +13,45 @@ namespace glimac{
 		return double(sqrt(1.0 + epsilon*d*epsilon*d));
 	}
 
+	//double invQuadratic()
+
 	double getNorm(const glm::vec3 vec){
     	return (double)sqrt(vec.x*vec.x + vec.y*vec.y + vec.z*vec.z);
   	} 
 
   	//example, will be replaced later with custom rbfs
-  	const double phi(const double &d){
-    	return d;
+  	const double phi(const double &d, int type, float e){
+  		float epsilon = e;
+  		switch(type){
+  			//multiquadric
+  			case 1: 
+	  			return double(sqrt(1+epsilon*epsilon*d*d));
+  				break;
+  			//gaussian
+  			case 2:
+				return double(exp(-epsilon*d*d));
+				break;
+			//linear
+			default : 
+				return d*epsilon; 
+  		}
 	}
 
-  	double resultRBF(std::vector <Controls> &controls, glm::vec3 vec){
+  	double resultRBF(std::vector <Controls> &controls, glm::vec3 vec, int type, float epsilon){
   		double weight;
   		for(int i = 0; i < controls.size(); i++) {
-  			weight += controls.at(i).weight*phi(double(glm::distance(vec, controls.at(i).pos)));
+  			weight += controls.at(i).weight*phi(double(glm::distance(vec, controls.at(i).pos)), type,epsilon);
 		}
 		return weight;
   	}
 
-	void omega(std::vector <Controls> &controls){
+	void omega(std::vector <Controls> &controls, int type, float epsilon){
 
 		Eigen::MatrixXd constraint = Eigen::MatrixXd::Zero(controls.size(), controls.size());
 		//Filling constraint matrix
 		for(int i = 0; i < controls.size(); i++) {
 			for(int j = 0; j < controls.size(); j++) {
-				constraint(i, j) = phi(double(glm::distance(controls.at(i).pos, controls.at(j).pos)));
+				constraint(i, j) = phi(double(glm::distance(controls.at(i).pos, controls.at(j).pos)), type, epsilon);
 			}
 		}
 
@@ -58,7 +73,7 @@ namespace glimac{
 			controls.at(i).value = finalValues(i);
 		}
 
-		std::cout << finalValues << std::endl;
+		//std::cout << finalValues << std::endl;
 
 	}
 	

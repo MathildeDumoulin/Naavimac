@@ -68,19 +68,45 @@ namespace glimac{
 	}
 
 	void RBFWindow(Scene &scene, CubeList &cubeList){
-		ImGui::SetNextWindowSize(ImVec2(200, 120));
-		ImGui::SetNextWindowPos(ImVec2(430, 10));
-
-		static char rbfFile[128] = "cp1.txt";
-        ImGui::Begin("Files");
-			ImGui::Text("Load RBF :");
-			ImGui::InputText("", rbfFile, IM_ARRAYSIZE(rbfFile));
-			
-			if (ImGui::Button("Generate"))
-	       	{
-	        	cubeList.applyRBF(scene, rbfFile);   
-	        }
+        static float epsilon = 1.0f;
+        ImGui::SetNextWindowSize(ImVec2(200, 80));
+        ImGui::SetNextWindowPos(ImVec2(640, 10));
+        ImGui::Begin("Extra parameters"); 
+            {
+                ImGui::SliderFloat("", &epsilon, 0.0f, 5.0f, "epsilon : %.1f");
+            }
         ImGui::End();
+
+
+		ImGui::SetNextWindowSize(ImVec2(200, 180));
+		ImGui::SetNextWindowPos(ImVec2(430, 10));
+        
+		static char rbfFile[128] = "cp1.txt";
+        ImGui::Begin("Files"); 
+
+			ImGui::Text("Load control points :");
+            {
+                ImGui::InputText("", rbfFile, IM_ARRAYSIZE(rbfFile));
+            }
+
+            ImGui::Text("Choose RBF :");
+			
+			if (ImGui::Button("Linear"))
+	       	{
+	        	cubeList.applyRBF(scene, rbfFile,0,epsilon);   
+	        }
+
+            if (ImGui::Button("Multiquadric"))
+            {
+                cubeList.applyRBF(scene, rbfFile,1,epsilon);   
+            }
+
+            if (ImGui::Button("Gaussian"))
+            {
+                cubeList.applyRBF(scene, rbfFile,2,epsilon);   
+            }
+        ImGui::End();
+        
     }
 }
 
