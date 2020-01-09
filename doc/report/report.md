@@ -295,6 +295,23 @@ ____________________________________
 ____________________________________
 
 
+### **User Interface with IMGUI**:
+
+We worked on setting a user interface, which provides users : 
+
++ Editing cubes types & color
++ Digging & Extruding terrain with buttons
++ Switching from day to night
++ Changing Light Intensity
++ Loading control points text files
++ Choosing RBF modes & parameters
+
+A lot more could be done on terrain generation / customization, such as choosing where to put control points, or having more parameters to play with.
+
+____________________________________
+____________________________________
+
+
 ### **Dual light conditions**:
 To deal with lighting, we use a class called Lighting!
 
