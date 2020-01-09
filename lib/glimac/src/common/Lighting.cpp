@@ -28,7 +28,7 @@ const glm::vec3& Lighting::pointlightsInt() const {
     return m_pointLightsInt;
 }
 
-const unsigned int Lighting::nbLights() const {
+unsigned int Lighting::nbLights() const {
     return m_pointLights.size();
 }   
 

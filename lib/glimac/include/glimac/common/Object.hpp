@@ -24,10 +24,10 @@ class Object {
         Object(const CubeEdges& cubeEdges);
         ~Object();
 
-        const GLuint vbo() const;
-        const GLuint ibo() const;
-        const GLsizei nbVertex() const;
-        const GLsizei nbIndex() const;
+        GLuint vbo() const;
+        GLuint ibo() const;
+        GLsizei nbVertex() const;
+        GLsizei nbIndex() const;
 };
 
 }

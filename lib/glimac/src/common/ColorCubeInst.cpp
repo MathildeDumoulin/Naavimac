@@ -14,7 +14,7 @@ namespace glimac {
 /***** CONSTRUCTORS & DESTRUCTOR *****/
 
     ColorCubeInst::ColorCubeInst(const unsigned int nbInstances, const Object& obj) 
-        : Instance(nbInstances, obj), m_bufferColor(0), m_offsetColor(nbInstances) {
+        : Instance(nbInstances, obj), m_bufferColor(0), m_offsetColor(nbInstances, glm::vec3(1.f, 1.f, 1.f)) {
 
             //Avoid memory leak
             if(glIsBuffer(m_bufferColor) == GL_TRUE) glDeleteBuffers(1, &m_bufferColor);
@@ -35,15 +35,11 @@ namespace glimac {
                 glVertexAttribDivisor(VERTEX_ATTR_COLOR, 1);
             glBindVertexArray(0);
 
-            for(size_t i = 0; i < nbInstances; ++i) {
-                m_offsetColor[i] = glm::vec3(1.f,1.f,1.f);
-            }
             refresh();
         }
 
     ColorCubeInst::~ColorCubeInst() {
         glDeleteBuffers(1, &m_bufferColor);
-        std::cout << "Deleting ColorCubeInst" << std::endl;
     }
 
     void ColorCubeInst::refresh() const {

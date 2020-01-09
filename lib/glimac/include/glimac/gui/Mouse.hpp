@@ -24,9 +24,9 @@ class Mouse {
         Mouse() = default;
         ~Mouse() = default;
 
-        const bool leftDown() const;
-        const bool middleDown() const;
-        const bool rightDown() const;
+        bool leftDown() const;
+        bool middleDown() const;
+        bool rightDown() const;
 
         void leftDown(const bool val);
         void middleDown(const bool val);

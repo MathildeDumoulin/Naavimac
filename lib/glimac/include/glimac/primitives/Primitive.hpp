@@ -45,7 +45,7 @@ class Primitive {
             return m_Vertices;
         }
 
-        const GLsizei nbVertex() const {
+        GLsizei nbVertex() const {
             return m_nbVertex;
         }
         
@@ -57,7 +57,7 @@ class Primitive {
             return m_Indexes;
         }
 
-        const GLsizei nbIndex() const {
+        GLsizei nbIndex() const {
             return m_nbIndex;
         }
 };

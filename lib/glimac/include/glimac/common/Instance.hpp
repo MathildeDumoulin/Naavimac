@@ -25,8 +25,8 @@ class Instance {
         virtual ~Instance();
         virtual void refresh() const;
 
-        const size_t nbInstances() const;
-        const GLsizei nbIndexPerObj() const;
+        size_t nbInstances() const;
+        GLsizei nbIndexPerObj() const;
         std::vector<glm::vec3>& offsetPosition();
         virtual const glm::vec3 getColor(const glm::vec3& position) const;
 

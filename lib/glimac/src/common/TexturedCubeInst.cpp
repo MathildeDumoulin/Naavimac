@@ -21,7 +21,6 @@ namespace glimac {
 
     TexturedCubeInst::~TexturedCubeInst() {
         glDeleteTextures(1, &m_diffuseTexture);
-        std::cout << "Deleting TexturedCubeInst" << std::endl;
     }
 
 

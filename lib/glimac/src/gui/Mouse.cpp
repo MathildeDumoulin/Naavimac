@@ -4,13 +4,13 @@
 
 namespace glimac {
 
-    const bool Mouse::leftDown() const {
+    bool Mouse::leftDown() const {
         return m_leftDown;
     }
-    const bool Mouse::middleDown() const {
+    bool Mouse::middleDown() const {
         return m_middleDown;
     }
-    const bool Mouse::rightDown() const {
+    bool Mouse::rightDown() const {
         return m_rightDown;
     }
 

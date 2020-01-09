@@ -34,19 +34,19 @@ Object::~Object() {
 }
 
 
-const GLuint Object::vbo() const {
+GLuint Object::vbo() const {
     return m_vbo;
 }
 
-const GLuint Object::ibo() const {
+GLuint Object::ibo() const {
     return m_ibo;
 }
 
-const GLsizei Object::nbVertex() const {
+GLsizei Object::nbVertex() const {
     return m_nbVertex;
 }
 
-const GLsizei Object::nbIndex() const {
+GLsizei Object::nbIndex() const {
     return m_nbIndex;
 }
 

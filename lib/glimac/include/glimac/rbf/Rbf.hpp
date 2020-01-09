@@ -34,7 +34,7 @@ namespace glimac {
     double resultRBF(std::vector <Controls> &controls, glm::vec3 vec, int type, float epsilon, int negative = 0);
 
 
-    const double phi(const double &x, int type, float e);
+    double phi(const double &x, int type, float e);
 
     void omega(std::vector <Controls> &controls, int type, float epsilon);
 

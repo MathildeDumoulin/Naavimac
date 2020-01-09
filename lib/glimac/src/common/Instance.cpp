@@ -14,7 +14,7 @@ namespace glimac {
 /***** CONSTRUCTORS & DESTRUCTOR *****/
 
     Instance::Instance(const unsigned int nbInstances, const Object& obj) 
-        : m_vao(0), m_bufferPosition(0), m_offsetPosition(nbInstances), m_nbIndexPerObj(obj.nbIndex()) {
+        : m_vao(0), m_bufferPosition(0), m_offsetPosition(nbInstances, glm::vec3(0.f, 0.f, 0.f)), m_nbIndexPerObj(obj.nbIndex()) {
 
             generateVertexArray(obj);
 
@@ -37,16 +37,12 @@ namespace glimac {
                 glVertexAttribDivisor(VERTEX_ATTR_OFFSET, 1);
             glBindVertexArray(0);
 
-            for(size_t i = 0; i < nbInstances; ++i) {
-                m_offsetPosition[i] = glm::vec3(0,0,0);
-            }
             refresh();
     }
 
     Instance::~Instance() {
         glDeleteBuffers(1, &m_bufferPosition);
         glDeleteVertexArrays(1, &m_vao);
-        std::cout << "Deleting Instance" << std::endl;
     }
 
 
@@ -88,11 +84,11 @@ namespace glimac {
 
 /***** GETTERS & SETTERS *****/
 
-    const size_t Instance::nbInstances() const {
+    size_t Instance::nbInstances() const {
         return m_offsetPosition.size();
     }
 
-    const GLsizei Instance::nbIndexPerObj() const {
+    GLsizei Instance::nbIndexPerObj() const {
         return m_nbIndexPerObj;
     }
 

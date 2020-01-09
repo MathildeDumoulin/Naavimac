@@ -27,7 +27,7 @@ namespace glimac{
 	}
 
   	//example, will be replaced later with custom rbfs
-  	const double phi(const double &d, int type, float e){
+  	double phi(const double &d, int type, float e){
   		float epsilon = e;
   		switch(type){
   			//multiquadric
@@ -51,7 +51,7 @@ namespace glimac{
 
   	double resultRBF(std::vector <Controls> &controls, glm::vec3 vec, int type, float epsilon, int negative){
   		double weight;
-  		for(int i = 0; i < controls.size(); i++) {
+  		for(uint i = 0; i < controls.size(); ++i) {
   			if(negative == 0){
   				weight += controls.at(i).weight*phi(double(glm::distance(vec, controls.at(i).pos)), type,epsilon);
   			}else{
@@ -66,8 +66,8 @@ namespace glimac{
 		
 		Eigen::MatrixXf constraint(controls.size(), controls.size());
 
-		for (int i = 0; i < controls.size(); ++i) {
-			for (int j = 0; j < controls.size(); ++j) {
+		for (uint i = 0; i < controls.size(); ++i) {
+			for (uint j = 0; j < controls.size(); ++j) {
 				constraint(i, j) = phi(double(glm::distance(controls.at(i).pos, controls.at(j).pos)), type, epsilon);
 			}
 		}
@@ -75,13 +75,13 @@ namespace glimac{
 		Eigen::VectorXf finalValues(controls.size());
 
 		//Filling weights vector with our control points weights
-		for (int i = 0; i < controls.size(); i++){
+		for (uint i = 0; i < controls.size(); ++i){
 			weights(i) = controls.at(i).weight;
 		}
 
 		finalValues = constraint.householderQr().solve(weights);
 
-		for(int i = 0; i < controls.size(); i++){
+		for(uint i = 0; i < controls.size(); ++i){
 			controls.at(i).value = finalValues(i);
 		}
 	}

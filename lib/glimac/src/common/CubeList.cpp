@@ -15,33 +15,26 @@ namespace glimac {
 /***** CONSTRUCTORS & DESTRUCTOR *****/
 
     CubeList::CubeList(Scene &scene, const Object& obj, const std::string filename) 
-        : m_world((worldSizeX+1) * (worldSizeY+1) * (worldSizeZ+1)) {
-            for(auto &elt:m_world) {
-                elt = NONE;
-            }
+        : m_world((worldSizeX+1) * (worldSizeY+1) * (worldSizeZ+1), NONE) {
 
             m_instances.insert(std::make_pair(DIRT, std::make_shared<TexturedCubeInst>(nbCubesAtStart, obj, "./bin/assets/textures/diffuse_DIRT.png")));
             m_instances.insert(std::make_pair(WATER, std::make_shared<TexturedCubeInst>(0, obj, "./bin/assets/textures/diffuse_WATER.png")));
             m_instances.insert(std::make_pair(COLOR, std::make_shared<ColorCubeInst>(0, obj)));
             m_instances.insert(std::make_pair(LIGHT, std::make_shared<LightCubeInst>(0, obj)));
 
-
             
             if(filename != ""){
                 applyRBF(scene, filename);
             }else{
                 createStartCubesGround();
-            }
-
-            //createStartCubesGround();
-            
+            }            
     }
 
 
 /***** PRIVATE METHODS *****/
 
     const glm::vec3 CubeList::positionFromIndex(unsigned int index) const {
-        assert(index < (worldSizeX+1)*(worldSizeY+1)*(worldSizeZ+1) && index >= 0);
+        assert(index < (worldSizeX+1)*(worldSizeY+1)*(worldSizeZ+1));
 
         float x = index / ((worldSizeZ + 1) * (worldSizeY + 1)) + worldMinX;
 
@@ -53,7 +46,7 @@ namespace glimac {
         return glm::vec3(x, y, z);
     }
 
-    const unsigned int CubeList::indexFromPosition(const glm::vec3& vec) const {
+    unsigned int CubeList::indexFromPosition(const glm::vec3& vec) const {
         assert(vec.x >= worldMinX && vec.x <= worldMaxX && 
                     vec.y >= worldMinY && vec.y <= worldMaxY && 
                         vec.z >= worldMinZ && vec.z <= worldMaxZ);
@@ -117,7 +110,7 @@ namespace glimac {
 
 /***** GETTERS & SETTERS *****/
 
-    const CubeType CubeList::type(const glm::vec3& position) const {
+    CubeType CubeList::type(const glm::vec3& position) const {
         //Check if the position is inside the world and return the index corresponding
         if(position.x >= worldMinX && position.x <= worldMaxX && 
             position.y >= worldMinY && position.y <= worldMaxY && 

@@ -29,7 +29,7 @@ class Lighting {
 
         void pointLightsInt(const glm::vec3& intensity);
         const glm::vec3& pointlightsInt() const;
-        const unsigned int nbLights() const;
+        unsigned int nbLights() const;
 
         void activateSun();
         void deactivateSun();
