@@ -289,6 +289,8 @@ After the RBFs methods were coded, it was time to apply it to our Cube List ! A 
 |   0.9   |  0.0 0.0 0.0 -1.0 -25.0 2.0 2.0 -0.5 25.0 25.0 3.0 1.0  |   Quite bad  |
 |   0.9   | 0.0 0.0 0.0 0.9 -25.0 2.0 2.0 -0.45 25.0 25.0 3.0 -0.15 |      Bad     |
 
+We noticed that our RBFs only created creases into the ground, we're not able to have mountains or hills. Even though we looked for a solution, nothing really seemed to do it. We probably need more height to see a difference, and our functions may be too linear. 
+
 ____________________________________
 ____________________________________
 
