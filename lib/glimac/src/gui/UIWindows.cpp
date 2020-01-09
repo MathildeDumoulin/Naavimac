@@ -21,7 +21,6 @@ namespace glimac{
 
             static float col1[3]={ 1.0f,0.0f,0.0f};
             ImGui::ColorEdit3("Color", col1);
-            //std::cout << col1[0] << std::endl;
             if (ImGui::Button("Color"))
             {
                 cubeList.type(scene, position, COLOR, glm::vec3(col1[0],col1[1],col1[2]));
@@ -109,7 +108,7 @@ namespace glimac{
 
         ImGui::End();
 
-        ImGui::SetNextWindowSize(ImVec2(200, 80));
+        ImGui::SetNextWindowSize(ImVec2(500, 60));
         ImGui::SetNextWindowPos(ImVec2(10, 800));
 
         ImGui::Begin("Presets"); 
@@ -121,7 +120,26 @@ namespace glimac{
             if (ImGui::Button("Big lake"))
             {
                 cubeList.applyRBF(scene, "cp1.txt",3,0.2, 0);   
+            }ImGui::SameLine(); 
+            if (ImGui::Button("Beach"))
+            {
+                cubeList.applyRBF(scene, "cp2.txt",3,2.5, 0);   
             }
+            ImGui::SameLine();
+            if (ImGui::Button("Coast"))
+            {
+                cubeList.applyRBF(scene, "cp8.txt",2,1.2, 1);   
+            }ImGui::SameLine();
+            if (ImGui::Button("Full Ocean"))
+            {
+                cubeList.FullOcean(scene);
+            }ImGui::SameLine();
+            if (ImGui::Button("Full Continent"))
+            {
+                cubeList.FullGround(scene);
+            }
+
+            
         }
         ImGui::End();
         

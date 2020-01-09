@@ -17,22 +17,18 @@ namespace glimac {
     struct Controls
     {
         glm::vec3 pos;
-        float weight; // will be set later using rbfs
-        float value; // specified in txt file
+        float weight; // specified in txt file
+        float value; // will be set later with omega coeffs
     };
 
-    ///Our different types of radial basis functions
-    //Get result from chosen RBF
+   
     double gaussian(const double d, const float epsilon);
 
    	double multiquadric(const double d, const float epsilon);
 
     double invQuadratic(const double d, const float epsilon);
 
-    double bump(const double d);
-
     double resultRBF(std::vector <Controls> &controls, glm::vec3 vec, int type, float epsilon, int negative = 0);
-
 
     double phi(const double &x, int type, float e);
 

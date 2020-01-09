@@ -158,7 +158,6 @@ int main(int argc, char** argv) {
             cubesWindow(scene, cubeList, scene.selection(), cubeEdges);
             lightWindow(scene, interface);
             RBFWindow(scene, cubeList);
-            //PresetsWindow(scene, cubeList);
         }
 
         // Rendering

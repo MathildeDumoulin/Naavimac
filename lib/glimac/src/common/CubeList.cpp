@@ -79,23 +79,25 @@ namespace glimac {
         m_instances.at(DIRT)->refresh(); //Send data to GPU
     }
 
+
+    //Interpolation to generate the ground
     void CubeList::applyRBF(Scene &scene, const std::string filename, int typeRBF, float epsilon, int negative){
         std::vector <Controls> cpList;
         readFileCP(filename,cpList);
+        //computing omega values to set weight for each cube later
         omega(cpList, typeRBF, epsilon);
 
         for(int y = -1; y <= 4; ++y){
             for(int x = worldMinX; x <= worldMaxX; ++x){
                 for(int z = worldMinZ; z <= worldMaxZ; ++z){
-
                     glm::vec3 currentPos = glm::vec3(x, y, z);
+                    //empty cube to refresh the scene
                     type(scene, currentPos, NONE);
                     double weight = resultRBF(cpList, currentPos, typeRBF, epsilon, negative);
-                    //std::cout << weight << std::endl;
-                    std::cout << weight << std::endl;
                     if(weight >= 0){
                         type(scene, currentPos, DIRT);
                     }else{
+                        //filling holes with water to create ocean / lakes
                         if(y<=0){
                             type(scene, currentPos, WATER);
                         }else{
@@ -103,6 +105,34 @@ namespace glimac {
                         }
                         
                     }
+                }
+            }
+        }
+    }
+
+    //generates water cubes to form an ocean
+    void CubeList::FullOcean(Scene &scene){
+        for(int y = -1; y <= 4; ++y){
+            for(int x = worldMinX; x <= worldMaxX; ++x){
+                for(int z = worldMinZ; z <= worldMaxZ; ++z){
+                    glm::vec3 currentPos = glm::vec3(x, y, z);
+                    if(y <= 0){
+                        type(scene, currentPos, WATER);
+                    }else{
+                        type(scene, currentPos, NONE);
+                    }
+                }
+            }
+        }
+    }
+
+    //generates only dirt cubes 
+    void CubeList::FullGround(Scene &scene){
+        for(int y = -1; y <= 4; ++y){
+            for(int x = worldMinX; x <= worldMaxX; ++x){
+                for(int z = worldMinZ; z <= worldMaxZ; ++z){
+                    glm::vec3 currentPos = glm::vec3(x, y, z);
+                    type(scene, currentPos, DIRT);
                 }
             }
         }

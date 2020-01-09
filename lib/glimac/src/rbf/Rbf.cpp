@@ -4,11 +4,10 @@
 
 namespace glimac{
 
-	//exp(-pow(abs(x * m_growthSpeed.getValue()), m_power.getValue()));
-
+	///Our radial basis functions
 	double gaussian(const double d, const float epsilon){
-		return exp(pow(epsilon, d));
-		//return exp(-epsilon*d*d);
+		//return exp(pow(epsilon, d));
+		return exp(-epsilon*d*d);
 	}
 
 	double multiquadric(const double d, const float epsilon){
@@ -19,30 +18,19 @@ namespace glimac{
 		return double(1.0/(1.0+epsilon*epsilon*d*d));
 	}
 
-	double bump(const double d){
-		if(d < 1 && d > -1){
-			return exp(-1.0/(1-d*d));
-		}
-		else return 0;
-	}
 
-  	//example, will be replaced later with custom rbfs
+  	//will return a value to set weight coeffs depending on selected RBF
   	double phi(const double &d, int type, float e){
   		float epsilon = e;
   		switch(type){
-  			//multiquadric
   			case 1: 
 	  			return multiquadric(d,e);
   				break;
-  			//gaussian
   			case 2:
 				return gaussian(d,e);
 				break;
 			case 3:
 				return invQuadratic(d,e);
-				break;
-			case 4 :
-				return bump(epsilon);
 				break;
 			default : 
 				return d*epsilon; 
@@ -61,11 +49,12 @@ namespace glimac{
 		return weight;
   	}
 
+  	//Will compute omega coefficients values : solving system
 	void omega(std::vector <Controls> &controls, int type, float epsilon){
 
 		
 		Eigen::MatrixXf constraint(controls.size(), controls.size());
-
+		//Filling constraint matrix
 		for (uint i = 0; i < controls.size(); ++i) {
 			for (uint j = 0; j < controls.size(); ++j) {
 				constraint(i, j) = phi(double(glm::distance(controls.at(i).pos, controls.at(j).pos)), type, epsilon);
