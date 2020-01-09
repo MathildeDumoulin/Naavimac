@@ -263,8 +263,31 @@ ____________________________________
 
 
 ### **Procedural generation**:
-TO DO !
 
+The procedural generation starts with an input with a text file (as suggested by our teachers), containing information for a few control points. In the file, we specify the coordinates of each point we want to set as a control point, followed by a value that will be its weight. 
+
+Then, we have to compute the omega values depending on the RBF that has been chosen, and the weights in the text file. After several tries, the **HouseHolderQR()** method was the most effective (faster). 
+
+After the RBFs methods were coded, it was time to apply it to our Cube List ! A few tries were made, trying to determine how to make beautiful landscapes. To do that, we had to experiment with our input files, coordinates, weights, choice of RBFs... Here's some of the results that were written down : 
+
+#### *Gaussian*
+
+| Epsilon |  File   |        Outcome       |
+|:-------:|:-------:|:--------------------:|
+|    5    | cp1.txt | Little circle island |
+|   0.8   | cp1.txt |   Half Circle coast  |
+|   0.8   | cp2.txt |         Cliff        |
+|   0.8   | cp3.txt |      Big Island      |
+
+#### *Linear*, was later replaced by Multiquadric (similar results)
+
+| Epsilon |                          File                           |    Outcome   |
+|:-------:|:-------------------------------------------------------:|:------------:|
+|   0.9   |                         cp1.txt                         |     Lake     |
+|   0.9   |                         cp3.txt                         |     Beach    |
+|   0.8   |                   origin weight : 1.0                   | Ocean "hole" |
+|   0.9   |  0.0 0.0 0.0 -1.0 -25.0 2.0 2.0 -0.5 25.0 25.0 3.0 1.0  |   Quite bad  |
+|   0.9   | 0.0 0.0 0.0 0.9 -25.0 2.0 2.0 -0.45 25.0 25.0 3.0 -0.15 |      Bad     |
 
 ____________________________________
 ____________________________________
@@ -325,9 +348,6 @@ So doing the way we do, it works pretty well and it is pretty easy to understand
 ____________________________________
 ____________________________________
 
-### **Loading/Saving map**:
-Yes, no, maybe? I don't know... 
-
 
 ### **Textured cubes**:
 Actually, it is not hard stuff. We made a very simple implementation using only one texture (a diffuse map). We load it and simply send it to OpenGL. In the Fragment Shader, we calculate the fragment's color using the texture and the lights! 
@@ -350,3 +370,6 @@ ____________________________________
 
 Julien:
 > I learned a lot doing this project. It was very interesting and I discovered many ressources I want to dive deeper in. This project was a pretty good introduction to 3D programming. Now, I want to restart from scratch, to make something some consistent and to work on optimizing ways. Every error I made during this project permitted me to better understand how we should start a project like this one and the kind of knowledges required.
+
+Mathilde: 
+> I wish I could have done more on this project, but some circumstances during the semester didn't help. However, I'm satisfied with how the project looks and what I've been able to do in such a short period of time. I was not familiar with 3D programming, and I'm conscious what i've coded so far can be improved, but I think it's a good start ! 
