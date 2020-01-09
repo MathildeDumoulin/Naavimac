@@ -77,12 +77,15 @@ int main(int argc, char** argv) {
         SDL_Event e;
         while(windowManager.pollEvent(e)) {
             interface.processEvent(e);
+            ImGui_ImplSDL2_ProcessEvent(&e);
             if(e.type == SDL_QUIT) {
                 done = true; // Leave the loop after this iteration
             }
-
+           
             switch(e.type) {
+
                 case SDL_KEYDOWN:
+                    if(!ImGui::GetIO().WantCaptureKeyboard){
                     if(e.key.keysym.sym == SDLK_z) scene.cam().moveFront(1);
                     if(e.key.keysym.sym == SDLK_s) scene.cam().moveFront(-1);
                     if(e.key.keysym.sym == SDLK_q) scene.cam().moveLeft(1);
@@ -103,8 +106,10 @@ int main(int argc, char** argv) {
                     if(e.key.keysym.sym == SDLK_o) cubeList.extrude(scene, cubeEdges);
                     if(e.key.keysym.sym == SDLK_p) cubeList.dig(scene, cubeEdges);
                     break;
-
+                }
+                
                 case SDL_MOUSEBUTTONDOWN:
+                if(!ImGui::GetIO().WantCaptureMouse){
                     if(e.button.button == SDL_BUTTON_LEFT) {
                         mouse.leftDown(true);
                         mouse.updatePosition(windowManager);
@@ -125,6 +130,7 @@ int main(int argc, char** argv) {
                         mouse.updateSelection(scene, cubeList);
                         cubeEdges.changeFirstInstance(scene.selection());
                     }
+                }
                     break;
 
                 case SDL_MOUSEBUTTONUP:
@@ -156,6 +162,7 @@ int main(int argc, char** argv) {
             cubesWindow(scene, cubeList, scene.selection(), cubeEdges);
             lightWindow(scene, interface);
             RBFWindow(scene, cubeList);
+            //PresetsWindow(scene, cubeList);
         }
 
         // Rendering

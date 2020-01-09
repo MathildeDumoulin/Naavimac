@@ -14,6 +14,7 @@ namespace glimac{
 	void cubesWindow(Scene &scene, CubeList &cubeList,const glm::vec3 &position, ColorCubeInst &cubeEdgesObj);
 	void lightWindow(Scene &scene, IMGUIWindowManager &interface);
 	void RBFWindow(Scene &scene, CubeList &cubeList);
+	//void PresetsWindow(Scene &scene, CubeList &cubeList);
 
 }
 

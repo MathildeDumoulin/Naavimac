@@ -35,7 +35,7 @@ class CubeList {
 
         void type(Scene& scene, const glm::vec3& position, const CubeType& newType, const glm::vec3& color = glm::vec3(1.f,1.f,1.f)); //Setter
         const CubeType type(const glm::vec3& position) const; //Getter
-        void applyRBF(Scene &scene, std::string filename, int typeRBF = 0, float epsilon = 1.0);
+        void applyRBF(Scene &scene, std::string filename, int typeRBF = 0, float epsilon = 1.0, int negative = 0);
 
         void extrude(Scene& scene, Instance& selectionInst);
         void dig(Scene& scene, Instance& selectionInst);

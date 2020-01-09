@@ -23,13 +23,16 @@ namespace glimac {
 
     ///Our different types of radial basis functions
     //Get result from chosen RBF
-   	double gaussian(glm::vec3 vec1, glm::vec3 vec2, const float epsilon);
+    double gaussian(const double d, const float epsilon);
 
-   	double multiquadric(glm::vec3 vec1, glm::vec3 vec2, const float epsilon);
+   	double multiquadric(const double d, const float epsilon);
 
-    double getNorm(const glm::vec3 vec);
+    double invQuadratic(const double d, const float epsilon);
 
-    double resultRBF(std::vector <Controls> &controls, glm::vec3 vec, int type, float epsilon);
+    double bump(const double d);
+
+    double resultRBF(std::vector <Controls> &controls, glm::vec3 vec, int type, float epsilon, int negative = 0);
+
 
     const double phi(const double &x, int type, float e);
 

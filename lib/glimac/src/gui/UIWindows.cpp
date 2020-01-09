@@ -61,7 +61,7 @@ namespace glimac{
             ImGui::Text("Light Intensity");
 
             static float f1=5.0f;
-            ImGui::SliderFloat("", &f1, 0.0f, 10.0f, "intensity : %.1f");
+            ImGui::SliderFloat("", &f1, 0.0f, 15.0f, "intensity : %.1f");
             scene.changeLighting().pointLightsInt(glm::vec3(f1,f1,f1));
 
         ImGui::End();
@@ -105,6 +105,32 @@ namespace glimac{
             {
                 cubeList.applyRBF(scene, rbfFile,2,epsilon);   
             }
+
+            if (ImGui::Button("Inv. Quadratic"))
+            {
+                cubeList.applyRBF(scene, rbfFile,3,epsilon);   
+            }
+
+            if (ImGui::Button("Bump"))
+            {
+                cubeList.applyRBF(scene, rbfFile,4,epsilon);   
+            }
+        ImGui::End();
+
+        ImGui::SetNextWindowSize(ImVec2(200, 80));
+        ImGui::SetNextWindowPos(ImVec2(10, 800));
+
+        ImGui::Begin("Presets"); 
+        {
+            if (ImGui::Button("Islands"))
+            {
+                cubeList.applyRBF(scene, "cp7.txt",3,epsilon,1);   
+            }ImGui::SameLine();
+            if (ImGui::Button("Flower"))
+            {
+                cubeList.applyRBF(scene, "cp5.txt",2,epsilon, 1);   
+            }
+        }
         ImGui::End();
         
     }

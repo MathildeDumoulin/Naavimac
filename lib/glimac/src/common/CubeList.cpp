@@ -86,7 +86,7 @@ namespace glimac {
         m_instances.at(DIRT)->refresh(); //Send data to GPU
     }
 
-    void CubeList::applyRBF(Scene &scene, const std::string filename, int typeRBF, float epsilon){
+    void CubeList::applyRBF(Scene &scene, const std::string filename, int typeRBF, float epsilon, int negative){
         std::vector <Controls> cpList;
         readFileCP(filename,cpList);
         omega(cpList, typeRBF, epsilon);
@@ -97,7 +97,7 @@ namespace glimac {
 
                     glm::vec3 currentPos = glm::vec3(x, y, z);
                     type(scene, currentPos, NONE);
-                    double weight = resultRBF(cpList, currentPos, typeRBF, epsilon);
+                    double weight = resultRBF(cpList, currentPos, typeRBF, epsilon, negative);
                     //std::cout << weight << std::endl;
                     std::cout << weight << std::endl;
                     if(weight >= 0){
