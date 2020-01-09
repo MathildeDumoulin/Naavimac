@@ -91,7 +91,7 @@ namespace glimac {
         readFileCP(filename,cpList);
         omega(cpList, typeRBF, epsilon);
 
-        for(int y = -1; y <= 3; ++y){
+        for(int y = -1; y <= 4; ++y){
             for(int x = worldMinX; x <= worldMaxX; ++x){
                 for(int z = worldMinZ; z <= worldMaxZ; ++z){
 

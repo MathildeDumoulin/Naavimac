@@ -91,10 +91,6 @@ namespace glimac{
 
             ImGui::Text("Choose RBF :");
 			
-			if (ImGui::Button("Linear"))
-	       	{
-	        	cubeList.applyRBF(scene, rbfFile,0,epsilon);   
-	        }
 
             if (ImGui::Button("Multiquadric"))
             {
@@ -103,7 +99,7 @@ namespace glimac{
 
             if (ImGui::Button("Gaussian"))
             {
-                cubeList.applyRBF(scene, rbfFile,2,epsilon);   
+                cubeList.applyRBF(scene, rbfFile,2,epsilon);
             }
 
             if (ImGui::Button("Inv. Quadratic"))
@@ -111,10 +107,6 @@ namespace glimac{
                 cubeList.applyRBF(scene, rbfFile,3,epsilon);   
             }
 
-            if (ImGui::Button("Bump"))
-            {
-                cubeList.applyRBF(scene, rbfFile,4,epsilon);   
-            }
         ImGui::End();
 
         ImGui::SetNextWindowSize(ImVec2(200, 80));
@@ -126,9 +118,9 @@ namespace glimac{
             {
                 cubeList.applyRBF(scene, "cp7.txt",3,epsilon,1);   
             }ImGui::SameLine();
-            if (ImGui::Button("Flower"))
+            if (ImGui::Button("Big lake"))
             {
-                cubeList.applyRBF(scene, "cp5.txt",2,epsilon, 1);   
+                cubeList.applyRBF(scene, "cp1.txt",3,0.2, 0);   
             }
         }
         ImGui::End();
